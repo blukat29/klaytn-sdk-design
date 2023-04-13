@@ -1,4 +1,3 @@
-import { encode, decode } from "@ethersproject/rlp";
 import _ from "lodash";
 import { FieldType, FieldTypeUint8 } from "./field"
 
@@ -23,7 +22,10 @@ export abstract class TypedTx {
   // RLP encoding for sender to sign.
   abstract sigRLP(): string;
   // RLP encoding for broadcasting. Includes all signatures.
-  abstract rawTx(): string;
+  abstract txRLP(): string;
+
+  ////////////////////////////////////////////////////////////
+  // Child classes MAY override below methods
 
   // RLP encoding for fee payer to sign.
   sigFeePayerRLP(): string {
@@ -83,7 +85,7 @@ export abstract class TypedTx {
 
   // RLP encode fields by names.
   // Throws if some fields are unset.
-  protected encode(fieldNames: string[]) {
+  protected serializeFields(fieldNames: string[]): string[] {
     const values = _.map(fieldNames, (name) => {
       const fieldType = this._static.fieldTypes[name];
       const fieldValue = this.fields[name];
@@ -92,7 +94,7 @@ export abstract class TypedTx {
       }
       return fieldType.serialize(fieldValue);
     });
-    return encode(values);
+    return values;
   }
 }
 
