@@ -10,12 +10,45 @@ import * as RLP from "@ethersproject/rlp";
 import { BigNumber, BigNumberish } from "ethers";
 
 // import { KlaytnTx } from "@klaytn/sdk-commons";
+export const KlaytnTxType = {
+  ValueTransfer:             0x08,
+  FeeDelegatedValueTransfer: 0x09,
+}
+
+export class KlaytnTx {
+
+  static fromObject(tx: any): AbstractTx | null {
+    const TxType = KlaytnTx.getTxType(tx.type);
+    if (TxType == null) {
+      return null;
+    } else {
+      return new TxType(tx);
+    }
+  }
+
+  static fromRawTx(rawTx: BytesLike): AbstractTx | null {
+    return null;
+  }
+
+  static getTxType(type: number): typeof AbstractTx | null {
+    switch (type) {
+      case KlaytnTxType.ValueTransfer: return TxTypeValueTransfer;
+      default: return null;
+    }
+  }
+
+  static isKlaytnTxType(type?: number): boolean {
+    return (!!type) && (KlaytnTx.getTxType(type) != null);
+  }
+
+  // TODO: wrapTx
+}
+
 abstract class AbstractTx {
-  type: number;
+  type: number = 0;
   tx: any;
 
-  constructor(type: number, tx: any) {
-    this.type = type;
+  constructor(tx: any) {
     this.tx = tx;
     this.validate();
   }
@@ -36,7 +69,8 @@ function formatNumber(value: BigNumberish, name?: string): Uint8Array {
 
 export class TxTypeValueTransfer extends AbstractTx {
   constructor(tx: any) {
-    super(0x08, tx);
+   super(0x08, tx);
+    this.tx =tx;
   }
 
   validate(): void {
@@ -86,20 +120,4 @@ export class TxTypeValueTransfer extends AbstractTx {
   }
 }
 
-export const KlaytnTxType = {
-  ValueTransfer:             0x08,
-  FeeDelegatedValueTransfer: 0x09,
-}
-
-export class KlaytnTx {
-  static isKlaytnTxType(type?: number): boolean {
-    if (!type) {
-      return false;
-    } else {
-      return _.includes(_.values(KlaytnTxType), type);
-    }
-  }
-
-  // TODO: wrapTx
-}
 // end "@klaytn/sdk-commons";

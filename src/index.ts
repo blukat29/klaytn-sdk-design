@@ -48,7 +48,7 @@ export class KlaytnWallet extends Wallet {
     return tx;
   }
 
-  async signTransaction(tx: KlaytnTransactionRequest): Promise<string> {
+  async signTransaction(tx: TransactionRequest): Promise<string> {
     if (!KlaytnTx.isKlaytnTxType(tx?.type)) {
       return super.signTransaction(tx);
     }
@@ -60,6 +60,8 @@ export class KlaytnWallet extends Wallet {
     console.log(signature);
 
     let chainId = tx.chainId || await this.getChainId();
+
+    // ktx.addSig(signature);
     ktx.tx.signatures = [
       [signature.v + 2*chainId + 8, signature.r, signature.s],
     ];
