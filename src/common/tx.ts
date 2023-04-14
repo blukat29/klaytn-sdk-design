@@ -63,6 +63,10 @@ export abstract class TypedTx {
   // Tx fields in their canonical forms.
   protected fields: Fields = {};
 
+  static isSupportedType(type?: number): boolean {
+    return !!type && !!TxTypes[type];
+  }
+
   // Create a TypedTx instance of the appropriate type
   static fromObject(fields: Fields): TypedTx {
     if (!fields.type) {
