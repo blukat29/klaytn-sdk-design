@@ -1,6 +1,6 @@
-import {Signature} from "ethers";
 import _ from "lodash";
-import { FieldType, getSignatureTuple } from "./field"
+import { FieldType } from "./field"
+import { Signature, SignatureLike } from "./util";
 
 interface FieldTypes {
   [name: string]: FieldType;
@@ -38,9 +38,13 @@ export abstract class TypedTx {
   }
 
   // Add a signature
-  addSignature(sig: Signature) {
-    const tuple = getSignatureTuple(sig);
-    console.log(tuple);
+  addTxSignature(sig: SignatureLike) {
+    if (!this._static.fieldTypes.txSignatures) {
+      throw new Error(`No 'txSignatures' field in txtype '${this.type}'`);
+    }
+    const tuple = Signature.toTuple(sig);
+    this.fields.txSignatures ||= [];
+    this.fields.txSignatures.push(tuple);
   }
 
   // Add a feepayer signature. works like addSignature.
@@ -75,6 +79,8 @@ export abstract class TypedTx {
     return tx;
   }
 
+  toObject(): Fields { return this.fields; }
+
   // A workaround to read child class's static members.
   private get _static(): typeof TypedTx {
     return this.constructor as typeof TypedTx;
@@ -92,18 +98,16 @@ export abstract class TypedTx {
     });
   }
 
-  // RLP encode fields by names.
-  // Throws if some fields are unset.
-  protected serializeFields(fieldNames: string[]): any[] {
-    const values = _.map(fieldNames, (name) => {
-      const fieldType = this._static.fieldTypes[name];
-      const fieldValue = this.fields[name];
-      if (fieldValue == null) {
-        throw new Error(`Missing transaction field '${name}' for txtype ${this.type}`);
-      }
-      return fieldType.serialize(fieldValue);
-    });
-    return values;
+  protected getField(name: string): any {
+    const value = this.fields[name];
+    if (value == null) {
+      throw new Error(`Missing transaction field '${name}' for txtype ${this.type}`);
+    }
+    return value;
+  }
+
+  protected getFields(names: string[]): any[] {
+    return _.map(names, (name) => this.getField(name));
   }
 }
 
