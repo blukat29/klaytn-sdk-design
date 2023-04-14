@@ -61,8 +61,20 @@ export class KlaytnWallet extends Wallet {
 
   async waitTransactionPooled(hash: string): Promise<TransactionResponse> {
     // ethers.js/providers/src.ts/json-rpc-provider.ts:JsonRpcSigner.sendTransaction
-    return await poll(
-      async () => await this.provider.getTransaction(hash),
-      { oncePoll: this.provider });
+    const func = async (): Promise<TransactionResponse | undefined> => {
+      const tx = await this.provider.getTransaction(hash);
+      if (tx === null) {
+        return undefined; // triggers retry
+      }
+      return tx;
+    };
+    const option = { oncePoll: this.provider };
+
+    const tx = await poll(func, option);
+    if (tx !== undefined) {
+      return tx;
+    } else {
+      throw new Error(`Cannot find transaction '${hash}' in txpool`);
+    }
   }
 }
