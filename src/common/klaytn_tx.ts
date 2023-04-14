@@ -1,19 +1,20 @@
 import { encode, decode } from "@ethersproject/rlp";
-import { FieldTypeAddress, FieldTypeUint256, FieldTypeUint64, FieldTypeUint8 } from "./field"
+import { FieldTypeAddress, FieldTypeSignatureTuples, FieldTypeUint256, FieldTypeUint64, FieldTypeUint8 } from "./field"
 import { TypedTx } from "./tx";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
 export class TypedTxValueTransfer extends TypedTx {
   static type = 8;
   static fieldTypes = {
-    'type':     FieldTypeUint8,
-    'nonce':    FieldTypeUint64,
-    'gasPrice': FieldTypeUint256,
-    'gas':      FieldTypeUint64,
-    'to':       FieldTypeAddress,
-    'value':    FieldTypeUint256,
-    'from':     FieldTypeAddress,
-    'chainId':  FieldTypeUint64,
+    'type':         FieldTypeUint8,
+    'nonce':        FieldTypeUint64,
+    'gasPrice':     FieldTypeUint256,
+    'gas':          FieldTypeUint64,
+    'to':           FieldTypeAddress,
+    'value':        FieldTypeUint256,
+    'from':         FieldTypeAddress,
+    'chainId':      FieldTypeUint64,
+    'txSignatures': FieldTypeSignatureTuples,
   };
 
   sigRLP(): string {

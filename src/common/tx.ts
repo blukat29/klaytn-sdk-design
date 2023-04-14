@@ -1,5 +1,6 @@
+import {Signature} from "ethers";
 import _ from "lodash";
-import { FieldType, FieldTypeUint8 } from "./field"
+import { FieldType, getSignatureTuple } from "./field"
 
 interface FieldTypes {
   [name: string]: FieldType;
@@ -35,6 +36,14 @@ export abstract class TypedTx {
   sigSenderTxRLP(): string {
     return this.sigRLP();
   }
+
+  // Add a signature
+  addSignature(sig: Signature) {
+    const tuple = getSignatureTuple(sig);
+    console.log(tuple);
+  }
+
+  // Add a feepayer signature. works like addSignature.
 
   // End override
   ////////////////////////////////////////////////////////////
@@ -85,7 +94,7 @@ export abstract class TypedTx {
 
   // RLP encode fields by names.
   // Throws if some fields are unset.
-  protected serializeFields(fieldNames: string[]): string[] {
+  protected serializeFields(fieldNames: string[]): any[] {
     const values = _.map(fieldNames, (name) => {
       const fieldType = this._static.fieldTypes[name];
       const fieldValue = this.fields[name];
@@ -101,6 +110,7 @@ export abstract class TypedTx {
 // Non-abstract child class of TypedTx
 export interface ConcreteTypedTx {
   type: number;
+  fieldTypes: FieldTypes;
   new (): TypedTx;
 }
 
@@ -108,9 +118,31 @@ export const TxTypes: {
   [type: number]: ConcreteTypedTx;
 } = {};
 
+// These fields are used in the abstract TypedTx class.
+const mandatoryFields = ['type', 'chainId'];
+
 export function registerTxType(cls: ConcreteTypedTx) {
-  if (TxTypes[cls.type]) {
-    throw new Error(`Already registered txtype ${cls.type}`); 
+  const type = cls.type;
+  const fieldTypes = cls.fieldTypes;
+
+  if (!type) {
+    throw new Error(`Missing TypedTx.type`);
   }
+  if (type == 0 || type == 1 || type == 2) {
+    throw new Error(`New txtype cannot be ${type}`);
+  }
+  if (TxTypes[type]) {
+    throw new Error(`Already registered txtype ${type}`);
+  }
+
+  if (!fieldTypes) {
+    throw new Error(`Missing TypedTx.fieldTypes`);
+  }
+  for (const name of mandatoryFields) {
+    if (!fieldTypes[name]) {
+      throw new Error(`A TypedTx must at least have '${name}' field`);
+    }
+  }
+
   TxTypes[cls.type] = cls;
 }
