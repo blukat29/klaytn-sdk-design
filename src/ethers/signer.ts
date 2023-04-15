@@ -14,7 +14,9 @@ export class KlaytnWallet extends Wallet {
     // Klaytn tx types, however, always uses gasPrice.
     // Pretend it's a legacy transaction, so we can receive gasPrice nontheless.
     const savedType = tx.type;
-    tx.type = 0;
+    if (TypedTx.isSupportedType(tx.type)) {
+      tx.type = 0;
+    }
     tx = await super.populateTransaction(tx);
     tx.type = savedType;
 
