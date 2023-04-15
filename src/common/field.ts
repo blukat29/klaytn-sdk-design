@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { HexStr, Signature, SignatureLike, SignatureTuple } from "./util";
+import { HexStr } from "./util";
+import { SignatureLike, SignatureTuple, getSignatureTuple } from "./sig";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getAddress } from "@ethersproject/address";
 
@@ -63,7 +64,7 @@ export const FieldTypeUint256 = new FieldTypeNumberBits(256);
 // Canonical type: hex string of checksumed address
 export const FieldTypeSignatureTuples = new class implements FieldType {
   canonicalize(value: SignatureLike[]): SignatureTuple[] {
-    return _.map(value, Signature.toTuple);
+    return _.map(value, getSignatureTuple);
   }
   emptyValue(): SignatureTuple[] { return [] };
 }

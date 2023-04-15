@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { FieldType } from "./field"
-import { Signature, SignatureLike } from "./util";
+import { SignatureLike, getSignatureTuple } from "./sig";
 
 interface FieldTypes {
   [name: string]: FieldType;
@@ -42,7 +42,7 @@ export abstract class TypedTx {
     if (!this._static.fieldTypes.txSignatures) {
       throw new Error(`No 'txSignatures' field in txtype '${this.type}'`);
     }
-    const tuple = Signature.toTuple(sig);
+    const tuple = getSignatureTuple(sig);
     this.fields.txSignatures ||= [];
     this.fields.txSignatures.push(tuple);
   }
