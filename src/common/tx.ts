@@ -1,24 +1,11 @@
 import _ from "lodash";
-import { FieldType } from "./field"
+import { FieldType, FieldTypes, Fields, TypedFields } from "./field"
 import { SignatureLike, getSignatureTuple } from "./sig";
 
-interface FieldTypes {
-  [name: string]: FieldType;
-}
-
-interface Fields {
-  [name: string]: any;
-}
-
-export abstract class TypedTx {
+export abstract class TypedTx extends TypedFields {
 
   ////////////////////////////////////////////////////////////
   // Child classes MUST override below properties and methods
-
-  // An 1-byte TxType number
-  public static type: number;
-  // Type declaration of tx fields.
-  public static fieldTypes: FieldTypes;
 
   // RLP encoding for sender to sign.
   abstract sigRLP(): string;
@@ -39,7 +26,7 @@ export abstract class TypedTx {
 
   // Add a signature
   addTxSignature(sig: SignatureLike) {
-    if (!this._static.fieldTypes.txSignatures) {
+    if (!this.fieldTypes.txSignatures) {
       throw new Error(`No 'txSignatures' field in txtype '${this.type}'`);
     }
     const tuple = getSignatureTuple(sig);
@@ -47,21 +34,10 @@ export abstract class TypedTx {
     this.fields.txSignatures.push(tuple);
   }
 
-  // Add a feepayer signature. works like addSignature.
+  // TODO: Add a feepayer signature. works like addSignature.
 
   // End override
   ////////////////////////////////////////////////////////////
-
-  // this.type is shortcut for this._static.type.
-  protected type: number;
-
-  // Constructor has no arguments to make child classes simple.
-  constructor() {
-    this.type = this._static.type;
-  }
-
-  // Tx fields in their canonical forms.
-  protected fields: Fields = {};
 
   static isSupportedType(type?: number): boolean {
     return !!type && !!TxTypes[type];
@@ -83,36 +59,8 @@ export abstract class TypedTx {
     return tx;
   }
 
+  // Return a plain object
   toObject(): Fields { return this.fields; }
-
-  // A workaround to read child class's static members.
-  private get _static(): typeof TypedTx {
-    return this.constructor as typeof TypedTx;
-  }
-
-  // Reset all fields
-  protected setFields(tx: Fields): void {
-    this.fields = {};
-    _.forOwn(this._static.fieldTypes, (fieldType, name) => {
-      if (tx[name]) {
-        this.fields[name] = fieldType.canonicalize(tx[name]);
-      } else {
-        this.fields[name] = null;
-      }
-    });
-  }
-
-  protected getField(name: string): any {
-    const value = this.fields[name];
-    if (value == null) {
-      throw new Error(`Missing transaction field '${name}' for txtype ${this.type}`);
-    }
-    return value;
-  }
-
-  protected getFields(names: string[]): any[] {
-    return _.map(names, (name) => this.getField(name));
-  }
 }
 
 // Non-abstract child class of TypedTx

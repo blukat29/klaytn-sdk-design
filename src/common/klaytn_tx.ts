@@ -5,6 +5,7 @@ import { TypedTx } from "./tx";
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
 export class TypedTxValueTransfer extends TypedTx {
   static type = 8;
+  static typeName = "TxTypeValueTransfer";
   static fieldTypes = {
     'type':         FieldTypeUint8,
     'nonce':        FieldTypeUint64,

@@ -19,6 +19,14 @@ export interface FieldType {
   emptyValue(): any;
 }
 
+export interface FieldTypes {
+  [name: string]: FieldType;
+}
+
+export interface Fields {
+  [name: string]: any;
+}
+
 // Accepted types: hex string, byte array
 // Canonical type: hex string
 export const FieldTypeBytes = new class implements FieldType {
@@ -67,4 +75,65 @@ export const FieldTypeSignatureTuples = new class implements FieldType {
     return _.map(value, getSignatureTuple);
   }
   emptyValue(): SignatureTuple[] { return [] };
+}
+
+export abstract class TypedFields {
+
+  ////////////////////////////////////////////////////////////
+  // Child classes MUST override below properties and methods
+
+  // An 1-byte type enum
+  public static type: number;
+
+  // Human readable name of the type. Appears in error messages.
+  public static typeName: string;
+
+  // Fields declaration
+  public static fieldTypes: FieldTypes;
+
+  // End override
+  ////////////////////////////////////////////////////////////
+
+  // shortcuts for this._static.*.
+  protected type: number = 0;
+  protected typeName: string = "";
+  protected fieldTypes: FieldTypes = {};
+
+  // Fields in their canonical forms.
+  protected fields: Fields = {};
+
+  constructor() {
+    this.type = this._static.type;
+    this.typeName = this._static.typeName;
+    this.fieldTypes = this._static.fieldTypes;
+  }
+
+  // A workaround to read child class's static members.
+  private get _static(): typeof TypedFields {
+    return this.constructor as typeof TypedFields;
+  }
+
+  // Reset all fields
+  protected setFields(obj: Fields): void {
+    this.fields = {};
+    _.forOwn(this.fieldTypes, (fieldType, name) => {
+      if (obj[name]) {
+        this.fields[name] = fieldType.canonicalize(obj[name]);
+      } else {
+        this.fields[name] = null;
+      }
+    });
+  }
+
+  protected getField(name: string): any {
+    const value = this.fields[name];
+    if (value == null) {
+      throw new Error(`Missing field '${name}' for '${this.typeName}' (type ${this.type})`);
+    }
+    return value;
+  }
+
+  protected getFields(names: string[]): any[] {
+    return _.map(names, (name) => this.getField(name));
+  }
 }
