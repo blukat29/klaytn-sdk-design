@@ -113,8 +113,9 @@ export abstract class TypedFields {
     return this.constructor as typeof TypedFields;
   }
 
-  // Reset all fields
-  protected setFields(obj: Fields): void {
+  // Fields accessors
+
+  public setFields(obj: Fields): void {
     this.fields = {};
     _.forOwn(this.fieldTypes, (fieldType, name) => {
       if (obj[name]) {
@@ -125,7 +126,7 @@ export abstract class TypedFields {
     });
   }
 
-  protected getField(name: string): any {
+  public getField(name: string): any {
     const value = this.fields[name];
     if (value == null) {
       throw new Error(`Missing field '${name}' for '${this.typeName}' (type ${this.type})`);
@@ -133,7 +134,68 @@ export abstract class TypedFields {
     return value;
   }
 
-  protected getFields(names: string[]): any[] {
+  public getFields(names: string[]): any[] {
     return _.map(names, (name) => this.getField(name));
+  }
+
+  public toObject(): Fields {
+    return this.fields;
+  }
+}
+
+// Instantiable child class of TypedFields
+export interface ConcreteTypedFields<T extends TypedFields> {
+  type: number;
+  fieldTypes: FieldTypes;
+  new (): T;
+}
+
+export class TypedFieldsFactory<T extends TypedFields> {
+  private registry: { [type: number]: ConcreteTypedFields<T> } = {};
+  private requiredFields: string[];
+
+  constructor(requiredFields?: string[]) {
+    this.requiredFields = requiredFields || [];
+  }
+
+  public add(cls: ConcreteTypedFields<T>) {
+    const type = cls.type;
+    const fieldTypes = cls.fieldTypes;
+
+    if (!type) {
+      throw new Error(`Cannot register TypedFields: Missing type`);
+    }
+    if (this.registry[type]) {
+      throw new Error(`Cannot register TypedFields: type ${type} already registered`);
+    }
+
+    if (!fieldTypes) {
+      throw new Error(`Cannot register TypedFields: Missing fieldTypes`);
+    }
+    for (const name of this.requiredFields) {
+      if (!fieldTypes[name]) {
+        throw new Error(`Cannot register TypedFields: Missing required field '${name}'`);
+      }
+    }
+
+    this.registry[type] = cls;
+  }
+
+  public has(type?: number): boolean {
+    return !!type && !!this.registry[type];
+  }
+
+  public lookup(type?: number): ConcreteTypedFields<T> {
+    if (!type || !this.has(type)) {
+      throw new Error(`Unsupported type '${type}'`);
+    }
+    return this.registry[type];
+  }
+
+  public fromObject(fields: Fields): T {
+    const ctor = this.lookup(fields?.type);
+    const instance = new ctor();
+    instance.setFields(fields);
+    return instance;
   }
 }

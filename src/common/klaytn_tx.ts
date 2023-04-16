@@ -1,5 +1,10 @@
 import { RLP, HexStr } from "./util";
-import { FieldTypeAddress, FieldTypeSignatureTuples, FieldTypeUint256, FieldTypeUint64, FieldTypeUint8 } from "./field"
+import {
+  FieldTypeAddress,
+  FieldTypeSignatureTuples,
+  FieldTypeUint8,
+  FieldTypeUint64,
+  FieldTypeUint256 } from "./field"
 import { TypedTx } from "./tx";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer

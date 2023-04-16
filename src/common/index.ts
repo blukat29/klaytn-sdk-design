@@ -1,10 +1,9 @@
-import { TypedTx, registerTxType } from "./tx";
+import { TypedTx, TypedTxFactory } from "./tx";
 
 import {
   TypedTxValueTransfer
 } from "./klaytn_tx";
-registerTxType(TypedTxValueTransfer);
 
-export {
-  TypedTx,
-};
+TypedTxFactory.add(TypedTxValueTransfer);
+
+export { TypedTx, TypedTxFactory };

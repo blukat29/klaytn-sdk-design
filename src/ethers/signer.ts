@@ -1,6 +1,6 @@
 import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { TypedTx } from "../common";
+import { TypedTxFactory } from "../common";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { poll } from "@ethersproject/web";
@@ -14,7 +14,7 @@ export class KlaytnWallet extends Wallet {
     // Klaytn tx types, however, always uses gasPrice.
     // Pretend it's a legacy transaction, so we can receive gasPrice nontheless.
     const savedType = tx.type;
-    if (TypedTx.isSupportedType(tx.type)) {
+    if (TypedTxFactory.has(tx.type)) {
       tx.type = 0;
     }
     tx = await super.populateTransaction(tx);
@@ -26,13 +26,13 @@ export class KlaytnWallet extends Wallet {
   async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
-    if (!TypedTx.isSupportedType(tx.type)) {
+    if (!TypedTxFactory.has(tx.type)) {
       return super.signTransaction(tx);
     }
 
     tx = await this.populateTransaction(tx);
 
-    const ttx = TypedTx.fromObject(tx);
+    const ttx = TypedTxFactory.fromObject(tx);
     const sighash = keccak256(ttx.sigRLP());
     const sig = this._signingKey().signDigest(sighash);
 
@@ -48,7 +48,7 @@ export class KlaytnWallet extends Wallet {
     const tx = await this.populateTransaction(transaction);
     const signedTx = await this.signTransaction(tx);
 
-    if (!TypedTx.isSupportedType(tx.type)) {
+    if (!TypedTxFactory.has(tx.type)) {
       return await this.provider.sendTransaction(signedTx);
     }
 
