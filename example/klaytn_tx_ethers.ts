@@ -1,13 +1,15 @@
 import { ethers } from "ethers";
-import { KlaytnWallet } from "../src/ethers"; // require("@klaytn/sdk-ethers");
+import { KlaytnWallet } from "../src/ethers"; // require("@klaytn/sdk/ethers");
+import { TypedAccountKeyFactory, TypedTxFactory } from "../src/common"; // require("@klaytn/sdk");
 
 const url = "https://public-en-baobab.klaytn.net";
 const priv = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const pub = "0x038318535b54105d4a7aae60c08fc45f9687181b4fdfc625bd1a753fa7397fed75";
 
-async function main() {
-  const provider = new ethers.providers.JsonRpcProvider(url);
-  const wallet = new KlaytnWallet(priv, provider);
+const provider = new ethers.providers.JsonRpcProvider(url);
+const wallet = new KlaytnWallet(priv, provider);
 
+async function testTxtype() {
   // most fields can be auto-filled by populateTransaction.
   let tx: any = {
     type: 8,
@@ -43,4 +45,30 @@ async function main() {
   }
 }
 
-main();
+async function testAccountUpdate() {
+
+  let account: any = {
+    type: 0x02,
+    key: pub,
+  };
+
+  let tx: any = {
+    type: 0x20,
+    // nonce:5700,
+    // gasPrice: 25e9,
+    // gasLimit: 30000,
+    // from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    key: account,
+    // chainId: 1001,
+  };
+
+  const ttx = TypedTxFactory.fromObject(tx);
+  console.log(ttx.sigRLP());
+  /*
+  const rawTx = await wallet.signTransaction(tx);
+  console.log('rawTx', rawTx);
+  */
+}
+
+//testTxtype();
+testAccountUpdate();

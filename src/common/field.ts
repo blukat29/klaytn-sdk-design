@@ -41,6 +41,24 @@ export const FieldTypeAddress = new class implements FieldType {
   emptyValue(): string { return "0x"; }
 }
 
+export class FieldTypeBytesFixedLen implements FieldType {
+  length: number;
+  constructor(length: number) {
+    this.length = length;
+  }
+  canonicalize(value: any): string {
+    if (!HexStr.isHex(value, this.length)) {
+      throw new Error(`Value is not ${this.length} bytes`);
+    }
+    return HexStr.from(value);
+  }
+  emptyValue(): string { return "0x00"; }
+}
+
+// Accepted types: hex-encoded string
+// Canonical type: hex-encoded string
+export const FieldTypeCompressedPubKey = new FieldTypeBytesFixedLen(33);
+
 export class FieldTypeNumberBits implements FieldType {
   maxBits: number;
   maxBN: BigNumber;
@@ -68,8 +86,8 @@ export const FieldTypeUint32 = new FieldTypeNumberBits(32);
 export const FieldTypeUint64 = new FieldTypeNumberBits(64);
 export const FieldTypeUint256 = new FieldTypeNumberBits(256);
 
-// Accepted types:
-// Canonical type: hex string of checksumed address
+// Accepted types: [v,r,s] tuple, {v,r,s} object, serialized bytes
+// Canonical type: [v,r,s] tuple
 export const FieldTypeSignatureTuples = new class implements FieldType {
   canonicalize(value: SignatureLike[]): SignatureTuple[] {
     return _.map(value, getSignatureTuple);

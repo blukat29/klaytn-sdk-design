@@ -21,4 +21,7 @@ export const HexStr = {
   concat(...items: string[]): string {
     return bytes.hexlify(bytes.concat(items));
   },
+  isHex(value: any, length?: number): boolean {
+    return bytes.isHexString(value, length);
+  },
 };
