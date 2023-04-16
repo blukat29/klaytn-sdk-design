@@ -22,34 +22,12 @@ async function testTxtype() {
     // chainId: 1001,
   };
 
-  if (1) {
-    // One-shot (recommended)
-    const sentTx = await wallet.sendTransaction(tx);
-    console.log('txhash', sentTx.hash);
-
-    const rc = await sentTx.wait();
-    console.log('receipt', rc);
-  } else {
-    // Step-by-step
-    tx = await wallet.populateTransaction(tx);
-    console.log('tx', tx);
-
-    const rawTx = await wallet.signTransaction(tx);
-    console.log('rawTx', rawTx);
-
-    const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
-    console.log('txhash', txhash);
-
-    const rc = await provider.waitForTransaction(txhash);
-    console.log('receipt', rc);
-  }
+  await sendTx(tx);
 }
 
 async function testAccountUpdate() {
-
   let account: any = {
-    type: 0x02,
-    key: pub,
+    type: 0x01,
   };
 
   let tx: any = {
@@ -62,12 +40,31 @@ async function testAccountUpdate() {
     // chainId: 1001,
   };
 
-  const ttx = TypedTxFactory.fromObject(tx);
-  console.log(ttx.sigRLP());
-  /*
-  const rawTx = await wallet.signTransaction(tx);
-  console.log('rawTx', rawTx);
-  */
+  await sendTx(tx);
+}
+
+async function sendTx(tx: any) {
+  if (0) {
+    // One-shot (recommended)
+    const sentTx = await wallet.sendTransaction(tx);
+    console.log('txhash', sentTx.hash);
+
+    const rc = await sentTx.wait();
+    console.log('receipt', rc);
+  } else {
+    // Step-by-step (for debugging)
+    tx = await wallet.populateTransaction(tx);
+    console.log('tx', tx);
+
+    const rawTx = await wallet.signTransaction(tx);
+    console.log('rawTx', rawTx);
+
+    const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
+    console.log('txhash', txhash);
+
+    const rc = await provider.waitForTransaction(txhash);
+    console.log('receipt', rc);
+  }
 }
 
 //testTxtype();
