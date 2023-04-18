@@ -3,11 +3,13 @@ export { TypedAccountKey, TypedAccountKeyFactory } from "./account";
 
 import {
   TypedTxValueTransfer,
+  TypedTxValueTransferMemo,
   TypedTxAccountUpdate,
 } from "./klaytn_tx";
 
 import { TypedTxFactory } from "./tx";
 TypedTxFactory.add(TypedTxValueTransfer);
+TypedTxFactory.add(TypedTxValueTransferMemo);
 TypedTxFactory.add(TypedTxAccountUpdate);
 
 import {
