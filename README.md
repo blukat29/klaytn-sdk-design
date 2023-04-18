@@ -101,21 +101,25 @@ classDiagram
     sendTransaction()
   }
 
-  ethers_Provider <|-- ethers_JsonRpcProvider
+  ethers_Provider <|-- ethers_BaseProvider
+  ethers_BaseProvider <|-- ethers_JsonRpcProvider
   ethers_JsonRpcProvider <|-- KlaytnJsonRpcProvider
   class ethers_Provider {
     abstract sendTransaction()
     abstract call()
     abstract estimateGas()
   }
+  class ethers_BaseProvider {
+    sendTransaction()
+    waitForTransaction()
+  }
   class ethers_JsonRpcProvider {
-    sendTransaction() // eth_sendRawTransaction
-    call() // eth_call
-    estimateGas() // eth_estimateGas
+    perform()
+    send()
+    prepareRequest() // "eth_sendRawTransaction"
   }
   class KlaytnJsonRpcProvider {
-    sendTransaction() // klay_sendRawTransaction
-    call() // klay_call
-    estimateGas() // klay_estimateGas
+    sendTransaction()
+    prepareRequest() // "klay_sendRawTransaction"
   }
 ```
