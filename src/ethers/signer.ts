@@ -58,6 +58,10 @@ export class KlaytnWallet extends Wallet {
   async populateTransaction(transaction: Deferrable<TransactionRequest>): Promise<TransactionRequest> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
+    if (!TypedTxFactory.has(tx.type)) {
+      return super.populateTransaction(tx);
+    }
+
     const savedFields = saveCustomFields(tx);
     tx = await super.populateTransaction(tx);
     restoreCustomFields(tx, savedFields);
