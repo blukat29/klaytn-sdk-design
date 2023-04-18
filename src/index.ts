@@ -1,1 +1,1 @@
-export { TypedTxFactory, TypedAccountKeyFactory } from "./common";
+export { TypedTxFactory, TypedAccountKeyFactory } from "./core";
