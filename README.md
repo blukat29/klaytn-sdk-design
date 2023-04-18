@@ -70,3 +70,52 @@ classDiagram
     fromObject(any): TypedAccountKey
   }
 ```
+
+## ethers extension classes
+
+```mermaid
+classDiagram
+  ethers_Wallet <|-- KlaytnWallet
+  ethers_Signer <|-- ethers_Wallet
+  class ethers_Signer {
+    provider
+    abstract getAddress()
+    abstract signMessage()
+    abstract signTransaction()
+    sendTransaction()
+  }
+  class ethers_Wallet {
+    address
+    privateKey
+    getAddress()
+    signMessage()
+    signTransaction()
+    checkTransaction()
+    populateTransaction()
+    sendTransaction()
+  }
+  class KlaytnWallet {
+    checkTransaction()
+    populateTransaction()
+    signTransaction()
+    sendTransaction()
+  }
+
+  ethers_Provider <|-- ethers_JsonRpcProvider
+  ethers_JsonRpcProvider <|-- KlaytnJsonRpcProvider
+  class ethers_Provider {
+    abstract sendTransaction()
+    abstract call()
+    abstract estimateGas()
+  }
+  class ethers_JsonRpcProvider {
+    sendTransaction() // eth_sendRawTransaction
+    call() // eth_call
+    estimateGas() // eth_estimateGas
+  }
+  class KlaytnJsonRpcProvider {
+    sendTransaction() // klay_sendRawTransaction
+    call() // klay_call
+    estimateGas() // klay_estimateGas
+  }
+```
