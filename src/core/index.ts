@@ -5,11 +5,13 @@ import {
   TypedTxValueTransfer,
   TypedTxValueTransferMemo,
   TypedTxAccountUpdate,
+  TypedTxSmartContractDeploy,
 } from "./klaytn_tx";
 
 import { TypedTxFactory } from "./tx";
 TypedTxFactory.add(TypedTxValueTransfer);
 TypedTxFactory.add(TypedTxValueTransferMemo);
+TypedTxFactory.add(TypedTxSmartContractDeploy);
 TypedTxFactory.add(TypedTxAccountUpdate);
 
 import {

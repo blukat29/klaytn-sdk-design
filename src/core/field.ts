@@ -95,6 +95,20 @@ export const FieldTypeSignatureTuples = new class implements FieldType {
   emptyValue(): SignatureTuple[] { return [] };
 }
 
+export const FieldTypeBool = new class implements FieldType {
+  bool: boolean;
+  constructor(bool?: boolean) {
+    if (!bool) {
+      bool = false;
+    }
+    this.bool = bool;
+  }
+  canonicalize(value: string): string {
+    return this.bool? "0x1" : "0x0" ;
+  }
+  emptyValue(): string { return "0x" };
+}
+
 export abstract class TypedFields {
 
   ////////////////////////////////////////////////////////////
