@@ -100,6 +100,7 @@ export class TypedTxSmartContractDeploy extends TypedTx {
     // SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat]), chainid, 0, 0])
     const inner = this.getFields([
       'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'humanReadable', 'codeFormat']);
+    inner[4]= "0x";
     return RLP.encode([
       RLP.encode(inner), this.getField('chainId'), "0x", "0x"]);
   }
@@ -108,6 +109,8 @@ export class TypedTxSmartContractDeploy extends TypedTx {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat, txSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'humanReadable', 'codeFormat', 'txSignatures']);
+    console.log( inner );
+    inner[3]= "0x";
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }

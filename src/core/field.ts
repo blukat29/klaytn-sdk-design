@@ -70,13 +70,17 @@ export class FieldTypeNumberBits implements FieldType {
     this.maxBN = BigNumber.from(2).pow(maxBits);
   }
   canonicalize(value: any): string {
+    if (value == 0) {
+      return "0x";
+    }
+
     const bn = BigNumber.from(value);
     if (bn.gte(this.maxBN)) {
       throw new Error(`Number exceeds ${this.maxBits} bits`);
     }
     return bn.toHexString();
   }
-  emptyValue(): string { return "0x00"; }
+  emptyValue(): string { return "0x"; }
 }
 
 // Accepted types: JS number, JS bigint, BigNumber class, hex-encoded string
@@ -96,15 +100,8 @@ export const FieldTypeSignatureTuples = new class implements FieldType {
 }
 
 export const FieldTypeBool = new class implements FieldType {
-  bool: boolean;
-  constructor(bool?: boolean) {
-    if (!bool) {
-      bool = false;
-    }
-    this.bool = bool;
-  }
-  canonicalize(value: string): string {
-    return this.bool? "0x1" : "0x0" ;
+  canonicalize(value: boolean): string {
+    return value? "0x01" : "0x" ;
   }
   emptyValue(): string { return "0x" };
 }
@@ -150,10 +147,11 @@ export abstract class TypedFields {
   public setFields(obj: Fields): void {
     this.fields = {};
     _.forOwn(this.fieldTypes, (fieldType, name) => {
-      if (obj[name]) {
-        this.fields[name] = fieldType.canonicalize(obj[name]);
-      } else {
+      console.log( name, obj[name] )
+      if (obj[name] === undefined) {
         this.fields[name] = null;
+      } else {
+        this.fields[name] = fieldType.canonicalize(obj[name]);
       }
     });
   }
