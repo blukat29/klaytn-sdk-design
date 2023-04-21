@@ -43,7 +43,7 @@ async function testAccountUpdate() {
 }
 
 async function sendTx(tx: any) {
-  if (0) {
+  if (1) {
     // One-shot (recommended)
     const sentTx = await wallet.sendTransaction(tx);
     console.log('txhash', sentTx.hash);

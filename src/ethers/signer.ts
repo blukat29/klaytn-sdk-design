@@ -3,7 +3,6 @@ import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract
 import { TypedTxFactory } from "../core";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { poll } from "@ethersproject/web";
 import _ from "lodash";
 
 // @ethersproject/abstract-signer/src.ts/index.ts:allowedTransactionKeys
@@ -101,28 +100,9 @@ export class KlaytnWallet extends Wallet {
     if (this.provider instanceof JsonRpcProvider) {
       // eth_sendRawTransaction cannot process Klaytn typed transactions.
       const txhash = await this.provider.send("klay_sendRawTransaction", [signedTx]);
-      return await this.waitTransactionPooled(txhash);
+      return await this.provider.getTransaction(txhash);
     } else {
       throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
-    }
-  }
-
-  async waitTransactionPooled(hash: string): Promise<TransactionResponse> {
-    // ethers.js/providers/src.ts/json-rpc-provider.ts:JsonRpcSigner.sendTransaction
-    const func = async (): Promise<TransactionResponse | undefined> => {
-      const tx = await this.provider.getTransaction(hash);
-      if (tx === null) {
-        return undefined; // triggers retry
-      }
-      return tx;
-    };
-    const option = { oncePoll: this.provider };
-
-    const tx = await poll(func, option);
-    if (tx !== undefined) {
-      return tx;
-    } else {
-      throw new Error(`Cannot find transaction '${hash}' in txpool`);
     }
   }
 }
