@@ -1,6 +1,6 @@
 import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { TypedTxFactory } from "../common";
+import { TypedTxFactory } from "../core";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { poll } from "@ethersproject/web";

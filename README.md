@@ -12,7 +12,6 @@ node example/klaytn_tx_ethers.js
 
 ## TODO
 
-- Rename 'common' to 'core'
 - common: TxTypes with feePayerSig
 - common: Merge signed txs
 - ethers: Send Klaytn typed tx via browser wallet (i.e. Wallet.sendTransaction works when this.provider is no JsonRpcProvider)
