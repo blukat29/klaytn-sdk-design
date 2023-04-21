@@ -113,9 +113,9 @@ export abstract class TypedFields {
   ////////////////////////////////////////////////////////////
 
   // shortcuts for this._static.*.
-  protected type: number = 0;
-  protected typeName: string = "";
-  protected fieldTypes: FieldTypes = {};
+  public readonly type: number = 0;
+  public readonly typeName: string = "";
+  public readonly fieldTypes: FieldTypes = {};
 
   // Fields in their canonical forms.
   protected fields: Fields = {};
@@ -146,14 +146,12 @@ export abstract class TypedFields {
 
   public setFieldsFromArray(names: string[], array: any[]): void {
     this.fields = {};
-    console.log("Setting", names, array)
     for (var i = 0; i < array.length; i++) {
       const name = names[i];
       const fieldType = this.fieldTypes[name];
       if (!fieldType) {
         throw new Error(`Unknown field '${name}' for '${this.typeName}' (type ${this.type})`);
       }
-      console.log(name, array[i])
       this.fields[name] = fieldType.canonicalize(array[i])
     }
   }
