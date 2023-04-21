@@ -144,6 +144,20 @@ export abstract class TypedFields {
     });
   }
 
+  public setFieldsFromArray(names: string[], array: any[]): void {
+    this.fields = {};
+    console.log("Setting", names, array)
+    for (var i = 0; i < array.length; i++) {
+      const name = names[i];
+      const fieldType = this.fieldTypes[name];
+      if (!fieldType) {
+        throw new Error(`Unknown field '${name}' for '${this.typeName}' (type ${this.type})`);
+      }
+      console.log(name, array[i])
+      this.fields[name] = fieldType.canonicalize(array[i])
+    }
+  }
+
   public getField(name: string): any {
     const value = this.fields[name];
     if (value == null) {

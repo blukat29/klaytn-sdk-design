@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { TypedFields, TypedFieldsFactory } from "./field"
 import { SignatureLike, getSignatureTuple } from "./sig";
+import { HexStr } from "./util";
 
 export abstract class TypedTx extends TypedFields {
 
@@ -11,6 +12,8 @@ export abstract class TypedTx extends TypedFields {
   abstract sigRLP(): string;
   // RLP encoding for broadcasting. Includes all signatures.
   abstract txRLP(): string;
+  // Set its own fields from an RLP encoded string.
+  abstract setFieldsFromRLP(rlp: string): void;
 
   ////////////////////////////////////////////////////////////
   // Child classes MAY override below methods
@@ -40,7 +43,26 @@ export abstract class TypedTx extends TypedFields {
   ////////////////////////////////////////////////////////////
 }
 
+class _TypedTxFactory extends TypedFieldsFactory<TypedTx> {
+  public fromRLP(value: string): TypedTx {
+    if (!HexStr.isHex(value)) {
+      throw new Error(`Not an RLP encoded string`);
+    }
+
+    const rlp = HexStr.from(value);
+    if (rlp.length < 4) {
+      throw new Error(`RLP encoded string too short`);
+    }
+
+    const type = HexStr.toNumber(rlp.substr(0,4));
+    const ctor = this.lookup(type);
+    const instance = new ctor();
+    instance.setFieldsFromRLP(rlp);
+    return instance;
+  }
+}
+
 const requiredFields = ['type', 'chainId', 'txSignatures'];
-export const TypedTxFactory = new TypedFieldsFactory<TypedTx>(
+export const TypedTxFactory = new _TypedTxFactory(
   requiredFields,
 );

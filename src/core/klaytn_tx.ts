@@ -7,6 +7,7 @@ import {
   FieldTypeUint64,
   FieldTypeUint256 } from "./field";
 import { TypedTx } from "./tx";
+import _ from "lodash";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
 export class TypedTxValueTransfer extends TypedTx {
@@ -39,6 +40,15 @@ export class TypedTxValueTransfer extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    rlp = "0x" + rlp.substring(4);
+    const array = _.concat([ this.type ], RLP.decode(rlp));
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures'
+    ], array);
+  }
 }
 
 export class TypedTxAccountUpdate extends TypedTx {
@@ -69,5 +79,8 @@ export class TypedTxAccountUpdate extends TypedTx {
       'nonce', 'gasPrice', 'gasLimit', 'from', 'key', 'txSignatures']);
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
   }
 }
