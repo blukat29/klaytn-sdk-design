@@ -12,7 +12,7 @@ import { TypedTx } from "./tx";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
 export class TypedTxValueTransfer extends TypedTx {
-  static type = 8;
+  static type = 0x8;
   static typeName = "TxTypeValueTransfer";
   static fieldTypes = {
     'type':         FieldTypeUint8,
@@ -46,7 +46,7 @@ export class TypedTxValueTransfer extends TypedTx {
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfermemo
 export class TypedTxValueTransferMemo extends TypedTx {
   static type = 0x10;
-  static typeName = "TxTypeValueTransfer";
+  static typeName = "TxTypeValueTransferMemo";
   static fieldTypes = {
     'type':         FieldTypeUint8,
     'nonce':        FieldTypeUint64,
@@ -230,7 +230,7 @@ export class TypedTxChainDataAnchoring extends TypedTx {
   };
 
   sigRLP(): string {
-    // SigRLP = encode([encode([type, nonce, gasPrice, gas, from, input]), chainid, 0, 0])
+    // SigRLP = encode([encode([type, nonce, gasPrice, gas, from, anchoredData]), chainid, 0, 0])
     const inner = this.getFields([
       'type', 'nonce', 'gasPrice', 'gasLimit', 'from', 'input']);
     return RLP.encode([
