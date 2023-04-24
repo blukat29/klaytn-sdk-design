@@ -42,6 +42,25 @@ TypedTxFactory.add(TypedTxFeeDelegatedAccountUpdate);
 TypedTxFactory.add(TypedTxFeeDelegatedCancel);
 TypedTxFactory.add(TypedTxFeeDelegatedChainDataAnchoring);
 
+// Partial Fee Delegation TX
+import {
+  TypedTxFeeDelegatedValueTransferWithRatio,
+  TypedTxFeeDelegatedValueTransferMemoWithRatio,
+  TypedTxFeeDelegatedSmartContractDeployWithRatio,
+  TypedTxFeeDelegatedSmartContractExecutionWithRatio,
+  TypedTxFeeDelegatedAccountUpdateWithRatio,
+  TypedTxFeeDelegatedCancelWithRatio, 
+  TypedTxFeeDelegatedChainDataAnchoringWithRatio,
+} from "./klaytn_tx_partial_fee_delegation";
+
+TypedTxFactory.add(TypedTxFeeDelegatedValueTransferWithRatio);
+TypedTxFactory.add(TypedTxFeeDelegatedValueTransferMemoWithRatio);
+TypedTxFactory.add(TypedTxFeeDelegatedSmartContractDeployWithRatio);
+TypedTxFactory.add(TypedTxFeeDelegatedSmartContractExecutionWithRatio);
+TypedTxFactory.add(TypedTxFeeDelegatedAccountUpdateWithRatio);
+TypedTxFactory.add(TypedTxFeeDelegatedCancelWithRatio);
+TypedTxFactory.add(TypedTxFeeDelegatedChainDataAnchoringWithRatio);
+
 import {
   TypedAccountKeyLegacy,
   TypedAccountKeyPublic,
