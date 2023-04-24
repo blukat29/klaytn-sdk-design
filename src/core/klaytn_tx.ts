@@ -109,7 +109,7 @@ export class TypedTxSmartContractDeploy extends TypedTx {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, codeFormat, txSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'humanReadable', 'codeFormat', 'txSignatures']);
-    console.log( inner );
+    // have to do someting in the future 
     inner[3]= "0x";
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
@@ -117,6 +117,38 @@ export class TypedTxSmartContractDeploy extends TypedTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypesmartcontractexecution
+export class TypedTxSmartContractExecution extends TypedTx {
+  static type = 0x30;
+  static typeName = "TxTypeSmartContractExecution";
+  static fieldTypes = {
+    'type':         FieldTypeUint8,
+    'nonce':        FieldTypeUint64,
+    'gasPrice':     FieldTypeUint256,
+    'gasLimit':     FieldTypeUint64,
+    'to':           FieldTypeAddress,
+    'value':        FieldTypeUint256,
+    'from':         FieldTypeAddress,
+    'input':        FieldTypeBytes,
+    'chainId':      FieldTypeUint64,
+    'txSignatures': FieldTypeSignatureTuples,
+  };
+
+  sigRLP(): string {
+    // SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from, input]), chainid, 0, 0])
+    const inner = this.getFields([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input']);
+    return RLP.encode([
+      RLP.encode(inner), this.getField('chainId'), "0x", "0x"]);
+  }
+
+  txRLP(): string {
+    // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, txSignatures])
+    const inner = this.getFields([
+      'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'txSignatures']);
+    return HexStr.concat(
+      this.getField('type'), RLP.encode(inner));
+  }
+}
 
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypeaccountupdate
@@ -146,6 +178,69 @@ export class TypedTxAccountUpdate extends TypedTx {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, from, rlpEncodedKey, txSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'from', 'key', 'txSignatures']);
+    return HexStr.concat(
+      this.getField('type'), RLP.encode(inner));
+  }
+}
+
+// https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypecancel
+export class TypedTxCancel extends TypedTx {
+  static type = 0x38;
+  static typeName = "TxTypeCancel";
+  static fieldTypes = {
+    'type':         FieldTypeUint8,
+    'nonce':        FieldTypeUint64,
+    'gasPrice':     FieldTypeUint256,
+    'gasLimit':     FieldTypeUint64,
+    'from':         FieldTypeAddress,
+    'chainId':      FieldTypeUint64,
+    'txSignatures': FieldTypeSignatureTuples,
+  };
+
+  sigRLP(): string {
+    // SigRLP = encode([encode([type, nonce, gasPrice, gas, from]), chainid, 0, 0])
+    const inner = this.getFields([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'from']);
+    return RLP.encode([
+      RLP.encode(inner), this.getField('chainId'), "0x", "0x"]);
+  }
+
+  txRLP(): string {
+    // TxHashRLP = type + encode([nonce, gasPrice, gas, from, txSignatures])
+    const inner = this.getFields([
+      'nonce', 'gasPrice', 'gasLimit', 'from', 'txSignatures']);
+    return HexStr.concat(
+      this.getField('type'), RLP.encode(inner));
+  }
+}
+
+// https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypechaindataanchoring
+export class TypedTxChainDataAnchoring extends TypedTx {
+  static type = 0x48;
+  static typeName = "TxTypeCancel";
+  static fieldTypes = {
+    'type':         FieldTypeUint8,
+    'nonce':        FieldTypeUint64,
+    'gasPrice':     FieldTypeUint256,
+    'gasLimit':     FieldTypeUint64,
+    'from':         FieldTypeAddress,
+    'input':        FieldTypeBytes,
+    'chainId':      FieldTypeUint64,
+    'txSignatures': FieldTypeSignatureTuples,
+  };
+
+  sigRLP(): string {
+    // SigRLP = encode([encode([type, nonce, gasPrice, gas, from, input]), chainid, 0, 0])
+    const inner = this.getFields([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'from', 'input']);
+    return RLP.encode([
+      RLP.encode(inner), this.getField('chainId'), "0x", "0x"]);
+  }
+
+  txRLP(): string {
+    // TxHashRLP = type + encode([nonce, gasPrice, gas, from, input, txSignatures])
+    const inner = this.getFields([
+      'nonce', 'gasPrice', 'gasLimit', 'from', 'txSignatures', 'input']);
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
