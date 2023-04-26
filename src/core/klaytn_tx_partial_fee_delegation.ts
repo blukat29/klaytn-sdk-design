@@ -45,7 +45,7 @@ export class TypedTxFeeDelegatedValueTransferWithRatio extends TypedTx {
       RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, feeRatio, txSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'feeRatio', 'txSignatures']);
@@ -53,7 +53,7 @@ export class TypedTxFeeDelegatedValueTransferWithRatio extends TypedTx {
       this.getField('type'), RLP.encode(inner));
   }
 
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, feeRatio, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
@@ -98,7 +98,7 @@ export class TypedTxFeeDelegatedValueTransferMemoWithRatio extends TypedTx {
       RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures])
     const inner = this.getFields([
         'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'feeRatio', 'txSignatures']);
@@ -106,7 +106,7 @@ export class TypedTxFeeDelegatedValueTransferMemoWithRatio extends TypedTx {
         this.getField('type'), RLP.encode(inner));
   }
 
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
@@ -157,7 +157,7 @@ export class TypedTxFeeDelegatedSmartContractDeployWithRatio extends TypedTx {
       RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, feeRatio, codeFormat, txSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'humanReadable', 'feeRatio', 'codeFormat', 'txSignatures']);
@@ -167,7 +167,7 @@ export class TypedTxFeeDelegatedSmartContractDeployWithRatio extends TypedTx {
       this.getField('type'), RLP.encode(inner));
   }
 
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, humanReadable, feeRatio, codeFormat, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'humanReadable', 'feeRatio', 'codeFormat', 'txSignatures', 'feePayer', 'feePayerSignatures']);
@@ -214,7 +214,7 @@ export class TypedTxFeeDelegatedSmartContractExecutionWithRatio extends TypedTx 
       RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'feeRatio', 'txSignatures']);
@@ -222,7 +222,7 @@ export class TypedTxFeeDelegatedSmartContractExecutionWithRatio extends TypedTx 
       this.getField('type'), RLP.encode(inner));
   }
 
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, input, feeRatio, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
@@ -266,7 +266,7 @@ export class TypedTxFeeDelegatedAccountUpdateWithRatio extends TypedTx {
         RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, rlpEncodedKey, feeRatio, txSignatures])
     const inner = this.getFields([
         'nonce', 'gasPrice', 'gasLimit', 'from', 'key', 'feeRatio', 'txSignatures']);
@@ -274,7 +274,7 @@ export class TypedTxFeeDelegatedAccountUpdateWithRatio extends TypedTx {
         this.getField('type'), RLP.encode(inner));
   }
 
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, from, rlpEncodedKey, feeRatio, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'from', 'key', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
@@ -316,7 +316,7 @@ export class TypedTxFeeDelegatedCancelWithRatio extends TypedTx {
         RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, feeRatio, txSignatures])
     const inner = this.getFields([
         'nonce', 'gasPrice', 'gasLimit', 'from', 'feeRatio', 'txSignatures']);
@@ -324,7 +324,7 @@ export class TypedTxFeeDelegatedCancelWithRatio extends TypedTx {
         this.getField('type'), RLP.encode(inner));
   }
 
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, from, feeRatio, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
         'nonce', 'gasPrice', 'gasLimit', 'from', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
@@ -367,7 +367,7 @@ export class TypedTxFeeDelegatedChainDataAnchoringWithRatio extends TypedTx {
         RLP.encode(inner),  this.getField('feePayer'), this.getField('chainId'), "0x", "0x"]);
   }
 
-  senderTxRLP(): string {
+  senderTxHashRLP(): string {
     // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, from, anchoredData, feeRatio, txSignatures])
     const inner = this.getFields([
         'nonce', 'gasPrice', 'gasLimit', 'from', 'input', 'feeRatio', 'txSignatures']);
@@ -375,8 +375,7 @@ export class TypedTxFeeDelegatedChainDataAnchoringWithRatio extends TypedTx {
         this.getField('type'), RLP.encode(inner));
   }
 
-
-  txRLP(): string {
+  txHashRLP(): string {
     // TxHashRLP = type + encode([nonce, gasPrice, gas, from, anchoredData, feeRatio, txSignatures, feePayer, feePayerSignatures])
     const inner = this.getFields([
       'nonce', 'gasPrice', 'gasLimit', 'from', 'input', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures' ]);
