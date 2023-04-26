@@ -4,7 +4,11 @@ const { KlaytnWallet } = require("../dist/ethers"); // require("@klaytn/sdk-ethe
 // const url = "https://public-en-baobab.klaytn.net";
 const url = "https://api.baobab.klaytn.net:8651";
 // const priv = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-const priv = "0xb3cf575dea0081563fe5482de2fe4425e025502b1f4ae7e02b2540ac0a5beda1";
+// const priv = "0xb3cf575dea0081563fe5482de2fe4425e025502b1f4ae7e02b2540ac0a5beda1";
+
+// AccountUpdate 
+// const priv = "0x349a0ea7201619771d6702f1a32f94ff89386dc35ef1a110e8937ea3938a17e1"; // address 0x27cfe94807f4bf2ed2f13b5f1e8c8911ac55316f
+const priv = "0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b"; 
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(url);
@@ -65,12 +69,40 @@ async function main() {
       // chainId: 1001,
     },
 
+    // TxTypeAccountUpdate1
+    {
+      type: 0x20,
+      // nonce:5700,
+      // gasPrice: 25e9,
+      // gasLimit: 30000,
+      // from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      key: {
+        type: 0x02, // AccountKeyPublic
+        key: "0x02dbac81e8486d68eac4e6ef9db617f7fbd79a04a3b323c982a09cdfc61f0ae0e8"
+      },
+      // chainId: 1001,
+    },
+
+    // TxTypeAccountUpdate2
+    {
+      type: 0x20,
+      // nonce:5700,
+      // gasPrice: 25e9,
+      // gasLimit: 30000,
+      from: "0x27cfe94807f4bf2ed2f13b5f1e8c8911ac55316f", // have to be defined
+      key: {
+        type: 0x01, // AccountKeyLegacy
+      },
+      // chainId: 1001,
+    },
   ]; 
   let testOX = [ 
     false, // TxTypeValueTransfer
     false, // TxTypeValueTransferMemo
     false, // TxTypeSmartContractDeploy
-    true   // TxTypeSmartContractExecution
+    false, // TxTypeSmartContractExecution
+    false, // TxTypeAccountUpdate1
+    true,  // TxTypeAccountUpdate2
   ]; 
 
   for ( let i = 0; i < txs.length ; i++) {
