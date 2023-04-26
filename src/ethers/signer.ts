@@ -86,7 +86,7 @@ export class KlaytnWallet extends Wallet {
       sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
     }
     ttx.addTxSignature(sig);
-    return ttx.txRLP();
+    return ttx.txHashRLP();
   }
 
   async sendTransaction(transaction: Deferrable<TransactionRequest>): Promise<TransactionResponse> {
