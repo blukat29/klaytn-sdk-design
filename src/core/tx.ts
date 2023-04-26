@@ -10,7 +10,7 @@ export abstract class TypedTx extends TypedFields {
   // RLP encoding for sender to sign.
   abstract sigRLP(): string;
   // RLP encoding for broadcasting. Includes all signatures.
-  abstract txRLP(): string;
+  abstract txHashRLP(): string;
 
   ////////////////////////////////////////////////////////////
   // Child classes MAY override below methods
