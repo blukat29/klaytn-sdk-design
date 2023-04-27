@@ -29,6 +29,7 @@ async function main() {
     },
 
     // TxTypeValueTransferMemo
+    // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfermemo
     {
       type: 0x10,
       // nonce:5700,
@@ -41,14 +42,25 @@ async function main() {
       // chainId: 1001,
     },
 
+    //
     // TxTypeSmartContractDeploy
+    //
+    // type: Must be 0x28,
+    // nonce: if not exist, this field will be filled.
+    // gasPrice: if not exist, this field will be filled.
+    // gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
+    // to:    "0x0000000000000000000000000000000000000000",
+    // value: Must be 0, if not payable
+    // from: "0x3208ca99480f82bfe240ca6bc06110cd12bb6366",
+    // input: SmartContract binary, 
+    // chainId: 1001,
+    // humanReadable: false,
+    // codeFormat: Must be 0x00
     {
       type: 0x28,
-      // nonce:5700,
-      // gasPrice: 25e9,
-      gasLimit: 1000000000,   // Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
+      gasLimit: 1000000000, 
       to:    "0x0000000000000000000000000000000000000000",
-      value: 0,  // Must be 0 if it is not payable
+      value: 0,  
       from: "0x3208ca99480f82bfe240ca6bc06110cd12bb6366",
       input: "0x608060405234801561001057600080fd5b5060f78061001f6000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c80633fb5c1cb1460415780638381f58a146053578063d09de08a14606d575b600080fd5b6051604c3660046083565b600055565b005b605b60005481565b60405190815260200160405180910390f35b6051600080549080607c83609b565b9190505550565b600060208284031215609457600080fd5b5035919050565b60006001820160ba57634e487b7160e01b600052601160045260246000fd5b506001019056fea2646970667358221220e0f4e7861cb6d7acf0f61d34896310975b57b5bc109681dbbfb2e548ef7546b364736f6c63430008120033",
       // chainId: 1001,
@@ -76,6 +88,9 @@ async function main() {
       // gasPrice: 25e9,
       // gasLimit: 30000,
       // from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      // key: {
+      //   type: 0x01, // AccountKeyLegacy
+      // },
       key: {
         type: 0x02, // AccountKeyPublic
         key: "0x02dbac81e8486d68eac4e6ef9db617f7fbd79a04a3b323c982a09cdfc61f0ae0e8"
@@ -91,14 +106,20 @@ async function main() {
       // gasLimit: 30000,
       from: "0x27cfe94807f4bf2ed2f13b5f1e8c8911ac55316f", // have to be defined
       key: {
-        type: 0x01, // AccountKeyLegacy
+        type: 0x02, // AccountKeyPublic
+        key: "0x02dbac81e8486d68eac4e6ef9db617f7fbd79a04a3b323c982a09cdfc61f0ae0e8"
       },
       // chainId: 1001,
     },
 
     // TxTypeCancel
+    {
+      type: 0x38,
+      nonce:2,
+      from: "0x27cfe94807f4bf2ed2f13b5f1e8c8911ac55316f", // have to be defined
+    },
 
-    // TypedTxChainDataAnchorin
+    // TypedTxChainDataAnchoring ?
   ]; 
   let testOX = [ 
     false, // TxTypeValueTransfer
@@ -106,7 +127,8 @@ async function main() {
     false, // TxTypeSmartContractDeploy
     false, // TxTypeSmartContractExecution
     false, // TxTypeAccountUpdate1
-    true,  // TxTypeAccountUpdate2
+    false, // TxTypeAccountUpdate2
+    true,  // TxTypeCancel
   ]; 
 
   for ( let i = 0; i < txs.length ; i++) {

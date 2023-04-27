@@ -36,6 +36,11 @@ function saveCustomFields(tx: Deferrable<TransactionRequest>): any {
     tx.type = 0;
   }
 
+  // 'from' may not be corresponded to the public key of the private key in Klaytn account
+  // So 'from' field also has to be saved
+  savedFields['from'] = tx.from;
+  _.unset(tx, 'from');
+  
   return savedFields;
 }
 
