@@ -20,7 +20,7 @@ export abstract class TypedTx extends TypedFields {
     throw new Error(`fee payer not supported in txtype ${this.type}`);
   }
   // RLP encoding with sender signature.
-  sigSenderTxRLP(): string {
+  senderTxHashRLP(): string {
     return this.sigRLP();
   }
 

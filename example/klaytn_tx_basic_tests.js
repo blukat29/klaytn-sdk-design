@@ -95,6 +95,10 @@ async function main() {
       },
       // chainId: 1001,
     },
+
+    // TxTypeCancel
+
+    // TypedTxChainDataAnchorin
   ]; 
   let testOX = [ 
     false, // TxTypeValueTransfer
