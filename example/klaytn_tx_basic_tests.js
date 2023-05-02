@@ -4,11 +4,11 @@ const { KlaytnWallet } = require("../dist/ethers"); // require("@klaytn/sdk-ethe
 // const url = "https://public-en-baobab.klaytn.net";
 const url = "https://api.baobab.klaytn.net:8651";
 // const priv = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-// const priv = "0xb3cf575dea0081563fe5482de2fe4425e025502b1f4ae7e02b2540ac0a5beda1";
+const priv = "0xb3cf575dea0081563fe5482de2fe4425e025502b1f4ae7e02b2540ac0a5beda1"; // address 0x3208ca99480f82bfe240ca6bc06110cd12bb6366
 
 // AccountUpdate 
 // const priv = "0x349a0ea7201619771d6702f1a32f94ff89386dc35ef1a110e8937ea3938a17e1"; // address 0x27cfe94807f4bf2ed2f13b5f1e8c8911ac55316f
-const priv = "0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b"; 
+// const priv = "0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b"; 
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(url);
@@ -73,7 +73,7 @@ async function main() {
       type: 0x30,
       // nonce:5700,
       // gasPrice: 25e9,
-      gasLimit: 1000000000,   // Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
+      gasLimit: 100,   // Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
       to:    "0xDAAa90156Ff49F388994406631c52732E364bB38",
       value: 0,  // Must be 0 if it is not payable
       from: "0x3208ca99480f82bfe240ca6bc06110cd12bb6366",
@@ -115,7 +115,7 @@ async function main() {
     // TxTypeCancel
     {
       type: 0x38,
-      nonce:2,
+      nonce:3,
       from: "0x27cfe94807f4bf2ed2f13b5f1e8c8911ac55316f", // have to be defined
     },
 
@@ -125,10 +125,10 @@ async function main() {
     false, // TxTypeValueTransfer
     false, // TxTypeValueTransferMemo
     false, // TxTypeSmartContractDeploy
-    false, // TxTypeSmartContractExecution
+    true, // TxTypeSmartContractExecution
     false, // TxTypeAccountUpdate1
     false, // TxTypeAccountUpdate2
-    true,  // TxTypeCancel
+    false,  // TxTypeCancel
   ]; 
 
   for ( let i = 0; i < txs.length ; i++) {
