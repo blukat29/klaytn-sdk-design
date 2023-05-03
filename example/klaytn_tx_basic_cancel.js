@@ -1,59 +1,73 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../dist/ethers"); // require("@klaytn/sdk-ethers");
 
-const url = "https://public-en-baobab.klaytn.net";
-const priv = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8"; // address 0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B
+const url = "http://localhost:8571";
+const priv = "0x8f00b81846d73995bb1f38f725843487700020a103b86f4493f98002bfcd175f"; // address 0xd92032b27f0475c34ee74cf6b4e04882abff5b18
+
+//
+// To test TxTypeCancel,
+// there must be a tx that will not included in a block and exists in the pending queue.
+// So we recommend 
+// 
+// 1) Before you execute this script, set up local 1CN-1EN.
+// 2) Shut down CN to stop mining. 
+// 3) Execute this script. 
+//
+//    You can look at the detial status with EN console. 
+//    3-1) Connect EN's console (e.g. > ken attach data/klay.ipc)
+//    3-2) Query txVT's hash with klay.getTransaction() and klay.getTransactionReciept(), 
+//         Check the result of both queries are null
+//    3-3) Query txCancel's hash with klay.getTransaction() and klay.getTransactionReciept(), 
+//         Check the result of klay.getTransaction() with blocknumber 0
+//         Check the result of klay.getTransactionReciept() is null
+//
+// 4) Start CN again. 
+//
+//    You can look at the detial status with EN console. 
+//    4-1) Connect EN's console (e.g. > ken attach data/klay.ipc)
+//    4-2) Query txVT's hash with klay.getTransaction() and klay.getTransactionReciept(), 
+//         Check the result of both queries are not null
+//         Check the result of klay.getTransaction() with non-zero blocknumber 
+// 
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(url);
   const wallet = new KlaytnWallet(priv, provider);
 
+  // TxTypeValueTransfer
+  let txVT =  {
+      type: 8,
+      gasPrice: 25e9,     // TODO: eth_estimateGas debug
+      gasLimit: 30000,
+      to: "0x3208ca99480f82bfe240ca6bc06110cd12bb6366",
+      value: 1e12,
+      from: "0xd92032b27f0475c34ee74cf6b4e04882abff5b18",
+    };
+
+  // txVT will be in the pending queue
+  const sentTx = await wallet.sendTransaction(txVT);
+  console.log('txhash', sentTx.hash);
+
   // TxTypeCancel
-  let tx = {
+  let txCancel = {
       type: 0x38,
-      from: '0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B',
-      gas: 0xf4240,
-      gasPrice: 0x19,
-      // chainId: 0x1,
-      // signatures: [
-      //     [
-      //         '0x0fea',
-      //         '0xd9994ef507951a59380309f656ee8ed685becdc89b1d1a0eb1d2f72683ae14d3',
-      //         '0x7ad5d37a89781f294fab72b254ea9266e4d039ae163db4a4c4752f1fabff023b',
-      //     ],
-      // ],
-      nonce: 1234,
-    }; 
+      nonce: sentTx.nonce,
+      gasPrice: 25e9,      
+      gasLimit: 30000,     
+      from: "0xd92032b27f0475c34ee74cf6b4e04882abff5b18", 
+    };
 
-  if (0) {
-    // One-shot (recommended)
-    const sentTx = await wallet.sendTransaction(tx);
-    console.log('txhash', sentTx.hash);
+  popTx = await wallet.populateTransaction(txCancel);
+  console.log('tx', popTx);
 
-    const rc = await sentTx.wait();
-    console.log('receipt', rc);
-  } else {
-    // Step-by-step
-    popTx = await wallet.populateTransaction(tx);
-    console.log('tx', popTx);
+  const rawTx = await wallet.signTransaction(popTx);
+  console.log(rawTx);
+  
+  const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
+  console.log('txhash', txhash);
 
-    popTx.chainID = 0x1;
-
-    const rawTx = await wallet.signTransaction(popTx);
-    console.log(rawTx);
-    console.log("0x38f8648204d219830f424094a94f5374fce5edbc8e2a8697c15331677e6ebf0bf845f84325a0fb2c3d53d2f6b7bb1deb5a09f80366a5a45429cc1e3956687b075a9dcad20434a05c6187822ee23b1001e9613d29a5d6002f990498d2902904f7f259ab3358216e")
-    // console.log([
-    //           '0x0fea',
-    //           '0xd9994ef507951a59380309f656ee8ed685becdc89b1d1a0eb1d2f72683ae14d3',
-    //           '0x7ad5d37a89781f294fab72b254ea9266e4d039ae163db4a4c4752f1fabff023b',
-    //       ])
-
-    // const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
-    // console.log('txhash', txhash);
-
-    // const rc = await provider.waitForTransaction(txhash);
-    // console.log('receipt', rc);
-  }
+  const rc = await provider.waitForTransaction(txhash);
+  console.log('receipt', rc);
 }
 
 main();
