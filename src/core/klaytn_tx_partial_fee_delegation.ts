@@ -60,6 +60,10 @@ export class TypedTxFeeDelegatedValueTransferWithRatio extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedvaluetransfermemowithratio
@@ -112,6 +116,10 @@ export class TypedTxFeeDelegatedValueTransferMemoWithRatio extends TypedTx {
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
+    
   }
 }
 
@@ -176,6 +184,10 @@ export class TypedTxFeeDelegatedSmartContractDeployWithRatio extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedsmartcontractexecutionwithratio
@@ -229,6 +241,10 @@ export class TypedTxFeeDelegatedSmartContractExecutionWithRatio extends TypedTx 
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 
@@ -281,6 +297,10 @@ export class TypedTxFeeDelegatedAccountUpdateWithRatio extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedcancelwithratio
@@ -330,6 +350,10 @@ export class TypedTxFeeDelegatedCancelWithRatio extends TypedTx {
         'nonce', 'gasPrice', 'gasLimit', 'from', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures']);
     return HexStr.concat(
         this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
+    
   }
 }
 
@@ -381,5 +405,9 @@ export class TypedTxFeeDelegatedChainDataAnchoringWithRatio extends TypedTx {
       'nonce', 'gasPrice', 'gasLimit', 'from', 'input', 'feeRatio', 'txSignatures', 'feePayer', 'feePayerSignatures' ]);
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
+    
   }
 }

@@ -105,7 +105,6 @@ export const FieldTypeBool = new class implements FieldType {
   }
   emptyValue(): string { return "0x" };
 }
-
 export abstract class TypedFields {
 
   ////////////////////////////////////////////////////////////
@@ -124,9 +123,9 @@ export abstract class TypedFields {
   ////////////////////////////////////////////////////////////
 
   // shortcuts for this._static.*.
-  protected type: number = 0;
-  protected typeName: string = "";
-  protected fieldTypes: FieldTypes = {};
+  public readonly type: number = 0;
+  public readonly typeName: string = "";
+  public readonly fieldTypes: FieldTypes = {};
 
   // Fields in their canonical forms.
   protected fields: Fields = {};
@@ -147,13 +146,24 @@ export abstract class TypedFields {
   public setFields(obj: Fields): void {
     this.fields = {};
     _.forOwn(this.fieldTypes, (fieldType, name) => {
-      console.log( name, obj[name] )
       if (obj[name] === undefined) {
         this.fields[name] = null;
       } else {
         this.fields[name] = fieldType.canonicalize(obj[name]);
       }
     });
+  }
+
+  public setFieldsFromArray(names: string[], array: any[]): void {
+    this.fields = {};
+    for (var i = 0; i < array.length; i++) {
+      const name = names[i];
+      const fieldType = this.fieldTypes[name];
+      if (!fieldType) {
+        throw new Error(`Unknown field '${name}' for '${this.typeName}' (type ${this.type})`);
+      }
+      this.fields[name] = fieldType.canonicalize(array[i])
+    }
   }
 
   public getField(name: string): any {

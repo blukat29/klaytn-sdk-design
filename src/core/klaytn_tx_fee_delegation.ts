@@ -59,6 +59,10 @@ export class TypedTxFeeDelegatedValueTransfer extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfermemo
@@ -110,6 +114,10 @@ export class TypedTxFeeDelegatedValueTransferMemo extends TypedTx {
       'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'txSignatures', 'feePayer', 'feePayerSignatures']);
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
+    
   }
 }
 
@@ -173,6 +181,10 @@ export class TypedTxFeeDelegatedSmartContractDeploy extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedsmartcontractexecution
@@ -225,6 +237,10 @@ export class TypedTxFeeDelegatedSmartContractExecution extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 
@@ -276,6 +292,10 @@ export class TypedTxFeeDelegatedAccountUpdate extends TypedTx {
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
   }
+
+  setFieldsFromRLP(rlp: string): void {
+    
+  }
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedcancel
@@ -324,6 +344,10 @@ export class TypedTxFeeDelegatedCancel extends TypedTx {
         'nonce', 'gasPrice', 'gasLimit', 'from', 'txSignatures', 'feePayer', 'feePayerSignatures']);
     return HexStr.concat(
         this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
+    
   }
 }
 
@@ -374,5 +398,9 @@ export class TypedTxFeeDelegatedChainDataAnchoring extends TypedTx {
       'nonce', 'gasPrice', 'gasLimit', 'from', 'input', 'txSignatures', 'feePayer', 'feePayerSignatures' ]);
     return HexStr.concat(
       this.getField('type'), RLP.encode(inner));
+  }
+
+  setFieldsFromRLP(rlp: string): void {
+    
   }
 }

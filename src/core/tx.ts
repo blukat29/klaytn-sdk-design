@@ -11,7 +11,7 @@ export abstract class TypedTx extends TypedFields {
   // RLP encoding for sender to sign.
   abstract sigRLP(): string;
   // RLP encoding for broadcasting. Includes all signatures.
-  abstract txRLP(): string;
+  abstract txHashRLP(): string;
   // Set its own fields from an RLP encoded string.
   abstract setFieldsFromRLP(rlp: string): void;
 
@@ -23,7 +23,7 @@ export abstract class TypedTx extends TypedFields {
     throw new Error(`fee payer not supported in txtype ${this.type}`);
   }
   // RLP encoding with sender signature.
-  sigSenderTxRLP(): string {
+  senderTxHashRLP(): string {
     return this.sigRLP();
   }
 
