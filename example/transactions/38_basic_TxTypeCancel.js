@@ -17,30 +17,6 @@ const account2 = '0xc40b6909eb7085590e1c26cb3becc25368e249e9' // reciever addres
 // 2) send Cancel tx with the original nonce+1 
 // 3) send ValueTransfer tx with the original nonce 
 // 
-// To test TxTypeCancel more detail,
-// there must be a tx that will not included in a block and exists in the pending queue.
-// So we recommend 
-// 
-// 1) Before you execute this script, set up local 1CN-1EN.
-// 2) Shut down CN to stop mining. 
-// 3) Execute this script. 
-//
-//    You can look at the detial status with EN console. 
-//    3-1) Connect EN's console (e.g. > ken attach data/klay.ipc)
-//    3-2) Query txVT's hash with klay.getTransaction() and klay.getTransactionReciept(), 
-//         Check the result of both queries are null
-//    3-3) Query txCancel's hash with klay.getTransaction() and klay.getTransactionReciept(), 
-//         Check the result of klay.getTransaction() with blocknumber 0
-//         Check the result of klay.getTransactionReciept() is null
-//
-// 4) Start CN again. 
-//
-//    You can look at the detial status with EN console. 
-//    4-1) Connect EN's console (e.g. > ken attach data/klay.ipc)
-//    4-2) Query txVT's hash with klay.getTransaction() and klay.getTransactionReciept(), 
-//         Check the result of both queries are not null
-//         Check the result of klay.getTransaction() with non-zero blocknumber 
-// 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
   const wallet = new KlaytnWallet(privateKey1, provider);
