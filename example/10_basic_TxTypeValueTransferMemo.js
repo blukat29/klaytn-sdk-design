@@ -7,15 +7,21 @@ const privateKey1 = fs.readFileSync('./example/privateKey', 'utf8') // private k
 const account1 = '0x3208ca99480f82bfe240ca6bc06110cd12bb6366' // sender address 
 const account2 = '0xc40b6909eb7085590e1c26cb3becc25368e249e9' // reciever address 
 
+//
+// TxTypeValueTransferMemo
+// https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfermemo
+// 
+//   type: Must be 0x10,
+//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
+// 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
   const wallet = new KlaytnWallet(privateKey1, provider);
 
-  // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfermemo
   tx = {
-      type: 0x10,         // TxTypeValueTransferMemo must be 0x10
+      type: 0x10,         
       gasPrice: 25e9,
-      gasLimit: 30000,    // Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
+      gasLimit: 30000,
       to: account2,
       value: 1e12,
       from: account1,
