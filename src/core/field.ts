@@ -70,13 +70,17 @@ export class FieldTypeNumberBits implements FieldType {
     this.maxBN = BigNumber.from(2).pow(maxBits);
   }
   canonicalize(value: any): string {
+    if (value == 0) {
+      return "0x";
+    }
+
     const bn = BigNumber.from(value);
     if (bn.gte(this.maxBN)) {
       throw new Error(`Number exceeds ${this.maxBits} bits`);
     }
     return bn.toHexString();
   }
-  emptyValue(): string { return "0x00"; }
+  emptyValue(): string { return "0x"; }
 }
 
 // Accepted types: JS number, JS bigint, BigNumber class, hex-encoded string
@@ -93,6 +97,13 @@ export const FieldTypeSignatureTuples = new class implements FieldType {
     return _.map(value, getSignatureTuple);
   }
   emptyValue(): SignatureTuple[] { return [] };
+}
+
+export const FieldTypeBool = new class implements FieldType {
+  canonicalize(value: boolean): string {
+    return value? "0x01" : "0x" ;
+  }
+  emptyValue(): string { return "0x" };
 }
 
 export abstract class TypedFields {
@@ -113,9 +124,9 @@ export abstract class TypedFields {
   ////////////////////////////////////////////////////////////
 
   // shortcuts for this._static.*.
-  public readonly type: number = 0;
-  public readonly typeName: string = "";
-  public readonly fieldTypes: FieldTypes = {};
+  protected type: number = 0;
+  protected typeName: string = "";
+  protected fieldTypes: FieldTypes = {};
 
   // Fields in their canonical forms.
   protected fields: Fields = {};
@@ -136,24 +147,13 @@ export abstract class TypedFields {
   public setFields(obj: Fields): void {
     this.fields = {};
     _.forOwn(this.fieldTypes, (fieldType, name) => {
-      if (obj[name]) {
-        this.fields[name] = fieldType.canonicalize(obj[name]);
-      } else {
+      console.log( name, obj[name] )
+      if (obj[name] === undefined) {
         this.fields[name] = null;
+      } else {
+        this.fields[name] = fieldType.canonicalize(obj[name]);
       }
     });
-  }
-
-  public setFieldsFromArray(names: string[], array: any[]): void {
-    this.fields = {};
-    for (var i = 0; i < array.length; i++) {
-      const name = names[i];
-      const fieldType = this.fieldTypes[name];
-      if (!fieldType) {
-        throw new Error(`Unknown field '${name}' for '${this.typeName}' (type ${this.type})`);
-      }
-      this.fields[name] = fieldType.canonicalize(array[i])
-    }
   }
 
   public getField(name: string): any {
