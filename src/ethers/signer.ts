@@ -83,13 +83,34 @@ export class KlaytnWallet extends Wallet {
     tx = await this.populateTransaction(tx);
 
     const ttx = TypedTxFactory.fromObject(tx);
-    const sighash = keccak256(ttx.sigRLP());
-    const sig = this._signingKey().signDigest(sighash);
+    const sigHash = keccak256(ttx.sigRLP());
+    const sig = this._signingKey().signDigest(sigHash);
 
     if (tx.chainId) { // EIP-155
       sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
     }
     ttx.addTxSignature(sig);
+
+    if (ttx.type == 0x9)
+      return ttx.senderTxHashRLP();
+    return ttx.txHashRLP();
+  }
+
+  async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest>): Promise<string> {
+    let tx: TransactionRequest = await resolveProperties(transaction);
+
+    if (tx.type != 0x9) {
+      throw new Error(`This typed transaction can not be signed as FeePayer`);
+    }
+
+    tx = await this.populateTransaction(tx);
+
+    const ttx = TypedTxFactory.fromObject(tx);
+    const sigFeePayerHash = keccak256(ttx.sigFeePayerRLP());
+    const sig = this._signingKey().signDigest(sigFeePayerHash);
+
+    ttx.addTxSignatureAsFeePayer(sig);
+
     return ttx.txHashRLP();
   }
 

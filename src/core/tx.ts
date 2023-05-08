@@ -37,6 +37,16 @@ export abstract class TypedTx extends TypedFields {
     this.fields.txSignatures.push(tuple);
   }
 
+  // Add a signature as a feePayer
+  addTxSignatureAsFeePayer(sig: SignatureLike) {
+    if (!this.fieldTypes.feePayerSignatures) {
+      throw new Error(`No 'feePayerSignatures' field in txtype '${this.type}'`);
+    }
+    const tuple = getSignatureTuple(sig);
+    this.fields.feePayerSignatures ||= [];
+    this.fields.feePayerSignatures.push(tuple);
+  }
+
   // TODO: Add a feepayer signature. works like addSignature.
 
   // End override
