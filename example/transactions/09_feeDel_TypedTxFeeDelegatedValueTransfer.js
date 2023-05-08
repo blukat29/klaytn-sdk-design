@@ -21,30 +21,19 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 async function senderSign( tx ) {
   const sender_wallet = new KlaytnWallet(sender_priv, provider);
   
-  let tx = {
-    type: 9,         
-    gasPrice: 25e9,
-    gasLimit: 30000, 
-    to: reciever,
-    value: 1e12,
-    from: sender,
-  }; 
-
   const popTx = await sender_wallet.populateTransaction(tx);
-  console.log('tx', popTx);
+  console.log('popTx', popTx);
 
-  const senderTx = await sender_wallet.signTransaction(popTx);
+  const senderTx = await sender_wallet.signTransactionAsSender(popTx);
   console.log('senderTx', senderTx);
 
   return senderTx; 
 }
 
-async function feePayerSign( tx ) {
+async function feePayerSign( senderTx ) {
   const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
 
-  tx.feePayer = feePayer; 
-
-  const feePayerTx = await feePayer_wallet.signTransactionAsFeePayer(popTx);
+  const feePayerTx = await feePayer_wallet.signTransactionAsFeePayer(senderTx);
   console.log('feePayerTx', feePayerTx);
 
   return feePayerTx; 
@@ -52,8 +41,18 @@ async function feePayerSign( tx ) {
 
 async function main() {
 
-  const senderTx = senderSign( tx ); 
-  const feePayerTx = feePayerSign( senderTx ); 
+  let tx = {
+    type: 9,         
+    gasPrice: 25e9,
+    gasLimit: 30000, 
+    to: reciever,
+    value: 1e12,
+    from: sender,
+    feePayer: feePayer,
+  }; 
+
+  const senderTx = await senderSign(tx); 
+  const feePayerTx = await feePayerSign(senderTx); 
 
   const txhash = await provider.send("klay_sendRawTransaction", [feePayerTx]);
   console.log('txhash', txhash);
