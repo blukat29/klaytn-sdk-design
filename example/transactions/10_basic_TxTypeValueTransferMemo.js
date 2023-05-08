@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 
 const fs = require('fs')
 const privateKey1 = fs.readFileSync('./example/privateKey', 'utf8') // private key of sender 
