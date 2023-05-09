@@ -16,6 +16,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer
 // 
 //   type: Must be 0x09,
+//   nonce: Must not be omitted, because feePayer's nonce is filled when populating
 //   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
 async function senderSign( tx ) {
@@ -36,17 +37,30 @@ async function feePayerSign( tx, senderSig ) {
   return feePayerTx; 
 }
 
+// async function doSender() {
+//   tx = [...]
+//   return sender.SignTx(tx)
+// }
+
+// async function doFP(senderrlp) {
+
+// }
+
 async function main() {
 
   let tx = {
-    type: 9,         
+    type: 9,    
+    nonce: 198,     
     gasPrice: 25e9,
-    gasLimit: 30000, 
+    gasLimit: 3000000, 
     to: reciever,
     value: 1e12,
     from: sender,
     feePayer: feePayer,
   }; 
+
+  senderTxRlp = sender
+
 
   const senderSig = await senderSign(tx); 
   const feePayerTx = await feePayerSign(tx, senderSig); 

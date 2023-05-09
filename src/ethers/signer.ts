@@ -103,6 +103,7 @@ export class KlaytnWallet extends Wallet {
     }
 
     tx = await this.populateTransaction(tx);
+    console.log('signTransactionAsSender', tx);
 
     const ttx = TypedTxFactory.fromObject(tx);
     const sigHash = keccak256(ttx.sigRLP());
@@ -123,6 +124,7 @@ export class KlaytnWallet extends Wallet {
     }
 
     tx = await this.populateTransaction(tx);
+    console.log('signTransactionAsFeePayer', tx);
 
     const ttx = TypedTxFactory.fromObject(tx);
     const sigFeePayerHash = keccak256(ttx.sigFeePayerRLP());
