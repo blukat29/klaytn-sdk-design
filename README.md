@@ -37,6 +37,7 @@ classDiagram
   TypedFields <|-- TypedAccountKey
   class TypedFields {
     static type: number
+    static typeName: string
     static fieldTypes: string -> FieldType
     setFields(any)
     getField(string): any
@@ -46,7 +47,7 @@ classDiagram
     sigRLP(): string
     sigFeePayerRLP(): string
     senderTxHashRLP(): string
-    txRLP(): string
+    txHashRLP(): string
     addSenderSig(sig)
     addFeePayerSig(sig)
   }
