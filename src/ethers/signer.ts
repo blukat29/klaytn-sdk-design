@@ -1,6 +1,7 @@
 import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { TypedTxFactory } from "../core";
+import { SignatureLike } from "../core/sig";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
@@ -89,14 +90,12 @@ export class KlaytnWallet extends Wallet {
     if (tx.chainId) { // EIP-155
       sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
     }
-    ttx.addTxSignature(sig);
+    ttx.addSenderSig(sig);
 
-    if (ttx.type == 0x9)
-      return ttx.senderTxHashRLP();
     return ttx.txHashRLP();
   }
 
-  async signTransactionAsSender(transaction: Deferrable<TransactionRequest>): Promise<TransactionRequest> {
+  async signTransactionAsSender(transaction: Deferrable<TransactionRequest>): Promise<SignatureLike> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
     if (tx.type != 0x9) {
@@ -112,12 +111,11 @@ export class KlaytnWallet extends Wallet {
     if (tx.chainId) { // EIP-155
       sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
     }
-    ttx.addTxSignature(sig);
 
-    return ttx;
+    return sig;
   }
 
-  async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest>): Promise<string> {
+  async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest>, senderSig: SignatureLike ): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
     if (tx.type != 0x9) {
@@ -130,7 +128,12 @@ export class KlaytnWallet extends Wallet {
     const sigFeePayerHash = keccak256(ttx.sigFeePayerRLP());
     const sig = this._signingKey().signDigest(sigFeePayerHash);
 
-    ttx.addTxSignatureAsFeePayer(sig);
+    if (tx.chainId) { // EIP-155
+      sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
+    }
+    ttx.addFeePayerSig(sig);
+
+    ttx.addSenderSig(senderSig);
 
     return ttx.txHashRLP();
   }

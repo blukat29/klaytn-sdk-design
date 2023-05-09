@@ -28,7 +28,7 @@ export abstract class TypedTx extends TypedFields {
   }
 
   // Add a signature
-  addTxSignature(sig: SignatureLike) {
+  addSenderSig(sig: SignatureLike) {
     if (!this.fieldTypes.txSignatures) {
       throw new Error(`No 'txSignatures' field in txtype '${this.type}'`);
     }
@@ -38,7 +38,7 @@ export abstract class TypedTx extends TypedFields {
   }
 
   // Add a signature as a feePayer
-  addTxSignatureAsFeePayer(sig: SignatureLike) {
+  addFeePayerSig(sig: SignatureLike) {
     if (!this.fieldTypes.feePayerSignatures) {
       throw new Error(`No 'feePayerSignatures' field in txtype '${this.type}'`);
     }
