@@ -59,6 +59,8 @@ classDiagram
   TypedFieldsFactory <|.. TypedAccountKeyFactory
   class TypedFieldsFactory {
     add(typeof T)
+    has(type?): boolean
+    lookup(type?): typeof T
     fromObject(any): T
   }
   class TypedTxFactory {
