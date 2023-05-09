@@ -97,9 +97,9 @@ classDiagram
     sendTransaction()
   }
   class KlaytnWallet {
+    signTransaction()
     checkTransaction()
     populateTransaction()
-    signTransaction()
     sendTransaction()
   }
 

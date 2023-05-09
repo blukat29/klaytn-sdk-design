@@ -9,6 +9,7 @@ import {
   FieldTypeUint256, 
   FieldTypeBytes} from "./field";
 import { TypedTx } from "./tx";
+import _ from "lodash";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer
 export class TypedTxFeeDelegatedValueTransfer extends TypedTx {
@@ -61,7 +62,19 @@ export class TypedTxFeeDelegatedValueTransfer extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    rlp = "0x" + rlp.substring(4);
+    const array = _.concat([ this.type ], RLP.decode(rlp));
     
+    if (array.length == 8) {
+      this.setFieldsFromArray([
+        'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures'
+      ], array);
+    } else if (array.length == 10) {
+      this.setFieldsFromArray([
+        'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures', 'feePayer', 'feePayerSignatures'
+      ], array);
+    }
   }
 }
 

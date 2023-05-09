@@ -32,7 +32,7 @@ import {
   TypedTxFeeDelegatedAccountUpdate,
   TypedTxFeeDelegatedCancel, 
   TypedTxFeeDelegatedChainDataAnchoring,
-} from "./klaytn_tx_fee_delegation";
+} from "./klaytn_tx_feeDelegation";
 
 TypedTxFactory.add(TypedTxFeeDelegatedValueTransfer);
 TypedTxFactory.add(TypedTxFeeDelegatedValueTransferMemo);
@@ -51,7 +51,7 @@ import {
   TypedTxFeeDelegatedAccountUpdateWithRatio,
   TypedTxFeeDelegatedCancelWithRatio, 
   TypedTxFeeDelegatedChainDataAnchoringWithRatio,
-} from "./klaytn_tx_partial_fee_delegation";
+} from "./klaytn_tx_partialFeeDelegation";
 
 TypedTxFactory.add(TypedTxFeeDelegatedValueTransferWithRatio);
 TypedTxFactory.add(TypedTxFeeDelegatedValueTransferMemoWithRatio);
