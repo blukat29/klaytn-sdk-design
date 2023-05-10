@@ -36,11 +36,13 @@ classDiagram
   TypedFields <|-- TypedTx
   TypedFields <|-- TypedAccountKey
   class TypedFields {
-    static type: number
-    static typeName: string
-    static fieldTypes: string -> FieldType
+    type: number
+    typeName: string
+    fieldTypes: string -> FieldType
     setFields(any)
-    getField(string): any
+    setFieldsFromArray( string[], any[] )
+    getField( string ): any
+    getFields( string[] ): any[]
     toObject(): any
   }
   class TypedTx {
@@ -58,6 +60,8 @@ classDiagram
   TypedFieldsFactory <|.. TypedTxFactory
   TypedFieldsFactory <|.. TypedAccountKeyFactory
   class TypedFieldsFactory {
+    private registry: { [number]: ConcreteTypedFields<T> }
+    private requiredFields: string[]
     add(typeof T)
     has(type?): boolean
     lookup(type?): typeof T
