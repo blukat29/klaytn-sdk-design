@@ -60,7 +60,7 @@ classDiagram
   TypedFieldsFactory <|.. TypedTxFactory
   TypedFieldsFactory <|.. TypedAccountKeyFactory
   class TypedFieldsFactory {
-    private registry: { [number]: ConcreteTypedFields<T> }
+    private registry: [number] -> TypedFields
     private requiredFields: string[]
     add(typeof T)
     has(type?): boolean
