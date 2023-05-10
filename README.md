@@ -68,12 +68,11 @@ classDiagram
     fromObject(any): T
   }
   class TypedTxFactory {
-    add(typeof TypedTx)
-    fromObject(any): TypedTx
+    fromRLP(any): TypedTx
   }
   class TypedAccountKeyFactory {
-    add(typeof TypedAccountKey)
-    fromObject(any): TypedAccountKey
+    canonicalize(TypedAccountKey | any): string 
+    emptyValue(): string
   }
 ```
 
