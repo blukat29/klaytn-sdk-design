@@ -2,6 +2,7 @@ import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { TypedTxFactory } from "../core";
 import { SignatureLike } from "../core/sig";
+import { HexStr } from "../core/util";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
@@ -65,6 +66,27 @@ export class KlaytnWallet extends Wallet {
 
     if (!TypedTxFactory.has(tx.type)) {
       return super.populateTransaction(tx);
+    }
+
+    if ( _.isNumber(tx.gasPrice) == false ) {
+      if (this.provider instanceof JsonRpcProvider ) {
+        const result = await this.provider.send("klay_gasPrice", []);
+        tx.gasPrice = result;
+        console.log('gasPrice', result)
+      } else {
+        throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
+      }
+    }
+
+    if ( _.isNumber(tx.gasLimit) == false && !!(tx.to) ) {
+      if (this.provider instanceof JsonRpcProvider ) {
+        const ttx = {"to": tx.to};         
+        const result = await this.provider.send("klay_estimateGas", [ttx]);
+        tx.gasLimit = result;
+        console.log('gasLimit', result)
+      } else {
+        throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
+      }
     }
 
     const savedFields = saveCustomFields(tx);

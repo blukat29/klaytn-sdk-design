@@ -20,8 +20,8 @@ async function main() {
 
   tx = {
       type: 0x10,         
-      gasPrice: 25e9,
-      gasLimit: 30000,
+      // gasPrice: 25e9,
+      // gasLimit: 30000,
       to: account2,
       value: 1e12,
       from: account1,
