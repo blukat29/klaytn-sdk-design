@@ -28,27 +28,11 @@ async function main() {
       input: "0x1234567890",
     }; 
   
-  if (1) {
-    // One-shot (recommended)
-    const sentTx = await wallet.sendTransaction(tx);
-    console.log('sentTx', sentTx);
+  const sentTx = await wallet.sendTransaction(tx);
+  console.log('sentTx', sentTx);
 
-    const rc = await sentTx.wait();
-    console.log('receipt', rc);
-  } else {
-    // Step-by-step
-    popTx = await wallet.populateTransaction(tx);
-    console.log('tx', popTx);
-
-    const rawTx = await wallet.signTransaction(popTx);
-    console.log('rawTx', rawTx);
-
-    const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
-    console.log('txhash', txhash);
-
-    const rc = await provider.waitForTransaction(txhash);
-    console.log('receipt', rc);
-  }
+  const rc = await sentTx.wait();
+  console.log('receipt', rc);
 }
 
 main();

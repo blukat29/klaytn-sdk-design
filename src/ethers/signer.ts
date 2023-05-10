@@ -81,8 +81,6 @@ export class KlaytnWallet extends Wallet {
       return super.signTransaction(tx);
     }
 
-    tx = await this.populateTransaction(tx);
-
     const ttx = TypedTxFactory.fromObject(tx);
     const sigHash = keccak256(ttx.sigRLP());
     const sig = this._signingKey().signDigest(sigHash);
@@ -102,9 +100,6 @@ export class KlaytnWallet extends Wallet {
       throw new Error(`This typed transaction can not be signed as FeePayer`);
     }
 
-    tx = await this.populateTransaction(tx);
-    console.log('signTransactionAsSender', tx);
-
     const ttx = TypedTxFactory.fromObject(tx);
     const sigHash = keccak256(ttx.sigRLP());
     const sig = this._signingKey().signDigest(sigHash);
@@ -122,9 +117,6 @@ export class KlaytnWallet extends Wallet {
     if (tx.type != 0x9) {
       throw new Error(`This typed transaction can not be signed as FeePayer`);
     }
-
-    tx = await this.populateTransaction(tx);
-    console.log('signTransactionAsFeePayer', tx);
 
     const ttx = TypedTxFactory.fromObject(tx);
     const sigFeePayerHash = keccak256(ttx.sigFeePayerRLP());
