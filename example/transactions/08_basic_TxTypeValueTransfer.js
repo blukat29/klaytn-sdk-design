@@ -12,16 +12,13 @@ const account2 = '0xc40b6909eb7085590e1c26cb3becc25368e249e9' // reciever addres
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
 // 
 //   type: Must be 0x08,
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
   const wallet = new KlaytnWallet(privateKey1, provider);
 
   let tx = {
-      type: 8,         
-      // gasPrice: 25e9,
-      // gasLimit: 30000, 
+      type: 8,
       to: account2,
       value: 100000000000,
       from: account1,

@@ -1,5 +1,7 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { TypedTxFeeDelegatedValueTransfer } = require("../../dist/src/core/klaytn_tx_feeDelegation");
+const { HexStr } = require("../../dist/src/core/util");
 
 const fs = require('fs')
 const sender_priv = fs.readFileSync('./example/privateKey', 'utf8') // private key of sender 
@@ -16,60 +18,60 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer
 // 
 //   type: Must be 0x09,
-//   nonce: Must not be omitted, because feePayer's nonce is filled when populating
+//   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
 //   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
-async function senderSign( tx ) {
+
+async function doSender() {
   const sender_wallet = new KlaytnWallet(sender_priv, provider);
   
-  const sig = await sender_wallet.signTransactionAsSender(tx);
-  console.log('sig', sig);
-
-  return sig; 
-}
-
-async function feePayerSign( tx, senderSig ) {
-  const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
-
-  const feePayerTx = await feePayer_wallet.signTransactionAsFeePayer(tx, senderSig);
-  console.log('feePayerTx', feePayerTx);
-
-  return feePayerTx; 
-}
-
-// async function doSender() {
-//   tx = [...]
-//   return sender.SignTx(tx)
-// }
-
-// async function doFP(senderrlp) {
-
-// }
-
-async function main() {
-
   let tx = {
     type: 9,    
-    nonce: 198,     
-    gasPrice: 25e9,
-    gasLimit: 3000000, 
+    gasLimit: 1000000000, 
     to: reciever,
     value: 1e12,
     from: sender,
     feePayer: feePayer,
   }; 
 
-  senderTxRlp = sender
+  tx = await sender_wallet.populateTransaction(tx);
+  console.log(tx);
 
+  const senderTxHashRLP = await sender_wallet.signTransaction(tx);
+  console.log('senderTxHashRLP', senderTxHashRLP);
 
-  const senderSig = await senderSign(tx); 
-  const feePayerTx = await feePayerSign(tx, senderSig); 
+  return senderTxHashRLP; 
+}
 
-  const txhash = await provider.send("klay_sendRawTransaction", [feePayerTx]);
+async function doFeePayer( senderTxHashRLP ) {
+  const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
+
+  const ttx = new TypedTxFeeDelegatedValueTransfer();
+  ttx.setFieldsFromRLP( senderTxHashRLP );
+  
+  let tx = ttx.toObject();
+  tx.type = HexStr.toNumber( tx.type );
+  tx.feePayer = feePayer;
+  console.log(tx);
+
+  const popTx = await feePayer_wallet.populateTransaction(tx);
+  console.log('popTx', popTx);
+
+  const completeTx = await feePayer_wallet.signTransactionAsFeePayer( popTx );
+  console.log('completeTx', completeTx);
+  
+  const txhash = await provider.send("klay_sendRawTransaction", [completeTx]);
   console.log('txhash', txhash);
 
   const rc = await provider.waitForTransaction(txhash);
   console.log('receipt', rc);
+}
+
+async function main() {
+
+  const senderTxHashRLP = await doSender();
+
+  doFeePayer( senderTxHashRLP ); 
 }
 
 main();

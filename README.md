@@ -11,8 +11,8 @@ node example/klaytn_tx_ethers.js
 ```
 
 ## TODO
+- ~~RLP decoding for adding fee payer's Signature~~
 - Populating gasPrice, gasLimit through Klaytn RPC (WIP)
-- RLP decoding for adding fee payer's Signature (WIP)
 - fee delegation & partial fee delegation examples 
 - recover function core & example
 - Wallet API dynamic hooking 

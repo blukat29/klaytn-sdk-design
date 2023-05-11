@@ -44,7 +44,13 @@ export class TypedTxValueTransfer extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
     
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures'
+    ], array);
   }
 }
 

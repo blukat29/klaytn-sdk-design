@@ -51,6 +51,10 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
   }
 }
 
+// Wallet API dynamic hooking
+// Wallet.populateTransaction = function() {
+// };
+
 export class KlaytnWallet extends Wallet {
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
 
@@ -68,18 +72,19 @@ export class KlaytnWallet extends Wallet {
       return super.populateTransaction(tx);
     }
 
-    if ( _.isNumber(tx.gasPrice) == false ) {
+    if ( !(tx.gasPrice) ) {
       if (this.provider instanceof JsonRpcProvider ) {
         const result = await this.provider.send("klay_gasPrice", []);
         tx.gasPrice = result;
-        console.log('gasPrice', result)
       } else {
         throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
       }
     }
 
-    if ( _.isNumber(tx.gasLimit) == false && !!(tx.to) ) {
+    if ( !(tx.gasLimit) && !!(tx.to) ) {
       if (this.provider instanceof JsonRpcProvider ) {
+
+        // TODO: Populating gasPrice, gasLimit through Klaytn RPC
         const ttx = {"to": tx.to};         
         const result = await this.provider.send("klay_estimateGas", [ttx]);
         tx.gasLimit = result*1.3;  // multiply 1.3 for enuough gas
@@ -112,28 +117,14 @@ export class KlaytnWallet extends Wallet {
     }
     ttx.addSenderSig(sig);
 
+    // fee deleation
+    if (tx.type == 0x9 ) 
+      return ttx.senderTxHashRLP()
+
     return ttx.txHashRLP();
   }
 
-  async signTransactionAsSender(transaction: Deferrable<TransactionRequest>): Promise<SignatureLike> {
-    let tx: TransactionRequest = await resolveProperties(transaction);
-
-    if (tx.type != 0x9) {
-      throw new Error(`This typed transaction can not be signed as FeePayer`);
-    }
-
-    const ttx = TypedTxFactory.fromObject(tx);
-    const sigHash = keccak256(ttx.sigRLP());
-    const sig = this._signingKey().signDigest(sigHash);
-
-    if (tx.chainId) { // EIP-155
-      sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
-    }
-
-    return sig;
-  }
-
-  async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest>, senderSig: SignatureLike ): Promise<string> {
+  async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest> ): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
     if (tx.type != 0x9) {
@@ -148,8 +139,6 @@ export class KlaytnWallet extends Wallet {
       sig.v = sig.recoveryParam + tx.chainId * 2 + 35;
     }
     ttx.addFeePayerSig(sig);
-
-    ttx.addSenderSig(senderSig);
 
     return ttx.txHashRLP();
   }
