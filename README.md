@@ -14,6 +14,8 @@ node example/klaytn_tx_ethers.js
 - Populating gasPrice, gasLimit through Klaytn RPC (WIP)
 - RLP decoding for adding fee payer's Signature (WIP)
 - fee delegation & partial fee delegation examples 
+- recover function core & example
+- Wallet API dynamic hooking 
 - Klaytn account key core 
 - Klaytn account key examples 
 - ethers: Send Klaytn typed tx via browser wallet (i.e. Wallet.sendTransaction works when this.provider is no JsonRpcProvider)
