@@ -82,7 +82,7 @@ export class KlaytnWallet extends Wallet {
       if (this.provider instanceof JsonRpcProvider ) {
         const ttx = {"to": tx.to};         
         const result = await this.provider.send("klay_estimateGas", [ttx]);
-        tx.gasLimit = result;
+        tx.gasLimit = result*1.3;  // multiply 1.3 for enuough gas
         console.log('gasLimit', result)
       } else {
         throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
