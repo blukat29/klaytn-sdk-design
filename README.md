@@ -11,9 +11,11 @@ node example/klaytn_tx_ethers.js
 ```
 
 ## TODO
-
-- common: TxTypes with feePayerSig
-- common: Merge signed txs
+- Populating gasPrice, gasLimit through Klaytn RPC (WIP)
+- RLP decoding for adding fee payer's Signature (WIP)
+- fee delegation & partial fee delegation examples 
+- Klaytn account key core 
+- Klaytn account key examples 
 - ethers: Send Klaytn typed tx via browser wallet (i.e. Wallet.sendTransaction works when this.provider is no JsonRpcProvider)
 - ethers: KlaytnWallet accepts address
 - ethers: KlaytnWallet from v4 keystore
