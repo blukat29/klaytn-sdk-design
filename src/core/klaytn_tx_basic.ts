@@ -88,7 +88,13 @@ export class TypedTxValueTransferMemo extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
     
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'txSignatures'
+    ], array);    
   }
 }
 
@@ -131,7 +137,13 @@ export class TypedTxSmartContractDeploy extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
     
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'humanReadable', 'codeFormat', 'txSignatures'
+    ], array);    
   }
 }
 
@@ -169,7 +181,13 @@ export class TypedTxSmartContractExecution extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
     
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'input', 'txSignatures'
+    ], array);    
   }
 }
 
@@ -206,7 +224,13 @@ export class TypedTxAccountUpdate extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
     
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'from', 'key', 'txSignatures'
+    ], array);    
   }
 }
 
@@ -241,7 +265,13 @@ export class TypedTxCancel extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
     
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'from', 'txSignatures'
+    ], array);    
   }
 }
 
@@ -277,6 +307,12 @@ export class TypedTxChainDataAnchoring extends TypedTx {
   }
 
   setFieldsFromRLP(rlp: string): void {
-
+    // Strip type byte
+    const inner_rlp = "0x" + String(rlp).substring(4);
+    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
+    
+    this.setFieldsFromArray([
+      'type', 'nonce', 'gasPrice', 'gasLimit', 'from', 'input', 'txSignatures'
+    ], array);
   }
 }
