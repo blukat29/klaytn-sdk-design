@@ -61,26 +61,24 @@ export class TypedTxFeeDelegatedValueTransfer extends TypedTx {
       this.getField('type'), RLP.encode(inner));
   }
 
-  setFieldsFromSenderTxHashRLP(rlp: string): void {
+  setFieldsFromRLP(rlp: string): void {
     // Strip type byte
     const inner_rlp = "0x" + String(rlp).substring(4);
     const array = _.concat([ this.type ], RLP.decode(inner_rlp));
 
-    // SenderTxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
-    this.setFieldsFromArray([
-      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures'
-    ], array);
-  }
-
-  setFieldsFromTxHashRLP(rlp: string): void {
-    // Strip type byte
-    const inner_rlp = "0x" + String(rlp).substring(4);
-    const array = _.concat([ this.type ], RLP.decode(inner_rlp));
-
-    // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures, feePayer, feePayerSignatures])
-    this.setFieldsFromArray([
-      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures', 'feePayer', 'feePayerSignatures'
-    ], array);
+    if (array.length == 8) {
+      // from SenderTxHashRLP 
+      this.setFieldsFromArray([
+        'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures'
+      ], array);
+    } else if (array.length == 10) {
+      // from TxHashRLP 
+      this.setFieldsFromArray([
+        'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures', 'feePayer', 'feePayerSignatures'
+      ], array);
+    } else {
+      throw new Error('Wrongly encoded RLP string');
+    }
   }
 }
 
