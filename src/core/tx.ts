@@ -13,7 +13,8 @@ export abstract class TypedTx extends TypedFields {
   // RLP encoding for broadcasting. Includes all signatures.
   abstract txHashRLP(): string;
   // Set its own fields from an RLP encoded string.
-  abstract setFieldsFromRLP(rlp: string): void;
+  // abstract setFieldsFromSenderTxHashRLP(rlp: string): void;
+  // abstract setFieldsFromTxHashRLP(rlp: string): void;
 
   ////////////////////////////////////////////////////////////
   // Child classes MAY override below methods

@@ -3,7 +3,8 @@ const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/s
 const { TypedTxFeeDelegatedValueTransfer } = require("../../dist/src/core/klaytn_tx_feeDelegation");
 const { HexStr } = require("../../dist/src/core/util");
 
-const fs = require('fs')
+const fs = require('fs');
+const { TypedTxFactory } = require("../../dist/src/core/tx");
 const sender_priv = fs.readFileSync('./example/privateKey', 'utf8') // private key of sender 
 const feePayer_priv = fs.readFileSync('./example/feePayerPrivateKey', 'utf8') // private key of feeDelegator
 
@@ -31,7 +32,6 @@ async function doSender() {
     to: reciever,
     value: 1e12,
     from: sender,
-    feePayer: feePayer,
   }; 
 
   tx = await sender_wallet.populateTransaction(tx);
@@ -46,11 +46,7 @@ async function doSender() {
 async function doFeePayer( senderTxHashRLP ) {
   const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
 
-  const ttx = new TypedTxFeeDelegatedValueTransfer();
-  ttx.setFieldsFromRLP( senderTxHashRLP );
-  
-  let tx = ttx.toObject();
-  tx.type = HexStr.toNumber( tx.type );
+  const tx = TypedTxFactory.fromRLP( senderTxHashRLP ).toObject()
   tx.feePayer = feePayer;
   console.log(tx);
 

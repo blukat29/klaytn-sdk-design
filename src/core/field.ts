@@ -221,14 +221,20 @@ export class TypedFieldsFactory<T extends TypedFields> {
     this.registry[type] = cls;
   }
 
-  public has(type?: number): boolean {
+  public has(type?: any): boolean {
+    if (!!type && HexStr.isHex(type)) 
+      return !!type && !!this.registry[HexStr.toNumber(type)];
+  
     return !!type && !!this.registry[type];
   }
 
-  public lookup(type?: number): ConcreteTypedFields<T> {
-    if (!type || !this.has(type)) {
+  public lookup(type?: any): ConcreteTypedFields<T> {
+    if (!type || !this.has(type))
       throw new Error(`Unsupported type '${type}'`);
-    }
+    
+    if ( HexStr.isHex(type))
+      return this.registry[HexStr.toNumber(type)];
+    
     return this.registry[type];
   }
 
