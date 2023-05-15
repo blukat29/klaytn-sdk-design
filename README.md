@@ -112,6 +112,7 @@ classDiagram
 ```
 
 ```mermaid  
+classDiagram
   TypedFieldsFactory <|.. TypedTxFactory
   TypedFieldsFactory <|.. TypedAccountKeyFactory
   class TypedFieldsFactory {
@@ -126,7 +127,7 @@ classDiagram
     fromRLP(string): TypedTx
   }
   class TypedAccountKeyFactory {
-    canonicalize(TypedAccountKey | any): string 
+    canonicalize(TypedAccountKey | string | any): string 
     emptyValue(): string
   }
 ```

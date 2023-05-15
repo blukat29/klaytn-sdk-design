@@ -13,10 +13,10 @@ const feePayer = '0x24e8efd18d65bcb6b3ba15a4698c0b0d69d13ff7'
 const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
 
 //
-// TypedTxFeeDelegatedValueTransferMemo
-// https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfermemo
+// TxTypeFeeDelegatedValueTransfer
+// https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer
 // 
-//   type: Must be 0x11,
+//   type: Must be 0x09,
 //   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
 //   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
@@ -25,13 +25,12 @@ async function doSender() {
   const sender_wallet = new KlaytnWallet(sender_priv, provider);
   
   let tx = {
-      type: 0x11,         
-      gasLimit: 1000000000, 
-      to: reciever,
-      value: 1e12,
-      from: sender,
-      input: "0x1234567890",
-    }; 
+    type: 9,    
+    gasLimit: 1000000000, 
+    to: reciever,
+    value: 1e12,
+    from: sender,
+  }; 
 
   tx = await sender_wallet.populateTransaction(tx);
   console.log(tx);
@@ -52,10 +51,10 @@ async function doFeePayer( senderTxHashRLP ) {
   const popTx = await feePayer_wallet.populateTransaction(tx);
   console.log('popTx', popTx);
 
-  const completeTx = await feePayer_wallet.signTransactionAsFeePayer( popTx );
-  console.log('completeTx', completeTx);
+  const txHashRLP = await feePayer_wallet.signTransactionAsFeePayer( popTx );
+  console.log('txHashRLP', txHashRLP);
   
-  const txhash = await provider.send("klay_sendRawTransaction", [completeTx]);
+  const txhash = await provider.send("klay_sendRawTransaction", [txHashRLP]);
   console.log('txhash', txhash);
 
   const rc = await provider.waitForTransaction(txhash);

@@ -70,13 +70,17 @@ export class FieldTypeNumberBits implements FieldType {
     this.maxBN = BigNumber.from(2).pow(maxBits);
   }
   canonicalize(value: any): string {
-    if (value == 0) {
-      return "0x00";
+    if (value === "0x") {
+      value = 0; 
     }
-
     const bn = BigNumber.from(value);
+
     if (bn.gte(this.maxBN)) {
       throw new Error(`Number exceeds ${this.maxBits} bits`);
+    }
+
+    if (bn.isZero()) {
+      return "0x";
     }
     return bn.toHexString();
   }
