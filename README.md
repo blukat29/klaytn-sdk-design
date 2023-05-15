@@ -37,6 +37,25 @@ node example/klaytn_tx_ethers.js
 
 ```mermaid
 classDiagram
+  class FieldType {
+    <<interface>> 
+    canonicalize(any): any
+    emptyValue(): any
+  }
+  FieldType ..|> FieldTypeBytes
+  FieldType ..|> FieldTypeAddress
+  FieldType ..|> FieldTypeBytesFixedLen
+  FieldType ..|> FieldTypeNumberBits
+  FieldType ..|> FieldTypeSignatureTuples
+  FieldType ..|> FieldTypeBool
+  FieldType ..|> FieldTypeAccountKey
+  class FieldTypeAccountKey {
+    canonicalize(value: TypedAccountKey | string | any): string
+  }
+```
+
+```mermaid  
+classDiagram
   TypedFields <|-- TypedTx
   TypedTx <|-- TypedTxValueTransfer
   TypedTx <|-- other TypedTxs
