@@ -4,7 +4,7 @@ const { TypedTxFeeDelegatedValueTransfer } = require("../../dist/src/core/klaytn
 const { HexStr } = require("../../dist/src/core/util");
 
 const fs = require('fs');
-const { TypedTxFactory } = require("../../dist/src/core/tx");
+const { TypedTxFactory, objectFromRLP } = require("../../dist/src/core/tx");
 const sender_priv = fs.readFileSync('./example/privateKey', 'utf8') // private key of sender 
 const feePayer_priv = fs.readFileSync('./example/feePayerPrivateKey', 'utf8') // private key of feeDelegator
 
@@ -46,7 +46,7 @@ async function doSender() {
 async function doFeePayer( senderTxHashRLP ) {
   const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
 
-  const tx = TypedTxFactory.fromRLP( senderTxHashRLP ).toObject()
+  const tx = objectFromRLP( senderTxHashRLP );
   tx.feePayer = feePayer;
   console.log(tx);
 

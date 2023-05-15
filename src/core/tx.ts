@@ -76,3 +76,7 @@ const requiredFields = ['type', 'chainId', 'txSignatures'];
 export const TypedTxFactory = new _TypedTxFactory(
   requiredFields,
 );
+
+export function objectFromRLP(value: string): any {
+  return TypedTxFactory.fromRLP( value ).toObject();
+}
