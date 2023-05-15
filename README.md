@@ -44,11 +44,10 @@ classDiagram
   }
   FieldType ..|> FieldTypeAddress
   FieldType ..|> FieldTypeBytes
-  FieldType ..|> FieldTypeBytesFixedLen
   FieldType ..|> FieldTypeNumberBits
   FieldType ..|> FieldTypeSignatureTuples
-  FieldType ..|> FieldTypeBool
   FieldType ..|> FieldTypeAccountKey
+  FieldType ..|> etc
   class FieldTypeAddress {
     canonicalize(any): string
     emptyValue(): string
@@ -88,7 +87,8 @@ classDiagram
   FieldSet <|-- AccountKey
   AccountKey <|-- AccountKeyLegacy
   AccountKey <|-- AccountKeyPublic
-  AccountKey <|-- etc
+  AccountKey <|-- ccountKeyWeightedMultiSig
+  AccountKey <|-- AccountKeyRoleBased
   class FieldSet {
     type: number
     typeName: string

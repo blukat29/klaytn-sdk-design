@@ -2,10 +2,10 @@ const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 
 const fs = require('fs')
-const privateKey1 = fs.readFileSync('./example/privateKey', 'utf8') // private key of sender 
+const sender_priv = fs.readFileSync('./example/privateKey', 'utf8') 
 
-const account1 = '0x3208ca99480f82bfe240ca6bc06110cd12bb6366' // sender address 
-const account2 = '0xc40b6909eb7085590e1c26cb3becc25368e249e9' // reciever address 
+const sender = '0x3208ca99480f82bfe240ca6bc06110cd12bb6366' 
+const reciever = '0xc40b6909eb7085590e1c26cb3becc25368e249e9'  
 
 //
 // TxTypeCancel
@@ -19,15 +19,15 @@ const account2 = '0xc40b6909eb7085590e1c26cb3becc25368e249e9' // reciever addres
 // 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
-  const wallet = new KlaytnWallet(privateKey1, provider);
+  const wallet = new KlaytnWallet(sender_priv, provider);
    
   // 1) send ValueTransfer tx with the original nonce+1
   let tx = {
       type: 8,         
       gasLimit: 30000, 
-      to: account2,
+      to: reciever,
       value: 1e12,
-      from: account1,
+      from: sender,
     }; 
   
   popTx = await wallet.populateTransaction(tx);
@@ -47,7 +47,7 @@ async function main() {
     type: 0x38,
     nonce: popTx.nonce, 
     gasLimit: 30000,     
-    from: account1, 
+    from: sender, 
   };
     
   const cancelTx = await wallet.sendTransaction(txCancel);
