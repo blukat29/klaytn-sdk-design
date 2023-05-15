@@ -42,15 +42,39 @@ classDiagram
     canonicalize(any): any
     emptyValue(): any
   }
-  FieldType ..|> FieldTypeBytes
   FieldType ..|> FieldTypeAddress
+  FieldType ..|> FieldTypeBytes
   FieldType ..|> FieldTypeBytesFixedLen
   FieldType ..|> FieldTypeNumberBits
   FieldType ..|> FieldTypeSignatureTuples
   FieldType ..|> FieldTypeBool
   FieldType ..|> FieldTypeAccountKey
+  class FieldTypeAddress {
+    canonicalize(any): string
+    emptyValue(): string
+  }
+  class FieldTypeBytes {
+    canonicalize(any): string
+    emptyValue(): string
+  }
+  class FieldTypeBytesFixedLen {
+    canonicalize(any): string
+    emptyValue(): string
+  }
+  class FieldTypeNumberBits {
+    canonicalize(any): string
+    emptyValue(): string
+  }
+  class FieldTypeSignatureTuples {
+    canonicalize( SignatureLike[]): SignatureTuple[]
+    emptyValue(): SignatureTuple[]
+  }
+  class FieldTypeBool {
+    canonicalize(boolean): string
+    emptyValue(): string
+  }
   class FieldTypeAccountKey {
-    canonicalize(value: TypedAccountKey | string | any): string
+    canonicalize(TypedAccountKey | string | any): string
   }
 ```
 
