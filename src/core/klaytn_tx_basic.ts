@@ -8,11 +8,11 @@ import {
   FieldTypeUint64,
   FieldTypeUint256, 
   FieldTypeBytes} from "./field";
-import { KlaytnTx } from "./tx";
+import { KlaytnTx } from "./klaytn_tx";
 import _ from "lodash";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
-export class TypedTxValueTransfer extends KlaytnTx {
+export class TxTypeValueTransfer extends KlaytnTx {
   static type = 0x8;
   static typeName = "TxTypeValueTransfer";
   static fieldTypes = {
@@ -55,7 +55,7 @@ export class TypedTxValueTransfer extends KlaytnTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfermemo
-export class TypedTxValueTransferMemo extends KlaytnTx {
+export class TxTypeValueTransferMemo extends KlaytnTx {
   static type = 0x10;
   static typeName = "TxTypeValueTransferMemo";
   static fieldTypes = {
@@ -99,7 +99,7 @@ export class TypedTxValueTransferMemo extends KlaytnTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypesmartcontractdeploy
-export class TypedTxSmartContractDeploy extends KlaytnTx {
+export class TxTypeSmartContractDeploy extends KlaytnTx {
   static type = 0x28;
   static typeName = "TxTypeSmartContractDeploy";
   static fieldTypes = {
@@ -148,7 +148,7 @@ export class TypedTxSmartContractDeploy extends KlaytnTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypesmartcontractexecution
-export class TypedTxSmartContractExecution extends KlaytnTx {
+export class TxTypeSmartContractExecution extends KlaytnTx {
   static type = 0x30;
   static typeName = "TxTypeSmartContractExecution";
   static fieldTypes = {
@@ -193,7 +193,7 @@ export class TypedTxSmartContractExecution extends KlaytnTx {
 
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypeaccountupdate
-export class TypedTxAccountUpdate extends KlaytnTx {
+export class TxTypeAccountUpdate extends KlaytnTx {
   static type = 0x20;
   static typeName = "TxTypeAccountUpdate";
   static fieldTypes = {
@@ -235,7 +235,7 @@ export class TypedTxAccountUpdate extends KlaytnTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypecancel
-export class TypedTxCancel extends KlaytnTx {
+export class TxTypeCancel extends KlaytnTx {
   static type = 0x38;
   static typeName = "TxTypeCancel";
   static fieldTypes = {
@@ -276,7 +276,7 @@ export class TypedTxCancel extends KlaytnTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypechaindataanchoring
-export class TypedTxChainDataAnchoring extends KlaytnTx {
+export class TxTypeChainDataAnchoring extends KlaytnTx {
   static type = 0x48;
   static typeName = "TxTypeCancel";
   static fieldTypes = {

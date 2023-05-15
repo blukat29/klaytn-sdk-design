@@ -1,65 +1,65 @@
-export { KlaytnTx, TypedTxFactory } from "./tx";
+export { KlaytnTx, TypedTxFactory } from "./klaytn_tx";
 export { TypedAccountKey, TypedAccountKeyFactory } from "./account";
 
 
-import { TypedTxFactory } from "./tx";
+import { TypedTxFactory } from "./klaytn_tx";
 
 // Basic TX 
 import {
-  TypedTxValueTransfer,
-  TypedTxValueTransferMemo,
-  TypedTxSmartContractDeploy,
-  TypedTxSmartContractExecution,
-  TypedTxAccountUpdate,
-  TypedTxCancel, 
-  TypedTxChainDataAnchoring,
+  TxTypeValueTransfer,
+  TxTypeValueTransferMemo,
+  TxTypeSmartContractDeploy,
+  TxTypeSmartContractExecution,
+  TxTypeAccountUpdate,
+  TxTypeCancel, 
+  TxTypeChainDataAnchoring,
 } from "./klaytn_tx_basic";
 
-TypedTxFactory.add(TypedTxValueTransfer);
-TypedTxFactory.add(TypedTxValueTransferMemo);
-TypedTxFactory.add(TypedTxSmartContractDeploy);
-TypedTxFactory.add(TypedTxSmartContractExecution);
-TypedTxFactory.add(TypedTxAccountUpdate);
-TypedTxFactory.add(TypedTxCancel);
-TypedTxFactory.add(TypedTxChainDataAnchoring);
+TypedTxFactory.add(TxTypeValueTransfer);
+TypedTxFactory.add(TxTypeValueTransferMemo);
+TypedTxFactory.add(TxTypeSmartContractDeploy);
+TypedTxFactory.add(TxTypeSmartContractExecution);
+TypedTxFactory.add(TxTypeAccountUpdate);
+TypedTxFactory.add(TxTypeCancel);
+TypedTxFactory.add(TxTypeChainDataAnchoring);
 
 // Fee Delegation TX
 import {
-  TypedTxFeeDelegatedValueTransfer,
-  TypedTxFeeDelegatedValueTransferMemo,
-  TypedTxFeeDelegatedSmartContractDeploy,
-  TypedTxFeeDelegatedSmartContractExecution,
-  TypedTxFeeDelegatedAccountUpdate,
-  TypedTxFeeDelegatedCancel, 
+  TxTypeFeeDelegatedValueTransfer,
+  TxTypeFeeDelegatedValueTransferMemo,
+  TxTypeFeeDelegatedSmartContractDeploy,
+  TxTypeFeeDelegatedSmartContractExecution,
+  TxTypeFeeDelegatedAccountUpdate,
+  TxTypeFeeDelegatedCancel, 
   TypedTxFeeDelegatedChainDataAnchoring,
 } from "./klaytn_tx_feeDelegation";
 
-TypedTxFactory.add(TypedTxFeeDelegatedValueTransfer);
-TypedTxFactory.add(TypedTxFeeDelegatedValueTransferMemo);
-TypedTxFactory.add(TypedTxFeeDelegatedSmartContractDeploy);
-TypedTxFactory.add(TypedTxFeeDelegatedSmartContractExecution);
-TypedTxFactory.add(TypedTxFeeDelegatedAccountUpdate);
-TypedTxFactory.add(TypedTxFeeDelegatedCancel);
+TypedTxFactory.add(TxTypeFeeDelegatedValueTransfer);
+TypedTxFactory.add(TxTypeFeeDelegatedValueTransferMemo);
+TypedTxFactory.add(TxTypeFeeDelegatedSmartContractDeploy);
+TypedTxFactory.add(TxTypeFeeDelegatedSmartContractExecution);
+TypedTxFactory.add(TxTypeFeeDelegatedAccountUpdate);
+TypedTxFactory.add(TxTypeFeeDelegatedCancel);
 TypedTxFactory.add(TypedTxFeeDelegatedChainDataAnchoring);
 
 // Partial Fee Delegation TX
 import {
-  TypedTxFeeDelegatedValueTransferWithRatio,
-  TypedTxFeeDelegatedValueTransferMemoWithRatio,
-  TypedTxFeeDelegatedSmartContractDeployWithRatio,
-  TypedTxFeeDelegatedSmartContractExecutionWithRatio,
-  TypedTxFeeDelegatedAccountUpdateWithRatio,
-  TypedTxFeeDelegatedCancelWithRatio, 
-  TypedTxFeeDelegatedChainDataAnchoringWithRatio,
+  TxTypeFeeDelegatedValueTransferWithRatio,
+  TxTypeFeeDelegatedValueTransferMemoWithRatio,
+  TxTypeFeeDelegatedSmartContractDeployWithRatio,
+  TxTypeFeeDelegatedSmartContractExecutionWithRatio,
+  TxTypeFeeDelegatedAccountUpdateWithRatio,
+  TxTypeFeeDelegatedCancelWithRatio, 
+  TxTypeFeeDelegatedChainDataAnchoringWithRatio,
 } from "./klaytn_tx_partialFeeDelegation";
 
-TypedTxFactory.add(TypedTxFeeDelegatedValueTransferWithRatio);
-TypedTxFactory.add(TypedTxFeeDelegatedValueTransferMemoWithRatio);
-TypedTxFactory.add(TypedTxFeeDelegatedSmartContractDeployWithRatio);
-TypedTxFactory.add(TypedTxFeeDelegatedSmartContractExecutionWithRatio);
-TypedTxFactory.add(TypedTxFeeDelegatedAccountUpdateWithRatio);
-TypedTxFactory.add(TypedTxFeeDelegatedCancelWithRatio);
-TypedTxFactory.add(TypedTxFeeDelegatedChainDataAnchoringWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedValueTransferWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedValueTransferMemoWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedSmartContractDeployWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedSmartContractExecutionWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedAccountUpdateWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedCancelWithRatio);
+TypedTxFactory.add(TxTypeFeeDelegatedChainDataAnchoringWithRatio);
 
 import {
   TypedAccountKeyLegacy,
