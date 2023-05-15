@@ -3,8 +3,8 @@ const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/s
 
 // create new account for testing 
 // https://baobab.wallet.klaytn.foundation/ 
-const privateKey1 = '0xb9e5d87f61cad44cb76f312e75a1456b3188606a528b4deb8f45374bb0b466a1' // private key of sender 
-const account1 = '0x6789d636da0b190ddabb398d742d61632aea1518' // sender address 
+const sender_priv = '0xb9e5d87f61cad44cb76f312e75a1456b3188606a528b4deb8f45374bb0b466a1' 
+const sender = '0x6789d636da0b190ddabb398d742d61632aea1518' 
 
 //
 // TxTypeAccountUpdate
@@ -17,11 +17,11 @@ const account1 = '0x6789d636da0b190ddabb398d742d61632aea1518' // sender address
 // 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
-  const wallet = new KlaytnWallet(privateKey1, provider);
+  const wallet = new KlaytnWallet(sender_priv, provider);
 
   let tx = {
         type: 0x20,
-        from: account1,
+        from: sender,
         key: {
             type: 0x02, 
             // private key 0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b
