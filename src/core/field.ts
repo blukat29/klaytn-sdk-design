@@ -109,7 +109,10 @@ export const FieldTypeSignatureTuples = new class implements FieldType {
 }
 
 export const FieldTypeBool = new class implements FieldType {
-  canonicalize(value: boolean): string {
+  canonicalize(value: any): string {
+    if (value === "0x01" || value === "0x") {
+      return value; 
+    }
     return value? "0x01" : "0x" ;
   }
   emptyValue(): string { return "0x" };

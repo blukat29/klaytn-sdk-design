@@ -70,7 +70,7 @@ classDiagram
     emptyValue(): SignatureTuple[]
   }
   class FieldTypeBool {
-    canonicalize(boolean): string
+    canonicalize(any): string
     emptyValue(): string
   }
   class FieldTypeAccountKey {
@@ -84,10 +84,11 @@ classDiagram
   FieldSet <|-- KlaytnTx
   KlaytnTx <|-- TxTypeValueTransfer
   KlaytnTx <|-- TxTypeFeeDelegatedValueTransfer
-  KlaytnTx <|-- other TxTypes
+  KlaytnTx <|-- etc.
   FieldSet <|-- AccountKey
   AccountKey <|-- AccountKeyLegacy
   AccountKey <|-- AccountKeyPublic
+  AccountKey <|-- etc.
   class FieldSet {
     type: number
     typeName: string
