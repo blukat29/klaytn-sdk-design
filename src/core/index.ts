@@ -31,7 +31,7 @@ import {
   TxTypeFeeDelegatedSmartContractExecution,
   TxTypeFeeDelegatedAccountUpdate,
   TxTypeFeeDelegatedCancel, 
-  TypedTxFeeDelegatedChainDataAnchoring,
+  TxTypeFeeDelegatedChainDataAnchoring,
 } from "./klaytn_tx_feeDelegation";
 
 TypedTxFactory.add(TxTypeFeeDelegatedValueTransfer);
@@ -40,7 +40,7 @@ TypedTxFactory.add(TxTypeFeeDelegatedSmartContractDeploy);
 TypedTxFactory.add(TxTypeFeeDelegatedSmartContractExecution);
 TypedTxFactory.add(TxTypeFeeDelegatedAccountUpdate);
 TypedTxFactory.add(TxTypeFeeDelegatedCancel);
-TypedTxFactory.add(TypedTxFeeDelegatedChainDataAnchoring);
+TypedTxFactory.add(TxTypeFeeDelegatedChainDataAnchoring);
 
 // Partial Fee Delegation TX
 import {
