@@ -8,7 +8,7 @@ import {
   FieldTypeUint64,
   FieldTypeUint256, 
   FieldTypeBytes} from "./field";
-import { KlaytnTx } from "./klaytn_tx";
+import { KlaytnTx } from "./tx";
 import _ from "lodash";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer

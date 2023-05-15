@@ -1,9 +1,9 @@
 import _ from "lodash";
-import { TypedFields, TypedFieldsFactory } from "./field"
+import { FieldSet, FieldSetFactory } from "./field"
 import { SignatureLike, getSignatureTuple } from "./sig";
 import { HexStr } from "./util";
 
-export abstract class KlaytnTx extends TypedFields {
+export abstract class KlaytnTx extends FieldSet {
 
   ////////////////////////////////////////////////////////////
   // Child classes MUST override below properties and methods
@@ -53,7 +53,7 @@ export abstract class KlaytnTx extends TypedFields {
   ////////////////////////////////////////////////////////////
 }
 
-class _TypedTxFactory extends TypedFieldsFactory<KlaytnTx> {
+class _KlaytnTxFactory extends FieldSetFactory<KlaytnTx> {
   public fromRLP(value: string): KlaytnTx {
     if (!HexStr.isHex(value)) {
       throw new Error(`Not an RLP encoded string`);
@@ -73,10 +73,10 @@ class _TypedTxFactory extends TypedFieldsFactory<KlaytnTx> {
 }
 
 const requiredFields = ['type', 'chainId', 'txSignatures'];
-export const TypedTxFactory = new _TypedTxFactory(
+export const KlaytnTxFactory = new _KlaytnTxFactory(
   requiredFields,
 );
 
 export function objectFromRLP(value: string): any {
-  return TypedTxFactory.fromRLP( value ).toObject();
+  return KlaytnTxFactory.fromRLP( value ).toObject();
 }

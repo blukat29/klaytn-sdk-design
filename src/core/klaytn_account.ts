@@ -1,8 +1,8 @@
-import { TypedAccountKey } from "./account";
+import { AccountKey } from "./account";
 import { FieldTypeUint8, FieldTypeCompressedPubKey } from "./field";
 import { HexStr, RLP } from "./util";
 
-export class TypedAccountKeyLegacy extends TypedAccountKey {
+export class TypedAccountKeyLegacy extends AccountKey {
   static type = 0x01;
   static typeName = "AccountKeyLegacy";
   static fieldTypes = {
@@ -14,7 +14,7 @@ export class TypedAccountKeyLegacy extends TypedAccountKey {
   }
 }
 
-export class TypedAccountKeyPublic extends TypedAccountKey {
+export class TypedAccountKeyPublic extends AccountKey {
   static type = 0x02;
   static typeName = "AccountKeyPublic";
   static fieldTypes = {

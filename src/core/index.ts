@@ -1,8 +1,8 @@
-export { KlaytnTx, TypedTxFactory } from "./klaytn_tx";
-export { TypedAccountKey, TypedAccountKeyFactory } from "./account";
+export { KlaytnTx, KlaytnTxFactory as TypedTxFactory } from "./tx";
+export { AccountKey as TypedAccountKey, AccountKeyFactory as TypedAccountKeyFactory } from "./account";
 
 
-import { TypedTxFactory } from "./klaytn_tx";
+import { KlaytnTxFactory } from "./tx";
 
 // Basic TX 
 import {
@@ -15,13 +15,13 @@ import {
   TxTypeChainDataAnchoring,
 } from "./klaytn_tx_basic";
 
-TypedTxFactory.add(TxTypeValueTransfer);
-TypedTxFactory.add(TxTypeValueTransferMemo);
-TypedTxFactory.add(TxTypeSmartContractDeploy);
-TypedTxFactory.add(TxTypeSmartContractExecution);
-TypedTxFactory.add(TxTypeAccountUpdate);
-TypedTxFactory.add(TxTypeCancel);
-TypedTxFactory.add(TxTypeChainDataAnchoring);
+KlaytnTxFactory.add(TxTypeValueTransfer);
+KlaytnTxFactory.add(TxTypeValueTransferMemo);
+KlaytnTxFactory.add(TxTypeSmartContractDeploy);
+KlaytnTxFactory.add(TxTypeSmartContractExecution);
+KlaytnTxFactory.add(TxTypeAccountUpdate);
+KlaytnTxFactory.add(TxTypeCancel);
+KlaytnTxFactory.add(TxTypeChainDataAnchoring);
 
 // Fee Delegation TX
 import {
@@ -34,13 +34,13 @@ import {
   TxTypeFeeDelegatedChainDataAnchoring,
 } from "./klaytn_tx_feeDelegation";
 
-TypedTxFactory.add(TxTypeFeeDelegatedValueTransfer);
-TypedTxFactory.add(TxTypeFeeDelegatedValueTransferMemo);
-TypedTxFactory.add(TxTypeFeeDelegatedSmartContractDeploy);
-TypedTxFactory.add(TxTypeFeeDelegatedSmartContractExecution);
-TypedTxFactory.add(TxTypeFeeDelegatedAccountUpdate);
-TypedTxFactory.add(TxTypeFeeDelegatedCancel);
-TypedTxFactory.add(TxTypeFeeDelegatedChainDataAnchoring);
+KlaytnTxFactory.add(TxTypeFeeDelegatedValueTransfer);
+KlaytnTxFactory.add(TxTypeFeeDelegatedValueTransferMemo);
+KlaytnTxFactory.add(TxTypeFeeDelegatedSmartContractDeploy);
+KlaytnTxFactory.add(TxTypeFeeDelegatedSmartContractExecution);
+KlaytnTxFactory.add(TxTypeFeeDelegatedAccountUpdate);
+KlaytnTxFactory.add(TxTypeFeeDelegatedCancel);
+KlaytnTxFactory.add(TxTypeFeeDelegatedChainDataAnchoring);
 
 // Partial Fee Delegation TX
 import {
@@ -53,19 +53,19 @@ import {
   TxTypeFeeDelegatedChainDataAnchoringWithRatio,
 } from "./klaytn_tx_partialFeeDelegation";
 
-TypedTxFactory.add(TxTypeFeeDelegatedValueTransferWithRatio);
-TypedTxFactory.add(TxTypeFeeDelegatedValueTransferMemoWithRatio);
-TypedTxFactory.add(TxTypeFeeDelegatedSmartContractDeployWithRatio);
-TypedTxFactory.add(TxTypeFeeDelegatedSmartContractExecutionWithRatio);
-TypedTxFactory.add(TxTypeFeeDelegatedAccountUpdateWithRatio);
-TypedTxFactory.add(TxTypeFeeDelegatedCancelWithRatio);
-TypedTxFactory.add(TxTypeFeeDelegatedChainDataAnchoringWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedValueTransferWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedValueTransferMemoWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedSmartContractDeployWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedSmartContractExecutionWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedAccountUpdateWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedCancelWithRatio);
+KlaytnTxFactory.add(TxTypeFeeDelegatedChainDataAnchoringWithRatio);
 
 import {
   TypedAccountKeyLegacy,
   TypedAccountKeyPublic,
 } from "./klaytn_account";
 
-import { TypedAccountKeyFactory } from "./account";
-TypedAccountKeyFactory.add(TypedAccountKeyLegacy);
-TypedAccountKeyFactory.add(TypedAccountKeyPublic);
+import { AccountKeyFactory } from "./account";
+AccountKeyFactory.add(TypedAccountKeyLegacy);
+AccountKeyFactory.add(TypedAccountKeyPublic);

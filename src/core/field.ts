@@ -109,7 +109,7 @@ export const FieldTypeBool = new class implements FieldType {
   }
   emptyValue(): string { return "0x" };
 }
-export abstract class TypedFields {
+export abstract class FieldSet {
 
   ////////////////////////////////////////////////////////////
   // Child classes MUST override below properties and methods
@@ -141,8 +141,8 @@ export abstract class TypedFields {
   }
 
   // A workaround to read child class's static members.
-  private get _static(): typeof TypedFields {
-    return this.constructor as typeof TypedFields;
+  private get _static(): typeof FieldSet {
+    return this.constructor as typeof FieldSet;
   }
 
   // Fields accessors
@@ -188,21 +188,21 @@ export abstract class TypedFields {
 }
 
 // Instantiable child class of TypedFields
-export interface ConcreteTypedFields<T extends TypedFields> {
+export interface ConcreteFieldSet<T extends FieldSet> {
   type: number;
   fieldTypes: FieldTypes;
   new (): T;
 }
 
-export class TypedFieldsFactory<T extends TypedFields> {
-  private registry: { [type: number]: ConcreteTypedFields<T> } = {};
+export class FieldSetFactory<T extends FieldSet> {
+  private registry: { [type: number]: ConcreteFieldSet<T> } = {};
   private requiredFields: string[];
 
   constructor(requiredFields?: string[]) {
     this.requiredFields = requiredFields || [];
   }
 
-  public add(cls: ConcreteTypedFields<T>) {
+  public add(cls: ConcreteFieldSet<T>) {
     const type = cls.type;
     const fieldTypes = cls.fieldTypes;
 
@@ -232,7 +232,7 @@ export class TypedFieldsFactory<T extends TypedFields> {
     return !!type && !!this.registry[type];
   }
 
-  public lookup(type?: any): ConcreteTypedFields<T> {
+  public lookup(type?: any): ConcreteFieldSet<T> {
     if (!type || !this.has(type))
       throw new Error(`Unsupported type '${type}'`);
     
