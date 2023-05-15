@@ -30,7 +30,12 @@ export interface Fields {
 // Accepted types: hex string of an address
 // Canonical type: hex string of checksumed address
 export const FieldTypeAddress = new class implements FieldType {
-  canonicalize(value: any): string { return getAddress(value); }
+  canonicalize(value: any): string { 
+    if (value === "0x") {
+      return "0x0000000000000000000000000000000000000000"
+    }
+    return getAddress(value); 
+  }
   emptyValue(): string { return "0x"; }
 }
 
