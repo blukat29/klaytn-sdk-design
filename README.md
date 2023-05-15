@@ -70,12 +70,11 @@ classDiagram
   FieldSet <|-- KlaytnTx
   KlaytnTx <|-- TxTypeValueTransfer
   KlaytnTx <|-- TxTypeFeeDelegatedValueTransfer
-  KlaytnTx <|-- etc
+  KlaytnTx <|-- other TxTypes
   FieldSet <|-- AccountKey
   AccountKey <|-- AccountKeyLegacy
   AccountKey <|-- AccountKeyPublic
-  AccountKey <|-- AccountKeyWeightedMultiSig
-  AccountKey <|-- etc
+  AccountKey <|-- other AccountKeys
   class FieldSet {
     type: number
     typeName: string
