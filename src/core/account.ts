@@ -17,11 +17,14 @@ export const TypedAccountKeyFactory = new TypedFieldsFactory<TypedAccountKey>(
   requiredFields,
 );
 
-// Accepted types: TypedAccountKey, plain object, serialized bytes
+
+// Accepted types: TypedAccountKey, string, plain object, serialized bytes
 export const FieldTypeAccountKey = new class implements FieldType {
-  canonicalize(value: TypedAccountKey | any): string {
+  canonicalize(value: TypedAccountKey | string | any): string {
     if (value instanceof TypedAccountKey) {
       return value.toRLP();
+    } else if (typeof(value) == 'string') {
+      return value;
     } else {
       return TypedAccountKeyFactory.fromObject(value).toRLP();
     }

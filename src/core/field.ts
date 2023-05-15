@@ -27,17 +27,17 @@ export interface Fields {
   [name: string]: any;
 }
 
-// Accepted types: hex string, byte array
-// Canonical type: hex string
-export const FieldTypeBytes = new class implements FieldType {
-  canonicalize(value: any): string { return HexStr.from(value); }
-  emptyValue(): string { return "0x"; }
-}
-
 // Accepted types: hex string of an address
 // Canonical type: hex string of checksumed address
 export const FieldTypeAddress = new class implements FieldType {
   canonicalize(value: any): string { return getAddress(value); }
+  emptyValue(): string { return "0x"; }
+}
+
+// Accepted types: hex string, byte array
+// Canonical type: hex string
+export const FieldTypeBytes = new class implements FieldType {
+  canonicalize(value: any): string { return HexStr.from(value); }
   emptyValue(): string { return "0x"; }
 }
 
@@ -71,7 +71,7 @@ export class FieldTypeNumberBits implements FieldType {
   }
   canonicalize(value: any): string {
     if (value == 0) {
-      return "0x";
+      return "0x00";
     }
 
     const bn = BigNumber.from(value);

@@ -75,6 +75,7 @@ classDiagram
   }
   class FieldTypeAccountKey {
     canonicalize(TypedAccountKey | string | any): string
+    emptyValue(): string
   }
 ```
 
@@ -84,6 +85,8 @@ classDiagram
   TypedTx <|-- TypedTxValueTransfer
   TypedTx <|-- other TypedTxs
   TypedFields <|-- TypedAccountKey
+  TypedAccountKey <|-- TypedAccountKeyLegacy
+  TypedAccountKey <|-- TypedAccountKeyPublic
   class TypedFields {
     type: number
     typeName: string
@@ -106,7 +109,9 @@ classDiagram
   class TypedAccountKey {
     toRLP(): string
   }
+```
 
+```mermaid  
   TypedFieldsFactory <|.. TypedTxFactory
   TypedFieldsFactory <|.. TypedAccountKeyFactory
   class TypedFieldsFactory {
