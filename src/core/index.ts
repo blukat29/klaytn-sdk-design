@@ -1,4 +1,4 @@
-export { TypedTx, TypedTxFactory } from "./tx";
+export { KlaytnTx, TypedTxFactory } from "./tx";
 export { TypedAccountKey, TypedAccountKeyFactory } from "./account";
 
 

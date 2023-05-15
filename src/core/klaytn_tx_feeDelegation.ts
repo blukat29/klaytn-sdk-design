@@ -8,11 +8,11 @@ import {
   FieldTypeUint64,
   FieldTypeUint256, 
   FieldTypeBytes} from "./field";
-import { TypedTx } from "./tx";
+import { KlaytnTx } from "./tx";
 import _ from "lodash";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfer
-export class TypedTxFeeDelegatedValueTransfer extends TypedTx {
+export class TypedTxFeeDelegatedValueTransfer extends KlaytnTx {
   static type = 0x9;
   static typeName = "TxTypeFeeDelegatedValueTransfer";
   static fieldTypes = {
@@ -83,7 +83,7 @@ export class TypedTxFeeDelegatedValueTransfer extends TypedTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfermemo
-export class TypedTxFeeDelegatedValueTransferMemo extends TypedTx {
+export class TypedTxFeeDelegatedValueTransferMemo extends KlaytnTx {
   static type = 0x11;
   static typeName = "TxTypeFeeDelegatedValueTransferMemo";
   static fieldTypes = {
@@ -155,7 +155,7 @@ export class TypedTxFeeDelegatedValueTransferMemo extends TypedTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedsmartcontractdeploy
-export class TypedTxFeeDelegatedSmartContractDeploy extends TypedTx {
+export class TypedTxFeeDelegatedSmartContractDeploy extends KlaytnTx {
   static type = 0x29;
   static typeName = "TxTypeFeeDelegatedSmartContractDeploy";
   static fieldTypes = {
@@ -237,7 +237,7 @@ export class TypedTxFeeDelegatedSmartContractDeploy extends TypedTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedsmartcontractexecution
-export class TypedTxFeeDelegatedSmartContractExecution extends TypedTx {
+export class TypedTxFeeDelegatedSmartContractExecution extends KlaytnTx {
   static type = 0x31;
   static typeName = "TxTypeFeeDelegatedSmartContractExecution";
   static fieldTypes = {
@@ -310,7 +310,7 @@ export class TypedTxFeeDelegatedSmartContractExecution extends TypedTx {
 
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedaccountupdate
-export class TypedTxFeeDelegatedAccountUpdate extends TypedTx {
+export class TypedTxFeeDelegatedAccountUpdate extends KlaytnTx {
   static type = 0x21;
   static typeName = "TxTypeFeeDelegatedAccountUpdate";
   static fieldTypes = {
@@ -380,7 +380,7 @@ export class TypedTxFeeDelegatedAccountUpdate extends TypedTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedcancel
-export class TypedTxFeeDelegatedCancel extends TypedTx {
+export class TypedTxFeeDelegatedCancel extends KlaytnTx {
   static type = 0x39;
   static typeName = "TxTypeFeeDelegatedCancel";
   static fieldTypes = {
@@ -449,7 +449,7 @@ export class TypedTxFeeDelegatedCancel extends TypedTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedchaindataanchoring
-export class TypedTxFeeDelegatedChainDataAnchoring extends TypedTx {
+export class TypedTxFeeDelegatedChainDataAnchoring extends KlaytnTx {
   static type = 0x49;
   static typeName = "TxTypeFeeDelegatedChainDataAnchoring";
   static fieldTypes = {

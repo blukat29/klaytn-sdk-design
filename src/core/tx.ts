@@ -3,7 +3,7 @@ import { TypedFields, TypedFieldsFactory } from "./field"
 import { SignatureLike, getSignatureTuple } from "./sig";
 import { HexStr } from "./util";
 
-export abstract class TypedTx extends TypedFields {
+export abstract class KlaytnTx extends TypedFields {
 
   ////////////////////////////////////////////////////////////
   // Child classes MUST override below properties and methods
@@ -53,8 +53,8 @@ export abstract class TypedTx extends TypedFields {
   ////////////////////////////////////////////////////////////
 }
 
-class _TypedTxFactory extends TypedFieldsFactory<TypedTx> {
-  public fromRLP(value: string): TypedTx {
+class _TypedTxFactory extends TypedFieldsFactory<KlaytnTx> {
+  public fromRLP(value: string): KlaytnTx {
     if (!HexStr.isHex(value)) {
       throw new Error(`Not an RLP encoded string`);
     }
