@@ -449,7 +449,7 @@ export class TxTypeFeeDelegatedCancel extends KlaytnTx {
 }
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedchaindataanchoring
-export class TypedTxFeeDelegatedChainDataAnchoring extends KlaytnTx {
+export class TxTypeFeeDelegatedChainDataAnchoring extends KlaytnTx {
   static type = 0x49;
   static typeName = "TxTypeFeeDelegatedChainDataAnchoring";
   static fieldTypes = {
