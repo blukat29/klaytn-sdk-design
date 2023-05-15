@@ -39,12 +39,7 @@ node example/klaytn_tx_ethers.js
 classDiagram
   TypedFields <|-- TypedTx
   TypedTx <|-- TypedTxValueTransfer
-  TypedTx <|-- TypedTxValueTransferMemo
-  TypedTx <|-- TypedTxSmartContractDeploy
-  TypedTx <|-- TypedTxSmartContractExecution
-  TypedTx <|-- TypedTxAccountUpdate
-  TypedTx <|-- TypedTxCancel
-  TypedTx <|-- ...
+  TypedTx <|-- other TypedTxs
   TypedFields <|-- TypedAccountKey
   class TypedFields {
     type: number
