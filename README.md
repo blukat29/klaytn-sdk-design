@@ -38,6 +38,13 @@ node example/klaytn_tx_ethers.js
 ```mermaid
 classDiagram
   TypedFields <|-- TypedTx
+  TypedTx <|-- TypedTxValueTransfer
+  TypedTx <|-- TypedTxValueTransferMemo
+  TypedTx <|-- TypedTxSmartContractDeploy
+  TypedTx <|-- TypedTxSmartContractExecution
+  TypedTx <|-- TypedTxAccountUpdate
+  TypedTx <|-- TypedTxCancel
+  TypedTx <|-- ...
   TypedFields <|-- TypedAccountKey
   class TypedFields {
     type: number
@@ -73,7 +80,7 @@ classDiagram
     fromObject(any): T
   }
   class TypedTxFactory {
-    fromRLP(any): TypedTx
+    fromRLP(string): TypedTx
   }
   class TypedAccountKeyFactory {
     canonicalize(TypedAccountKey | any): string 
