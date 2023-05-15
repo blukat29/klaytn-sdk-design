@@ -81,13 +81,14 @@ classDiagram
 
 ```mermaid  
 classDiagram
-  TypedFields <|-- TypedTx
-  TypedTx <|-- TypedTxValueTransfer
-  TypedTx <|-- other TypedTxs
-  TypedFields <|-- TypedAccountKey
-  TypedAccountKey <|-- TypedAccountKeyLegacy
-  TypedAccountKey <|-- TypedAccountKeyPublic
-  class TypedFields {
+  FieldSet <|-- KlaytnTx
+  KlaytnTx <|-- TxTypeValueTransfer
+  KlaytnTx <|-- TxTypeFeeDelegatedValueTransfer
+  KlaytnTx <|-- other TxTypes
+  FieldSet <|-- AccountKey
+  AccountKey <|-- AccountKeyLegacy
+  AccountKey <|-- AccountKeyPublic
+  class FieldSet {
     type: number
     typeName: string
     fieldTypes: string -> FieldType
@@ -97,7 +98,7 @@ classDiagram
     getFields( string[] ): any[]
     toObject(): any
   }
-  class TypedTx {
+  class KlaytnTx {
     sigRLP(): string
     sigFeePayerRLP(): string
     senderTxHashRLP(): string
@@ -106,28 +107,28 @@ classDiagram
     addFeePayerSig(sig)
     setFieldsFromRLP(string): void
   }
-  class TypedAccountKey {
+  class AccountKey {
     toRLP(): string
   }
 ```
 
 ```mermaid  
 classDiagram
-  TypedFieldsFactory <|.. TypedTxFactory
-  TypedFieldsFactory <|.. TypedAccountKeyFactory
-  class TypedFieldsFactory {
-    private registry: [number] -> TypedFields
+  FieldSetFactory <|.. KlaytnTxFactory
+  FieldSetFactory <|.. AccountKeyFactory
+  class FieldSetFactory {
+    private registry: [number] -> FieldSet
     private requiredFields: string[]
     add(typeof T)
     has(type?): boolean
     lookup(type?): typeof T
     fromObject(any): T
   }
-  class TypedTxFactory {
-    fromRLP(string): TypedTx
+  class KlaytnTxFactory {
+    fromRLP(string): KlaytnTx
   }
-  class TypedAccountKeyFactory {
-    canonicalize(TypedAccountKey | string | any): string 
+  class AccountKeyFactory {
+    canonicalize(AccountKey | string | any): string 
     emptyValue(): string
   }
 ```
