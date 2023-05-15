@@ -55,7 +55,10 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
 // Wallet.populateTransaction = function() {
 // };
 
+const feeDelegations: Array<number> = [0x09, 0x11, 0x21, 0x29, 0x31, 0x39, 0x49 ];
+
 export class KlaytnWallet extends Wallet {
+
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
 
     const savedFields = saveCustomFields(transaction);
@@ -117,9 +120,9 @@ export class KlaytnWallet extends Wallet {
     }
     ttx.addSenderSig(sig);
 
-    // fee deleation
-    if (tx.type == 0x9 ) 
+    if ( !!tx.type && feeDelegations.includes(typeof(tx.type)=='string' ? HexStr.toNumber(tx.type) : tx.type) ) {
       return ttx.senderTxHashRLP()
+    }
 
     return ttx.txHashRLP();
   }
@@ -127,7 +130,7 @@ export class KlaytnWallet extends Wallet {
   async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest> ): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
-    if (tx.type != 0x9) {
+    if ( !!tx.type && !feeDelegations.includes(typeof(tx.type)=='string' ? HexStr.toNumber(tx.type) : tx.type) ) {
       throw new Error(`This typed transaction can not be signed as FeePayer`);
     }
 
