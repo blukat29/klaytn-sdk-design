@@ -37,17 +37,16 @@ node example/klaytn_tx_ethers.js
 
 ```mermaid
 classDiagram
+  FieldType ..|> FieldTypeAddress
+  FieldType ..|> FieldTypeBytes
+  FieldType ..|> FieldTypeSignatureTuples
+  FieldType ..|> FieldTypeAccountKey
+  FieldType ..|> etc
   class FieldType {
     <<interface>> 
     canonicalize(any): any
     emptyValue(): any
   }
-  FieldType ..|> FieldTypeAddress
-  FieldType ..|> FieldTypeBytes
-  FieldType ..|> FieldTypeNumberBits
-  FieldType ..|> FieldTypeSignatureTuples
-  FieldType ..|> FieldTypeAccountKey
-  FieldType ..|> etc
   class FieldTypeAddress {
     canonicalize(any): string
     emptyValue(): string
@@ -56,21 +55,9 @@ classDiagram
     canonicalize(any): string
     emptyValue(): string
   }
-  class FieldTypeBytesFixedLen {
-    canonicalize(any): string
-    emptyValue(): string
-  }
-  class FieldTypeNumberBits {
-    canonicalize(any): string
-    emptyValue(): string
-  }
   class FieldTypeSignatureTuples {
     canonicalize( SignatureLike[]): SignatureTuple[]
     emptyValue(): SignatureTuple[]
-  }
-  class FieldTypeBool {
-    canonicalize(any): string
-    emptyValue(): string
   }
   class FieldTypeAccountKey {
     canonicalize(TypedAccountKey | string | any): string
@@ -87,8 +74,8 @@ classDiagram
   FieldSet <|-- AccountKey
   AccountKey <|-- AccountKeyLegacy
   AccountKey <|-- AccountKeyPublic
-  AccountKey <|-- ccountKeyWeightedMultiSig
-  AccountKey <|-- AccountKeyRoleBased
+  AccountKey <|-- AccountKeyWeightedMultiSig
+  AccountKey <|-- etc
   class FieldSet {
     type: number
     typeName: string
