@@ -56,6 +56,7 @@ classDiagram
     txHashRLP(): string
     addSenderSig(sig)
     addFeePayerSig(sig)
+    setFieldsFromRLP(string): void
   }
   class TypedAccountKey {
     toRLP(): string
