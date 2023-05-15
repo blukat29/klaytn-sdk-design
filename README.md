@@ -37,7 +37,6 @@ node example/klaytn_tx_ethers.js
 
 ```mermaid
 classDiagram
-  FieldType ..|> FieldTypeAddress
   FieldType ..|> FieldTypeBytes
   FieldType ..|> FieldTypeSignatureTuples
   FieldType ..|> FieldTypeAccountKey
@@ -46,10 +45,6 @@ classDiagram
     <<interface>> 
     canonicalize(any): any
     emptyValue(): any
-  }
-  class FieldTypeAddress {
-    canonicalize(any): string
-    emptyValue(): string
   }
   class FieldTypeBytes {
     canonicalize(any): string

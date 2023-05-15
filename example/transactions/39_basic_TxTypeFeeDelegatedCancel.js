@@ -21,6 +21,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // 1) send ValueTransfer tx with the original nonce+1  
 // 2) send Cancel tx with the original nonce+1 
 // 3) send ValueTransfer tx with the original nonce 
+//    then you can see Cancel tx with the original nonce+1 
 // 
 
 async function doSender( popTx ) {

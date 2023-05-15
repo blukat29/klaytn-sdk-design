@@ -16,6 +16,7 @@ const reciever = '0xc40b6909eb7085590e1c26cb3becc25368e249e9'
 // 1) send ValueTransfer tx with the original nonce+1  
 // 2) send Cancel tx with the original nonce+1 
 // 3) send ValueTransfer tx with the original nonce 
+//    then you can see Cancel tx with the original nonce+1 
 // 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
