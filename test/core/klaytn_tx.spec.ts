@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { TypedTxFactory } from "../../src/core";
+import { KlaytnTxFactory } from "../../src/core";
 
 // Non-canonical types, as user-supplied values.
 const nonce = 1234;
@@ -37,12 +37,12 @@ describe("TypedTxFactory", () => {
   // Generate mocha tests from test cases
   for (const tc of txTestCases) {
     it(tc.name, () => {
-      let tx = TypedTxFactory.fromObject(tc.obj);
+      let tx = KlaytnTxFactory.fromObject(tc.obj);
       assert.equal(tx.getField(tc.name), tc.name);
       assert.equal(tx.sigRLP(), tc.sigRLP);
       assert.equal(tx.txHashRLP(), tc.txRLP);
 
-      tx = TypedTxFactory.fromRLP(tc.txRLP);
+      tx = KlaytnTxFactory.fromRLP(tc.txRLP);
       assert.equal(tx.txHashRLP(), tc.txRLP);
     });
   }

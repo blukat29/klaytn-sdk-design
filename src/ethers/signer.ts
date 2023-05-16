@@ -1,6 +1,6 @@
 import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { TypedTxFactory } from "../core";
+import { KlaytnTxFactory } from "../core";
 import { SignatureLike } from "../core/sig";
 import { HexStr } from "../core/util";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
@@ -32,7 +32,7 @@ function saveCustomFields(tx: Deferrable<TransactionRequest>): any {
   // Signer.populateTransaction() will not fill gasPrice
   // unless tx type is explicitly Legacy (type=0) or EIP-2930 (type=1).
   // Klaytn tx types, however, always uses gasPrice.
-  if (_.isNumber(tx.type) && TypedTxFactory.has(tx.type)) {
+  if (_.isNumber(tx.type) && KlaytnTxFactory.has(tx.type)) {
     savedFields['type'] = tx.type;
     tx.type = 0;
   }
@@ -55,8 +55,6 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
 // Wallet.populateTransaction = function() {
 // };
 
-const feeDelegations: Array<number> = [0x09, 0x11, 0x21, 0x29, 0x31, 0x39, 0x49 ];
-
 export class KlaytnWallet extends Wallet {
 
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
@@ -71,7 +69,7 @@ export class KlaytnWallet extends Wallet {
   async populateTransaction(transaction: Deferrable<TransactionRequest>): Promise<TransactionRequest> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
-    if (!TypedTxFactory.has(tx.type)) {
+    if (!KlaytnTxFactory.has(tx.type)) {
       return super.populateTransaction(tx);
     }
 
@@ -107,11 +105,11 @@ export class KlaytnWallet extends Wallet {
   async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
-    if (!TypedTxFactory.has(tx.type)) {
+    if (!KlaytnTxFactory.has(tx.type)) {
       return super.signTransaction(tx);
     }
 
-    const ttx = TypedTxFactory.fromObject(tx);
+    const ttx = KlaytnTxFactory.fromObject(tx);
     const sigHash = keccak256(ttx.sigRLP());
     const sig = this._signingKey().signDigest(sigHash);
 
@@ -120,21 +118,20 @@ export class KlaytnWallet extends Wallet {
     }
     ttx.addSenderSig(sig);
 
-    if ( !!tx.type && feeDelegations.includes(typeof(tx.type)=='string' ? HexStr.toNumber(tx.type) : tx.type) ) {
+    if ( ttx.isFeePayer() ) {
       return ttx.senderTxHashRLP()
     }
-
     return ttx.txHashRLP();
   }
 
   async signTransactionAsFeePayer(transaction: Deferrable<TransactionRequest> ): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
-    if ( !!tx.type && !feeDelegations.includes(typeof(tx.type)=='string' ? HexStr.toNumber(tx.type) : tx.type) ) {
-      throw new Error(`This typed transaction can not be signed as FeePayer`);
+    const ttx = KlaytnTxFactory.fromObject(tx);
+    if ( !ttx.isFeePayer() ) {
+      throw new Error(`This transaction can not be signed as FeePayer`);
     }
 
-    const ttx = TypedTxFactory.fromObject(tx);
     const sigFeePayerHash = keccak256(ttx.sigFeePayerRLP());
     const sig = this._signingKey().signDigest(sigFeePayerHash);
 
@@ -151,7 +148,25 @@ export class KlaytnWallet extends Wallet {
     const tx = await this.populateTransaction(transaction);
     const signedTx = await this.signTransaction(tx);
 
-    if (!TypedTxFactory.has(tx.type)) {
+    if (!KlaytnTxFactory.has(tx.type)) {
+      return await this.provider.sendTransaction(signedTx);
+    }
+
+    if (this.provider instanceof JsonRpcProvider) {
+      // eth_sendRawTransaction cannot process Klaytn typed transactions.
+      const txhash = await this.provider.send("klay_sendRawTransaction", [signedTx]);
+      return await this.provider.getTransaction(txhash);
+    } else {
+      throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
+    }
+  }
+
+  async sendTransactionAsFeePayer(transaction: Deferrable<TransactionRequest>): Promise<TransactionResponse> {
+    this._checkProvider("sendTransactionAsFeePayer");
+    const tx = await this.populateTransaction(transaction);
+    const signedTx = await this.signTransactionAsFeePayer(tx);
+
+    if (!KlaytnTxFactory.has(tx.type)) {
       return await this.provider.sendTransaction(signedTx);
     }
 

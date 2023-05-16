@@ -47,7 +47,20 @@ export abstract class KlaytnTx extends FieldSet {
     this.fields.feePayerSignatures.push(tuple);
   }
 
-  // TODO: Add a feepayer signature. works like addSignature.
+  public isFeePayer(): boolean {
+    const feeDelegations: Array<number> = [
+      0x09, 0x11, 0x21, 0x29, 0x31, 0x39, 0x49 ];
+    const feeDelegationsAsFeePayer: Array<number> = [
+      0x0a, 0x12, 0x22, 0x2a, 0x32, 0x3a, 0x4a ];
+
+    let fp_type = typeof(this.type)=='string' ? HexStr.toNumber(this.type) : this.type;  
+    
+    if (typeof(fp_type) == 'number') {
+      return feeDelegations.includes(fp_type) || feeDelegations.includes(fp_type); 
+    } else {
+      throw new Error('The type have to be a number');
+    }
+  }
 
   // End override
   ////////////////////////////////////////////////////////////

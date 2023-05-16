@@ -1,6 +1,8 @@
-export { KlaytnTx, KlaytnTxFactory as TypedTxFactory } from "./tx";
-export { AccountKey as TypedAccountKey, AccountKeyFactory as TypedAccountKeyFactory } from "./account";
+// export { KlaytnTx, KlaytnTxFactory as TypedTxFactory } from "./tx";
+// export { AccountKey as TypedAccountKey, AccountKeyFactory as TypedAccountKeyFactory } from "./account";
 
+export { KlaytnTx, KlaytnTxFactory } from "./tx";
+export { AccountKey, AccountKeyFactory } from "./account";
 
 import { KlaytnTxFactory } from "./tx";
 
