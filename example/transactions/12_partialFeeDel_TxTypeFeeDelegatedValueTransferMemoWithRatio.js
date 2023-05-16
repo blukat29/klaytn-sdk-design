@@ -13,10 +13,10 @@ const feePayer = '0x24e8efd18d65bcb6b3ba15a4698c0b0d69d13ff7'
 const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
 
 //
-// TxTypeFeeDelegatedValueTransferMemo
-// https://docs.klaytn.foundation/content/klaytn/design/transactions/fee-delegation#txtypefeedelegatedvaluetransfermemo
+// TxTypeFeeDelegatedValueTransferMemoWithRatio
+// https://docs.klaytn.foundation/content/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedvaluetransfermemowithratio
 // 
-//   type: Must be 0x11,
+//   type: Must be 0x12,
 //   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
 //   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
@@ -25,12 +25,13 @@ async function doSender() {
   const sender_wallet = new KlaytnWallet(sender_priv, provider);
   
   let tx = {
-      type: 0x11,         
+      type: 0x12,         
       gasLimit: 1000000000, 
       to: reciever,
       value: 1e12,
       from: sender,
       input: "0x1234567890",
+      feeRatio: 30, 
     }; 
 
   tx = await sender_wallet.populateTransaction(tx);
