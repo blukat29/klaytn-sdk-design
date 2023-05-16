@@ -9,6 +9,7 @@ import {
   FieldTypeUint256, 
   FieldTypeBytes} from "./field";
 import { KlaytnTx } from "./tx";
+import _ from "lodash";
 
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedvaluetransferwithratio
 export class TxTypeFeeDelegatedValueTransferWithRatio extends KlaytnTx {
