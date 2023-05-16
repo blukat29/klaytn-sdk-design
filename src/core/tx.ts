@@ -56,7 +56,7 @@ export abstract class KlaytnTx extends FieldSet {
     let fp_type = typeof(this.type)=='string' ? HexStr.toNumber(this.type) : this.type;  
     
     if (typeof(fp_type) == 'number') {
-      return feeDelegations.includes(fp_type) || feeDelegations.includes(fp_type); 
+      return feeDelegations.includes(fp_type) || feeDelegationsAsFeePayer.includes(fp_type); 
     } else {
       throw new Error('The type have to be a number');
     }
