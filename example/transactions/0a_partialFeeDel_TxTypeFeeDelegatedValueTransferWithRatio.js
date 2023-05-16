@@ -49,16 +49,10 @@ async function doFeePayer( senderTxHashRLP ) {
   tx.feePayer = feePayer;
   console.log(tx);
 
-  const popTx = await feePayer_wallet.populateTransaction(tx);
-  console.log('popTx', popTx);
+  const sentTx = await feePayer_wallet.sendTransactionAsFeePayer(tx);
+  console.log('sentTx', sentTx);
 
-  const txHashRLP = await feePayer_wallet.signTransactionAsFeePayer( popTx );
-  console.log('txHashRLP', txHashRLP);
-  
-  const txhash = await provider.send("klay_sendRawTransaction", [txHashRLP]);
-  console.log('txhash', txhash);
-
-  const rc = await provider.waitForTransaction(txhash);
+  const rc = await sentTx.wait();
   console.log('receipt', rc);
 }
 
