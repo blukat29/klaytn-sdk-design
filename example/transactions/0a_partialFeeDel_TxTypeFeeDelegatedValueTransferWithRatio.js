@@ -30,7 +30,7 @@ async function doSender() {
     to: reciever,
     value: 1e12,
     from: sender,
-    feeRatio: 30,
+    feeRatio: 40,
   }; 
 
   tx = await sender_wallet.populateTransaction(tx);
@@ -49,10 +49,16 @@ async function doFeePayer( senderTxHashRLP ) {
   tx.feePayer = feePayer;
   console.log(tx);
 
-  const sentTx = await feePayer_wallet.sendTransactionAsFeePayer(tx);
-  console.log('sentTx', sentTx);
+  const popTx = await feePayer_wallet.populateTransaction(tx);
+  console.log('popTx', popTx);
 
-  const rc = await sentTx.wait();
+  const txHashRLP = await feePayer_wallet.signTransactionAsFeePayer( popTx );
+  console.log('txHashRLP', txHashRLP);
+  
+  const txhash = await provider.send("klay_sendRawTransaction", [txHashRLP]);
+  console.log('txhash', txhash);
+
+  const rc = await provider.waitForTransaction(txhash);
   console.log('receipt', rc);
 }
 

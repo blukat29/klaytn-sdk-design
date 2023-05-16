@@ -24,4 +24,7 @@ export const HexStr = {
   isHex(value: any, length?: number): boolean {
     return bytes.isHexString(value, length);
   },
+  stripZeros(value: any): any {
+    return bytes.stripZeros(value);
+  }
 };
