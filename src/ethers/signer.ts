@@ -1,8 +1,7 @@
 import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { KlaytnTxFactory } from "../core";
-import { SignatureLike } from "../core/sig";
-import { HexStr } from "../core/util";
+import { RLP } from "../core/util";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
@@ -85,8 +84,18 @@ export class KlaytnWallet extends Wallet {
     if ( !(tx.gasLimit) && !!(tx.to) ) {
       if (this.provider instanceof JsonRpcProvider ) {
 
-        // TODO: Populating gasPrice, gasLimit through Klaytn RPC
-        const ttx = {"to": tx.to};         
+        // const estimateGasAllowedKeys: Array<string> = [
+        //   "from", "to", "gasLimit", "gasPrice", "value", "input" ];
+        // let ttx: any = {};
+        // for (const key in tx) {
+        //   if (estimateGasAllowedKeys.indexOf(key) != -1) {
+        //     ttx[key] = RLP.encode(_.get(tx, key));
+        //   }
+        // }
+        // console.log('ttx', ttx)
+    
+        let ttx = {"to":tx.to};
+
         const result = await this.provider.send("klay_estimateGas", [ttx]);
         tx.gasLimit = result*1.3;  // multiply 1.3 for enuough gas
         console.log('gasLimit', result)
