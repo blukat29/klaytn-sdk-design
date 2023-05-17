@@ -2,6 +2,8 @@ import _ from "lodash";
 import { FieldSet, FieldSetFactory } from "./field"
 import { SignatureLike, getSignatureTuple } from "./sig";
 import { HexStr } from "./util";
+import { Deferrable } from "ethers/lib/utils";
+import { TransactionRequest } from "@ethersproject/abstract-provider";
 
 export abstract class KlaytnTx extends FieldSet {
 
@@ -92,4 +94,22 @@ export const KlaytnTxFactory = new _KlaytnTxFactory(
 
 export function objectFromRLP(value: string): any {
   return KlaytnTxFactory.fromRLP( value ).toObject();
+}
+
+export function encodeTxForRPC( allowedKeys:string[], tx: Deferrable<TransactionRequest>): any {
+  let ttx: any = {};
+  for (const key in tx) {
+    if (allowedKeys.indexOf(key) != -1) {
+      let value = _.get(tx, key);
+
+      if ( value == 0 || value === "0x0000000000000000000000000000000000000000") {
+        value = "0x";
+      } else if ( typeof(value) == 'number' ) {
+        ttx[key] = HexStr.fromNumber(value);
+      } else {
+        ttx[key] = value;
+      }
+    }
+  }
+  return ttx;
 }

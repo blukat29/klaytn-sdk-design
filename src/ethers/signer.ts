@@ -4,6 +4,7 @@ import { KlaytnTxFactory } from "../core";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
+import { encodeTxForRPC } from "../core/klaytn_tx";
 
 // @ethersproject/abstract-signer/src.ts/index.ts:allowedTransactionKeys
 const ethersAllowedTransactionKeys: Array<string> = [
@@ -83,20 +84,12 @@ export class KlaytnWallet extends Wallet {
     if ( !(tx.gasLimit) && !!(tx.to) ) {
       if (this.provider instanceof JsonRpcProvider ) {
 
-        // const estimateGasAllowedKeys: Array<string> = [
-        //   "from", "to", "gasLimit", "gasPrice", "value", "input" ];
-        // let ttx: any = {};
-        // for (const key in tx) {
-        //   if (estimateGasAllowedKeys.indexOf(key) != -1) {
-        //     ttx[key] = RLP.encode(_.get(tx, key));
-        //   }
-        // }
-        // console.log('ttx', ttx)
-    
-        let ttx = {"to":tx.to};
+        const estimateGasAllowedKeys: string[] = [
+          "from", "to", "gasLimit", "gasPrice", "value", "input" ];
+        let ttx = encodeTxForRPC( estimateGasAllowedKeys, tx );
 
         const result = await this.provider.send("klay_estimateGas", [ttx]);
-        tx.gasLimit = result*1.3;  // multiply 1.3 for enuough gas
+        tx.gasLimit = result*2;  // multiply 2 for enuough gas
         console.log('gasLimit', result)
       } else {
         throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
