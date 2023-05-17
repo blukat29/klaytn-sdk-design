@@ -1,10 +1,7 @@
-// export { KlaytnTx, KlaytnTxFactory as TypedTxFactory } from "./tx";
-// export { AccountKey as TypedAccountKey, AccountKeyFactory as TypedAccountKeyFactory } from "./account";
-
-export { KlaytnTx, KlaytnTxFactory } from "./tx";
+export { KlaytnTx, KlaytnTxFactory } from "./klaytn_tx";
 export { AccountKey, AccountKeyFactory } from "./account";
 
-import { KlaytnTxFactory } from "./tx";
+import { KlaytnTxFactory } from "./klaytn_tx";
 
 // Basic TX 
 import {

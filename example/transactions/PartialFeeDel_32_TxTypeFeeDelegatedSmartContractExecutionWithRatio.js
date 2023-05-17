@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
-const { objectFromRLP } = require("../../dist/src/core/tx");
+const { objectFromRLP } = require("../../dist/src/core/klaytn_tx");
 
 const fs = require('fs');
 const sender_priv = fs.readFileSync('./example/privateKey', 'utf8') 

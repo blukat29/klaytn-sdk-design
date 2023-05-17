@@ -1,7 +1,6 @@
 import { Wallet } from "@ethersproject/wallet";
 import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { KlaytnTxFactory } from "../core";
-import { RLP } from "../core/util";
 import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
@@ -127,7 +126,7 @@ export class KlaytnWallet extends Wallet {
     }
     ttx.addSenderSig(sig);
 
-    if ( ttx.isFeePayer() ) {
+    if ( ttx.hasFeePayer() ) {
       return ttx.senderTxHashRLP()
     }
     return ttx.txHashRLP();
@@ -137,7 +136,7 @@ export class KlaytnWallet extends Wallet {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
     const ttx = KlaytnTxFactory.fromObject(tx);
-    if ( !ttx.isFeePayer() ) {
+    if ( !ttx.hasFeePayer() ) {
       throw new Error(`This transaction can not be signed as FeePayer`);
     }
 

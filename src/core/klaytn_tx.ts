@@ -47,7 +47,7 @@ export abstract class KlaytnTx extends FieldSet {
     this.fields.feePayerSignatures.push(tuple);
   }
 
-  public isFeePayer(): boolean {
+  public hasFeePayer(): boolean {
     const feeDelegations: Array<number> = [
       0x09, 0x11, 0x21, 0x29, 0x31, 0x39, 0x49 ];
     const feeDelegationsAsFeePayer: Array<number> = [
