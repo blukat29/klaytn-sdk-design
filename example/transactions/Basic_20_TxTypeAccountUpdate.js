@@ -3,8 +3,8 @@ const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/s
 
 // create new account for testing 
 // https://baobab.wallet.klaytn.foundation/ 
-const sender_priv = '0xb9e5d87f61cad44cb76f312e75a1456b3188606a528b4deb8f45374bb0b466a1' 
-const sender = '0x6789d636da0b190ddabb398d742d61632aea1518' 
+const sender_priv = '0x7cbba376b357c352f9fc08e01761d5059fe8e459e61ec6f705b094869b9bb490' 
+const sender = '0xd634b0e06dd997fb65b072063c5d619ea94d0b7c' 
 
 //
 // TxTypeAccountUpdate

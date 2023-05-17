@@ -8,8 +8,8 @@ const feePayer = '0x24e8efd18d65bcb6b3ba15a4698c0b0d69d13ff7'
 
 // create new account for testing 
 // https://baobab.wallet.klaytn.foundation/ 
-const sender_priv = '0x251441fccde61ac2e6a9fa13a7249a77441356be50998503bdaf320b4cb710d3' 
-const sender = '0xd6cde01ae3a8ef74b7eeabf22bfe26f8c5ff1534' 
+const sender_priv = '0xc8e5055957defefceff3b1ed9bbfaf691d8b9dd59d3bb5d402b7749d4efebd14' 
+const sender = '0xa780ecb6b21a43b6e48199a1b0a21aa1f0dc3316' 
 
 const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
 
@@ -19,7 +19,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // 
 //   type: Must be 0x22,
 //   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
+//   gasLimit: Must be large enough 
 // 
 
 async function doSender() {
@@ -27,7 +27,7 @@ async function doSender() {
   
   let tx = {
       type: 0x22,
-      gasLimit: 1000000000, 
+      gasLimit: 1000000000,
       from: sender,
       key: {
           type: 0x02, 

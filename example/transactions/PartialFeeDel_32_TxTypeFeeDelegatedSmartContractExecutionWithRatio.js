@@ -16,7 +16,6 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/partial-fee-delegation#txtypefeedelegatedsmartcontractexecutionwithratio
 // 
 //   type: Must be 0x32,
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 //   to : deployed contract address 
 //   value: Must be 0, if not payable
 //   input: Refer ethers.utils.interface.encodeFunctionData
@@ -43,8 +42,7 @@ async function doSender() {
   const param = contract.interface.encodeFunctionData("setNumber", ["0x123"]); 
 
   let tx = {
-      type: 0x32,
-      gasLimit: 1000000000,  
+      type: 0x32, 
       to: contract_addr,
       value: 0,  
       from: sender,

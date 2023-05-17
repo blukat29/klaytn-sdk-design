@@ -10,7 +10,6 @@ const sender = '0x3208ca99480f82bfe240ca6bc06110cd12bb6366'
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypesmartcontractdeploy
 // 
 //   type: Must be 0x28,
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 //   to:    Must be "0x0000000000000000000000000000000000000000",
 //   value: Must be 0, if not payable
 //   input: SmartContract binary, 
@@ -23,7 +22,6 @@ async function main() {
 
   tx = {
       type: 0x28,
-      gasLimit: 1000000000, 
       to:    "0x0000000000000000000000000000000000000000",
       value: 0,  
       from: sender,

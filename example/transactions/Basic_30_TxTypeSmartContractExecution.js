@@ -12,7 +12,6 @@ const contract_addr = '0xD7fA6634bDDe0B2A9d491388e2fdeD0fa25D2067'
 // https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypesmartcontractexecution
 // 
 //   type: Must be 0x30,
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 //   to : deployed contract address 
 //   value: Must be 0, if not payable
 //   input: Refer ethers.utils.interface.encodeFunctionData
@@ -40,7 +39,6 @@ async function main() {
 
   tx = {
       type: 0x30,
-      gasLimit: 1000000000,  
       to: contract_addr,
       value: 0,  
       from: sender,

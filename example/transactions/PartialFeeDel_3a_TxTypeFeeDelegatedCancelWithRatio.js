@@ -30,7 +30,6 @@ async function doSender( popTx ) {
   let tx = {
     type: 0x3a,
     nonce: popTx.nonce, 
-    gasLimit: 1000000000,
     from: sender,
     feeRatio: 30, 
   };
@@ -67,7 +66,6 @@ async function main() {
   // 1) send ValueTransfer tx with the original nonce+1
   let tx = {
       type: 8,         
-      gasLimit: 1000000000, 
       to: reciever,
       value: 1e12,
       from: sender,

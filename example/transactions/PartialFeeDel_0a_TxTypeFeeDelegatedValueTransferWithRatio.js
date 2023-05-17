@@ -18,7 +18,6 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // 
 //   type: Must be 0x0a,
 //   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
 
 async function doSender() {
@@ -26,7 +25,6 @@ async function doSender() {
   
   let tx = {
     type: 0x0a,    
-    gasLimit: 1000000000, 
     to: reciever,
     value: 1e12,
     from: sender,

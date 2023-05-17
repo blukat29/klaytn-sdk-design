@@ -18,7 +18,6 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // 
 //   type: Must be 0x11,
 //   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
-//   gasLimit: Must be fixed value, because it calls deprecated old eth_estimateGas API of Klaytn node
 // 
 
 async function doSender() {
