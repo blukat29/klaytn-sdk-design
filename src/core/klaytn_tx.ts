@@ -96,7 +96,14 @@ export function objectFromRLP(value: string): any {
   return KlaytnTxFactory.fromRLP( value ).toObject();
 }
 
-export function encodeTxForRPC( allowedKeys:string[], tx: Deferrable<TransactionRequest>): any {
+export function encodeTxForRPC( allowedKeys:string[], tx: TransactionRequest ): any {
+  // TODO: refactoring like below 
+  // https://github.com/ethers-io/ethers.js/blob/master/packages/providers/src.ts/json-rpc-provider.ts#L701
+  // return {
+  //   from: hexlify(tx.from),
+  //   gas: tx.gasLimit? fromnumber(tx.gasLimit) : null;
+  // };
+
   let ttx: any = {};
   for (const key in tx) {
     if (allowedKeys.indexOf(key) != -1) {

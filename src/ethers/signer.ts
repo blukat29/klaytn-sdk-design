@@ -103,6 +103,19 @@ export class KlaytnWallet extends Wallet {
     return tx;
   }
 
+  // TODO: refactor like below
+  // async rpc_estimateGas(tx: TransactionRequest): Promise<number> {
+  //   let allowExtra = {
+
+  //   }
+  //   let rpcTx = JsonRpcProvider.hexlifyTransaction(tx, allowExtra);
+
+  //   if (this.provider instanceof JsonRpcProvider ) {
+      
+  //   }
+  //   return 0;
+  // }
+
   async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
