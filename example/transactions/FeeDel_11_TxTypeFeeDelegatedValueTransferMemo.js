@@ -25,7 +25,6 @@ async function doSender() {
   
   let tx = {
       type: 0x11,         
-      gasLimit: 1000000000, 
       to: reciever,
       value: 1e12,
       from: sender,

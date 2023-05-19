@@ -8,8 +8,8 @@ const feePayer = '0x24e8efd18d65bcb6b3ba15a4698c0b0d69d13ff7'
 
 // create new account for testing 
 // https://baobab.wallet.klaytn.foundation/ 
-const sender_priv = '0xc8e5055957defefceff3b1ed9bbfaf691d8b9dd59d3bb5d402b7749d4efebd14' 
-const sender = '0xa780ecb6b21a43b6e48199a1b0a21aa1f0dc3316' 
+const sender_priv = '0x78197af8e2293de5357a91d5d7b6e4224168668180704cc1c7150669d7190fbc' 
+const sender = '0x0adc9d67eef6d0f02e17543386be40ed451f7667' 
 
 const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
 
@@ -27,7 +27,9 @@ async function doSender() {
   
   let tx = {
       type: 0x22,
-      gasLimit: 1000000000,
+      // gasLimit was 56000
+      // https://baobab.scope.klaytn.com/tx/0x2a9fc23547e58f67d83263e509e0dc987ada346521a95d8f48de4e023796dede?tabId=accountKeyInfo
+      gasLimit: 60000,  
       from: sender,
       key: {
           type: 0x02, 
