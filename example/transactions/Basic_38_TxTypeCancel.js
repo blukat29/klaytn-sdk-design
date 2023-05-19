@@ -21,40 +21,35 @@ const reciever = '0xc40b6909eb7085590e1c26cb3becc25368e249e9'
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
   const wallet = new KlaytnWallet(sender_priv, provider);
-   
-  // 1) send ValueTransfer tx with the original nonce+1
+
+  // 1) send ValueTransfer tx with the next nonce+1
+  let nextNonce = await wallet.getTransactionCount();
   let tx = {
-      type: 8,         
+      type: 8,    
+      nonce: nextNonce + 1,     
       to: reciever,
       value: 1e12,
       from: sender,
     }; 
-  
-  popTx = await wallet.populateTransaction(tx);
-  console.log('tx', popTx);
 
-  popTx.nonce = popTx.nonce + 1; 
-  console.log('tx with nonce + 1', popTx);
+  const nextTx = await wallet.sendTransaction(tx);
+  console.log('tx next + 1', nextTx);
 
-  const rawTx = await wallet.signTransaction(popTx);
-  console.log('rawTx', rawTx);
-
-  const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
-  console.log('txhash', txhash);
-
-  // 2) send Cancel tx with the original nonce+1 
+  // 2) send Cancel tx with the next nonce+1 
   let txCancel = {
     type: 0x38,
-    nonce: popTx.nonce, 
+    nonce: nextNonce + 1, 
     from: sender, 
   };
     
   const cancelTx = await wallet.sendTransaction(txCancel);
-  console.log('tx Cancel', cancelTx);
+  console.log('tx next + 1 Cancel', cancelTx);
 
-  // 3) send ValueTransfer tx with the original nonce
+  // 3) send ValueTransfer tx with the next nonce
+  tx.nonce = nextNonce;
+  
   const sentTx = await wallet.sendTransaction(tx);
-  console.log('tx original', sentTx);
+  console.log('tx next', sentTx);
 
   const rc = await sentTx.wait();
   console.log('receipt', rc);

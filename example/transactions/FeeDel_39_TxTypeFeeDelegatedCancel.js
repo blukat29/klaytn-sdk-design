@@ -24,19 +24,19 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 //    then you can see Cancel tx with the next nonce + 1 
 // 
 
-async function doSender( popTx ) {
+async function doSender( nextNonce ) {
   const sender_wallet = new KlaytnWallet(sender_priv, provider);
   
-  let tx = {
+  let txCancel = {
     type: 0x39,
-    nonce: popTx.nonce, 
+    nonce: nextNonce + 1,
     from: sender, 
   };
 
-  tx = await sender_wallet.populateTransaction(tx);
-  console.log(tx);
+  txCancel = await sender_wallet.populateTransaction(txCancel);
+  console.log(txCancel);
 
-  const senderTxHashRLP = await sender_wallet.signTransaction(tx);
+  const senderTxHashRLP = await sender_wallet.signTransaction(txCancel);
   console.log('senderTxHashRLP', senderTxHashRLP);
 
   return senderTxHashRLP; 
@@ -45,50 +45,38 @@ async function doSender( popTx ) {
 async function doFeePayer( senderTxHashRLP ) {
   const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
 
-  const tx = objectFromRLP( senderTxHashRLP );
-  tx.feePayer = feePayer;
-  console.log(tx);
+  const txCancel = objectFromRLP( senderTxHashRLP );
+  txCancel.feePayer = feePayer;
+  console.log(txCancel);
 
-  const popTx = await feePayer_wallet.populateTransaction(tx);
-  console.log('popTx', popTx);
-
-  const txHashRLP = await feePayer_wallet.signTransactionAsFeePayer( popTx );
-  console.log('txHashRLP', txHashRLP);
-  
-  const txhash = await provider.send("klay_sendRawTransaction", [txHashRLP]);
-  console.log('txhash', txhash);
+  const cancelTx = await feePayer_wallet.sendTransactionAsFeePayer(txCancel);
+  console.log('tx next + 1 Cancel', cancelTx);
 }
 
 async function main() {
   const wallet = new KlaytnWallet(sender_priv, provider);
    
-  // 1) send ValueTransfer tx with the original nonce+1
+  // 1) send ValueTransfer tx with the next nonce + 1
+  let nextNonce = await wallet.getTransactionCount();
   let tx = {
-      type: 8,         
+      type: 8,      
+      nonce: nextNonce + 1,        
       to: reciever,
       value: 1e12,
       from: sender,
     }; 
   
-  popTx = await wallet.populateTransaction(tx);
-  console.log('tx', popTx);
+  const nextTx = await wallet.sendTransaction(tx);
+  console.log('tx next + 1', nextTx);
 
-  popTx.nonce = popTx.nonce + 1; 
-  console.log('tx(nonce + 1)', popTx);
-
-  const rawTx = await wallet.signTransaction(popTx);
-  console.log('rawTx(nonce + 1)', rawTx);
-
-  const txhash = await provider.send("klay_sendRawTransaction", [rawTx]);
-  console.log('txhash(nonce + 1)', txhash);
-
-  // 2) send Cancel tx with the original nonce+1 
-  const senderTxHashRLP = await doSender( popTx );
+  // 2) send Cancel tx with the next nonce+1 
+  const senderTxHashRLP = await doSender( nextNonce );
   await doFeePayer( senderTxHashRLP ); 
 
-  // 3) send ValueTransfer tx with the original nonce
+  // 3) send ValueTransfer tx with the next nonce
+  tx.nonce = nextNonce;
   const sentTx = await wallet.sendTransaction(tx);
-  console.log('tx original', sentTx);
+  console.log('tx next', sentTx);
 
   const rc = await sentTx.wait();
   console.log('receipt', rc);
