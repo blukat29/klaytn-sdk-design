@@ -11,9 +11,14 @@ node example/klaytn_tx_ethers.js
 ```
 
 ## TODO
-
-- common: TxTypes with feePayerSig
-- common: Merge signed txs
+- ~~RLP decoding for adding fee payer's Signature~~
+- ~~Populating gasPrice, gasLimit through Klaytn RPC~~
+- ~~Fee delegation & partial fee delegation examples~~
+- recover function core & example
+- Wallet API dynamic hooking 
+- Klaytn account key core 
+- Klaytn account key examples 
+- Add more test cases
 - ethers: Send Klaytn typed tx via browser wallet (i.e. Wallet.sendTransaction works when this.provider is no JsonRpcProvider)
 - ethers: KlaytnWallet accepts address
 - ethers: KlaytnWallet from v4 keystore
@@ -33,40 +38,79 @@ node example/klaytn_tx_ethers.js
 
 ```mermaid
 classDiagram
-  TypedFields <|-- TypedTx
-  TypedFields <|-- TypedAccountKey
-  class TypedFields {
-    static type: number
-    static fieldTypes: string -> FieldType
+  FieldType ..|> FieldTypeBytes
+  FieldType ..|> FieldTypeSignatureTuples
+  FieldType ..|> FieldTypeAccountKey
+  FieldType ..|> etc
+  class FieldType {
+    <<interface>> 
+    canonicalize(any): any
+    emptyValue(): any
+  }
+  class FieldTypeBytes {
+    canonicalize(any): string
+    emptyValue(): string
+  }
+  class FieldTypeSignatureTuples {
+    canonicalize( SignatureLike[]): SignatureTuple[]
+    emptyValue(): SignatureTuple[]
+  }
+  class FieldTypeAccountKey {
+    canonicalize(TypedAccountKey | string | any): string
+    emptyValue(): string
+  }
+```
+
+```mermaid  
+classDiagram
+  FieldSet <|-- KlaytnTx
+  KlaytnTx <|-- TxTypeValueTransfer
+  KlaytnTx <|-- TxTypeFeeDelegatedValueTransfer
+  KlaytnTx <|-- other TxTypes
+  FieldSet <|-- AccountKey
+  AccountKey <|-- AccountKeyLegacy
+  AccountKey <|-- AccountKeyPublic
+  AccountKey <|-- other AccountKey
+  class FieldSet {
+    type: number
+    typeName: string
+    fieldTypes: string -> FieldType
     setFields(any)
-    getField(string): any
+    setFieldsFromArray( string[], any[] )
+    getField( string ): any
+    getFields( string[] ): any[]
     toObject(): any
   }
-  class TypedTx {
+  class KlaytnTx {
     sigRLP(): string
     sigFeePayerRLP(): string
     senderTxHashRLP(): string
-    txRLP(): string
+    txHashRLP(): string
     addSenderSig(sig)
     addFeePayerSig(sig)
+    setFieldsFromRLP(string): void
   }
-  class TypedAccountKey {
+  class AccountKey {
     toRLP(): string
   }
+```
 
-  TypedFieldsFactory <|.. TypedTxFactory
-  TypedFieldsFactory <|.. TypedAccountKeyFactory
-  class TypedFieldsFactory {
+```mermaid  
+classDiagram
+  FieldSetFactory <|.. KlaytnTxFactory
+  FieldSetFactory <|.. AccountKeyFactory
+  class FieldSetFactory {
+    private registry: [number] -> FieldSet
+    private requiredFields: string[]
     add(typeof T)
+    has(type?): boolean
+    lookup(type?): typeof T
     fromObject(any): T
   }
-  class TypedTxFactory {
-    add(typeof TypedTx)
-    fromObject(any): TypedTx
+  class KlaytnTxFactory {
+    fromRLP(string): KlaytnTx
   }
-  class TypedAccountKeyFactory {
-    add(typeof TypedAccountKey)
-    fromObject(any): TypedAccountKey
+  class AccountKeyFactory {
   }
 ```
 
@@ -94,9 +138,9 @@ classDiagram
     sendTransaction()
   }
   class KlaytnWallet {
+    signTransaction()
     checkTransaction()
     populateTransaction()
-    signTransaction()
     sendTransaction()
   }
 

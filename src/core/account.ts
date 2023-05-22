@@ -1,6 +1,6 @@
-import { FieldType, TypedFields, TypedFieldsFactory } from "./field";
+import { FieldType, FieldSet, FieldSetFactory } from "./field";
 
-export abstract class TypedAccountKey extends TypedFields {
+export abstract class AccountKey extends FieldSet {
 
   ////////////////////////////////////////////////////////////
   // Child classes MUST override below properties and methods
@@ -13,17 +13,20 @@ export abstract class TypedAccountKey extends TypedFields {
 }
 
 const requiredFields = ['type'];
-export const TypedAccountKeyFactory = new TypedFieldsFactory<TypedAccountKey>(
+export const AccountKeyFactory = new FieldSetFactory<AccountKey>(
   requiredFields,
 );
 
-// Accepted types: TypedAccountKey, plain object, serialized bytes
+
+// Accepted types: TypedAccountKey, string, plain object, serialized bytes
 export const FieldTypeAccountKey = new class implements FieldType {
-  canonicalize(value: TypedAccountKey | any): string {
-    if (value instanceof TypedAccountKey) {
+  canonicalize(value: AccountKey | string | any): string {
+    if (value instanceof AccountKey) {
       return value.toRLP();
+    } else if (typeof(value) == 'string') {
+      return value;
     } else {
-      return TypedAccountKeyFactory.fromObject(value).toRLP();
+      return AccountKeyFactory.fromObject(value).toRLP();
     }
   }
   emptyValue(): string { return ""; }

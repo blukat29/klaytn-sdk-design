@@ -45,6 +45,12 @@ export function getSignatureTuple(sig: SignatureLike): SignatureTuple {
     sig = { v: numV, r: sig[1], s: sig[2] };
   }
   const split = splitSignature(sig);
-  const strV = HexStr.fromNumber(split.v);
-  return [strV, split.r, split.s];
+
+  // R and S must not have leading zeros
+  // c.f. https://github.com/ethers-io/ethers.js/blob/v5/packages/transactions/src.ts/index.ts#L298
+  return [
+    HexStr.fromNumber(split.v),
+    HexStr.stripZeros(split.r),
+    HexStr.stripZeros(split.s),
+  ];
 }

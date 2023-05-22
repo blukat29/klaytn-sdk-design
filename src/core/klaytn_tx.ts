@@ -1,86 +1,122 @@
-import { FieldTypeAccountKey } from "./account";
-import { RLP, HexStr } from "./util";
-import {
-  FieldTypeAddress,
-  FieldTypeSignatureTuples,
-  FieldTypeUint8,
-  FieldTypeUint64,
-  FieldTypeUint256 } from "./field";
-import { TypedTx } from "./tx";
 import _ from "lodash";
+import { FieldSet, FieldSetFactory } from "./field"
+import { SignatureLike, getSignatureTuple } from "./sig";
+import { HexStr } from "./util";
+import { Deferrable } from "ethers/lib/utils";
+import { TransactionRequest } from "@ethersproject/abstract-provider";
 
-// https://docs.klaytn.foundation/content/klaytn/design/transactions/basic#txtypevaluetransfer
-export class TypedTxValueTransfer extends TypedTx {
-  static type = 8;
-  static typeName = "TxTypeValueTransfer";
-  static fieldTypes = {
-    'type':         FieldTypeUint8,
-    'nonce':        FieldTypeUint64,
-    'gasPrice':     FieldTypeUint256,
-    'gasLimit':     FieldTypeUint64,
-    'to':           FieldTypeAddress,
-    'value':        FieldTypeUint256,
-    'from':         FieldTypeAddress,
-    'chainId':      FieldTypeUint64,
-    'txSignatures': FieldTypeSignatureTuples,
-  };
+export abstract class KlaytnTx extends FieldSet {
 
-  sigRLP(): string {
-    // SigRLP = encode([encode([type, nonce, gasPrice, gas, to, value, from]), chainid, 0, 0])
-    const inner = this.getFields([
-      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from']);
-    return RLP.encode([
-      RLP.encode(inner), this.getField('chainId'), "0x", "0x"]);
+  ////////////////////////////////////////////////////////////
+  // Child classes MUST override below properties and methods
+
+  // RLP encoding for sender to sign.
+  abstract sigRLP(): string;
+  // RLP encoding for broadcasting. Includes all signatures.
+  abstract txHashRLP(): string;
+  // Set its own fields from an RLP encoded string.
+  abstract setFieldsFromRLP(rlp: string): void;
+
+  ////////////////////////////////////////////////////////////
+  // Child classes MAY override below methods
+
+  // RLP encoding for fee payer to sign.
+  sigFeePayerRLP(): string {
+    throw new Error(`fee payer not supported in txtype ${this.type}`);
+  }
+  // RLP encoding with sender signature.
+  senderTxHashRLP(): string {
+    return this.sigRLP();
   }
 
-  txRLP(): string {
-    // TxHashRLP = type + encode([nonce, gasPrice, gas, to, value, from, txSignatures])
-    const inner = this.getFields([
-      'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures']);
-    return HexStr.concat(
-      this.getField('type'), RLP.encode(inner));
+  // Add a signature
+  addSenderSig(sig: SignatureLike) {
+    if (!this.fieldTypes.txSignatures) {
+      throw new Error(`No 'txSignatures' field in txtype '${this.type}'`);
+    }
+    const tuple = getSignatureTuple(sig);
+    this.fields.txSignatures ||= [];
+    this.fields.txSignatures.push(tuple);
   }
 
-  setFieldsFromRLP(rlp: string): void {
-    // Strip type byte
-    rlp = "0x" + rlp.substring(4);
-    const array = _.concat([ this.type ], RLP.decode(rlp));
-    this.setFieldsFromArray([
-      'type', 'nonce', 'gasPrice', 'gasLimit', 'to', 'value', 'from', 'txSignatures'
-    ], array);
+  // Add a signature as a feePayer
+  addFeePayerSig(sig: SignatureLike) {
+    if (!this.fieldTypes.feePayerSignatures) {
+      throw new Error(`No 'feePayerSignatures' field in txtype '${this.type}'`);
+    }
+    const tuple = getSignatureTuple(sig);
+    this.fields.feePayerSignatures ||= [];
+    this.fields.feePayerSignatures.push(tuple);
+  }
+
+  public hasFeePayer(): boolean {
+    const feeDelegations: Array<number> = [
+      0x09, 0x11, 0x21, 0x29, 0x31, 0x39, 0x49 ];
+    const feeDelegationsAsFeePayer: Array<number> = [
+      0x0a, 0x12, 0x22, 0x2a, 0x32, 0x3a, 0x4a ];
+
+    let fp_type = typeof(this.type)=='string' ? HexStr.toNumber(this.type) : this.type;  
+    
+    if (typeof(fp_type) == 'number') {
+      return feeDelegations.includes(fp_type) || feeDelegationsAsFeePayer.includes(fp_type); 
+    } else {
+      throw new Error('The type have to be a number');
+    }
+  }
+
+  // End override
+  ////////////////////////////////////////////////////////////
+}
+
+class _KlaytnTxFactory extends FieldSetFactory<KlaytnTx> {
+  public fromRLP(value: string): KlaytnTx {
+    if (!HexStr.isHex(value)) {
+      throw new Error(`Not an RLP encoded string`);
+    }
+
+    const rlp = HexStr.from(value);
+    if (rlp.length < 4) {
+      throw new Error(`RLP encoded string too short`);
+    }
+
+    const type = HexStr.toNumber(rlp.substr(0,4));
+    const ctor = this.lookup(type);
+    const instance = new ctor();
+    instance.setFieldsFromRLP(rlp);
+    return instance;
   }
 }
 
-export class TypedTxAccountUpdate extends TypedTx {
-  static type = 0x20;
-  static typeName = "TxTypeAccountUpdate";
-  static fieldTypes = {
-    'type':         FieldTypeUint8,
-    'nonce':        FieldTypeUint64,
-    'gasPrice':     FieldTypeUint256,
-    'gasLimit':     FieldTypeUint64,
-    'from':         FieldTypeAddress,
-    'key':          FieldTypeAccountKey,
-    'chainId':      FieldTypeUint64,
-    'txSignatures': FieldTypeSignatureTuples,
-  };
+const requiredFields = ['type', 'chainId', 'txSignatures'];
+export const KlaytnTxFactory = new _KlaytnTxFactory(
+  requiredFields,
+);
 
-  sigRLP(): string {
-    // SigRLP = encode([encode([type, nonce, gasPrice, gas, from, rlpEncodedKey]), chainid, 0, 0])
-    const inner = this.getFields([
-      'type', 'nonce', 'gasPrice', 'gasLimit', 'from', 'key']);
-    return RLP.encode([
-      RLP.encode(inner), this.getField('chainId'), "0x", "0x"]);
-  }
+export function objectFromRLP(value: string): any {
+  return KlaytnTxFactory.fromRLP( value ).toObject();
+}
 
-  txRLP(): string {
-    // TxHashRLP = type + encode([nonce, gasPrice, gas, from, rlpEncodedKey, txSignatures])
-    const inner = this.getFields([
-      'nonce', 'gasPrice', 'gasLimit', 'from', 'key', 'txSignatures']);
-    return HexStr.concat(
-      this.getField('type'), RLP.encode(inner));
-  }
+export function encodeTxForRPC( allowedKeys:string[], tx: TransactionRequest ): any {
+  // TODO: refactoring like below 
+  // https://github.com/ethers-io/ethers.js/blob/master/packages/providers/src.ts/json-rpc-provider.ts#L701
+  // return {
+  //   from: hexlify(tx.from),
+  //   gas: tx.gasLimit? fromnumber(tx.gasLimit) : null;
+  // };
 
-  setFieldsFromRLP(rlp: string): void {
+  let ttx: any = {};
+  for (const key in tx) {
+    if (allowedKeys.indexOf(key) != -1) {
+      let value = _.get(tx, key);
+
+      if ( value == 0 || value === "0x0000000000000000000000000000000000000000") {
+        value = "0x";
+      } else if ( typeof(value) == 'number' ) {
+        ttx[key] = HexStr.fromNumber(value);
+      } else {
+        ttx[key] = value;
+      }
+    }
   }
+  return ttx;
 }

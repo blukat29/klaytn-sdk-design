@@ -27,17 +27,22 @@ export interface Fields {
   [name: string]: any;
 }
 
+// Accepted types: hex string of an address
+// Canonical type: hex string of checksumed address
+export const FieldTypeAddress = new class implements FieldType {
+  canonicalize(value: any): string { 
+    if (value === "0x") {
+      return "0x0000000000000000000000000000000000000000"
+    }
+    return getAddress(value); 
+  }
+  emptyValue(): string { return "0x"; }
+}
+
 // Accepted types: hex string, byte array
 // Canonical type: hex string
 export const FieldTypeBytes = new class implements FieldType {
   canonicalize(value: any): string { return HexStr.from(value); }
-  emptyValue(): string { return "0x"; }
-}
-
-// Accepted types: hex string of an address
-// Canonical type: hex string of checksumed address
-export const FieldTypeAddress = new class implements FieldType {
-  canonicalize(value: any): string { return getAddress(value); }
   emptyValue(): string { return "0x"; }
 }
 
@@ -70,13 +75,21 @@ export class FieldTypeNumberBits implements FieldType {
     this.maxBN = BigNumber.from(2).pow(maxBits);
   }
   canonicalize(value: any): string {
+    if (value === "0x") {
+      value = 0; 
+    }
     const bn = BigNumber.from(value);
+
     if (bn.gte(this.maxBN)) {
       throw new Error(`Number exceeds ${this.maxBits} bits`);
     }
+
+    if (bn.isZero()) {
+      return "0x";
+    }
     return bn.toHexString();
   }
-  emptyValue(): string { return "0x00"; }
+  emptyValue(): string { return "0x"; }
 }
 
 // Accepted types: JS number, JS bigint, BigNumber class, hex-encoded string
@@ -95,7 +108,16 @@ export const FieldTypeSignatureTuples = new class implements FieldType {
   emptyValue(): SignatureTuple[] { return [] };
 }
 
-export abstract class TypedFields {
+export const FieldTypeBool = new class implements FieldType {
+  canonicalize(value: any): string {
+    if (value === "0x01" || value === "0x") {
+      return value; 
+    }
+    return value? "0x01" : "0x" ;
+  }
+  emptyValue(): string { return "0x" };
+}
+export abstract class FieldSet {
 
   ////////////////////////////////////////////////////////////
   // Child classes MUST override below properties and methods
@@ -127,8 +149,8 @@ export abstract class TypedFields {
   }
 
   // A workaround to read child class's static members.
-  private get _static(): typeof TypedFields {
-    return this.constructor as typeof TypedFields;
+  private get _static(): typeof FieldSet {
+    return this.constructor as typeof FieldSet;
   }
 
   // Fields accessors
@@ -136,10 +158,10 @@ export abstract class TypedFields {
   public setFields(obj: Fields): void {
     this.fields = {};
     _.forOwn(this.fieldTypes, (fieldType, name) => {
-      if (obj[name]) {
-        this.fields[name] = fieldType.canonicalize(obj[name]);
-      } else {
+      if (obj[name] === undefined) {
         this.fields[name] = null;
+      } else {
+        this.fields[name] = fieldType.canonicalize(obj[name]);
       }
     });
   }
@@ -174,21 +196,21 @@ export abstract class TypedFields {
 }
 
 // Instantiable child class of TypedFields
-export interface ConcreteTypedFields<T extends TypedFields> {
+export interface ConcreteFieldSet<T extends FieldSet> {
   type: number;
   fieldTypes: FieldTypes;
   new (): T;
 }
 
-export class TypedFieldsFactory<T extends TypedFields> {
-  private registry: { [type: number]: ConcreteTypedFields<T> } = {};
+export class FieldSetFactory<T extends FieldSet> {
+  private registry: { [type: number]: ConcreteFieldSet<T> } = {};
   private requiredFields: string[];
 
   constructor(requiredFields?: string[]) {
     this.requiredFields = requiredFields || [];
   }
 
-  public add(cls: ConcreteTypedFields<T>) {
+  public add(cls: ConcreteFieldSet<T>) {
     const type = cls.type;
     const fieldTypes = cls.fieldTypes;
 
@@ -211,14 +233,20 @@ export class TypedFieldsFactory<T extends TypedFields> {
     this.registry[type] = cls;
   }
 
-  public has(type?: number): boolean {
+  public has(type?: any): boolean {
+    if (!!type && HexStr.isHex(type)) 
+      return !!type && !!this.registry[HexStr.toNumber(type)];
+  
     return !!type && !!this.registry[type];
   }
 
-  public lookup(type?: number): ConcreteTypedFields<T> {
-    if (!type || !this.has(type)) {
+  public lookup(type?: any): ConcreteFieldSet<T> {
+    if (!type || !this.has(type))
       throw new Error(`Unsupported type '${type}'`);
-    }
+    
+    if ( HexStr.isHex(type))
+      return this.registry[HexStr.toNumber(type)];
+    
     return this.registry[type];
   }
 

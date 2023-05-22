@@ -21,6 +21,8 @@ coverage
 
 # API keys and secrets
 .env
+example/privateKey
+example/feePayerPrivateKey
 
 # Dependency directory
 node_modules

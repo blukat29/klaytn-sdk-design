@@ -1,1 +1,1 @@
-export { TypedTxFactory, TypedAccountKeyFactory } from "./core";
+export { KlaytnTxFactory, AccountKeyFactory } from "./core";
