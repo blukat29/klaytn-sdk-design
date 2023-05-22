@@ -89,7 +89,9 @@ export class KlaytnWallet extends Wallet {
         let ttx = encodeTxForRPC( estimateGasAllowedKeys, tx );
 
         const result = await this.provider.send("klay_estimateGas", [ttx]);
-        tx.gasLimit = result*2;  // multiply 2 for enuough gas
+        // multiply 1.5 for ensuring that the estimated gas is sufficient
+        // refer https://github.com/MetaMask/metamask-extension/blob/9d38e537fca4a61643743f6bf3409f20189eb8bb/ui/ducks/send/helpers.js#L115
+        tx.gasLimit = result*1.5;  
         console.log('gasLimit', result)
       } else {
         throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
