@@ -61,10 +61,10 @@ KlaytnTxFactory.add(TxTypeFeeDelegatedCancelWithRatio);
 KlaytnTxFactory.add(TxTypeFeeDelegatedChainDataAnchoringWithRatio);
 
 import {
-  TypedAccountKeyLegacy,
-  TypedAccountKeyPublic,
+  AccountKeyLegacy,
+  AccountKeyPublic,
 } from "./klaytn_account";
 
 import { AccountKeyFactory } from "./account";
-AccountKeyFactory.add(TypedAccountKeyLegacy);
-AccountKeyFactory.add(TypedAccountKeyPublic);
+AccountKeyFactory.add(AccountKeyLegacy);
+AccountKeyFactory.add(AccountKeyPublic);
