@@ -20,6 +20,14 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 //   type: Must be 0x22,
 //   nonce: In signTransactionAsFeePayer, must not be omitted, because feePayer's nonce is filled when populating
 //   gasLimit: Must be large enough 
+//             If SDK users (wallet or dapp devs) want to add some margin, they can always
+//               1) As in this example, fill in enough values by referring to the results of your previous transactions.
+//               2) Manually call eth_estimateGas or klay_estimateGas and multiply by a factor.
+//                  Edit the populatedTx (e.g. tx.gas = tx.gas * 1.8)
+//
+//             Learn how Klaytn Tx intrinsic gas are calculated - which is unlikely because there's no documentation for it. 
+//             You should see the source code for the info (e.g. VTwithMemo intrinsic gas is 21000 + len(memo)*100 )
+//             https://github.com/klaytn/klaytn/blob/dev/blockchain/types/tx_internal_data_value_transfer_memo.go#L239
 // 
 
 async function doSender() {
