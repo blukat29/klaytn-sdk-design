@@ -111,8 +111,6 @@ classDiagram
     fromRLP(string): KlaytnTx
   }
   class AccountKeyFactory {
-    canonicalize(AccountKey | string | any): string 
-    emptyValue(): string
   }
 ```
 
