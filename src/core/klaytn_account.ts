@@ -63,7 +63,7 @@ export class AccountKeyWeightedMultiSig extends AccountKey {
   static fieldTypes = {
     'type': FieldTypeUint8,
     'Threshold': FieldTypeUint256,
-    'WeightedPublicKeys': AccountKey,
+    'WeightedPublicKeys': FieldTypeCompressedPubKey,
   };
 
   // 0x04 + encode([threshold, [[weight, CompressedPubKey1], [weight2, CompressedPubKey2]]])
