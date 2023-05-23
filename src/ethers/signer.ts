@@ -80,7 +80,8 @@ export class KlaytnWallet extends Wallet {
       return super.populateTransaction(tx);
     }
 
-    if ( !(tx.nonce) ) {
+    // Klaytn AccountKey is not matched with pubKey of the privateKey 
+    if ( !(tx.nonce) && !!(this.klaytn_address)) {
       if (this.provider instanceof JsonRpcProvider ) { 
         const result = await this.provider.getTransactionCount( this.klaytn_address);
         console.log('nonce', result)
