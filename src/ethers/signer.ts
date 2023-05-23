@@ -1,7 +1,9 @@
 import { Wallet } from "@ethersproject/wallet";
-import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
+import { ExternallyOwnedAccount } from "@ethersproject/abstract-signer";
+import { SigningKey } from "@ethersproject/signing-key";
+import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { KlaytnTxFactory } from "../core";
-import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
+import { BytesLike, Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
 import { encodeTxForRPC } from "../core/klaytn_tx";
@@ -56,8 +58,14 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
 
 export class KlaytnWallet extends Wallet {
 
-  checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
+  private klaytn_address: string;
 
+  constructor(address: string, privateKey: BytesLike | ExternallyOwnedAccount | SigningKey, provider?: Provider) {
+    super( privateKey, provider); 
+    this.klaytn_address = address; 
+  }
+
+  checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
     const savedFields = saveCustomFields(transaction);
     transaction = super.checkTransaction(transaction);
     restoreCustomFields(transaction, savedFields);
@@ -70,6 +78,16 @@ export class KlaytnWallet extends Wallet {
 
     if (!KlaytnTxFactory.has(tx.type)) {
       return super.populateTransaction(tx);
+    }
+
+    if ( !(tx.nonce) ) {
+      if (this.provider instanceof JsonRpcProvider ) { 
+        const result = await this.provider.getTransactionCount( this.klaytn_address);
+        console.log('nonce', result)
+        tx.nonce = result;
+      } else {
+        throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);
+      }
     }
 
     if ( !(tx.gasPrice) ) {
@@ -95,7 +113,7 @@ export class KlaytnWallet extends Wallet {
         //   In ethers, no special logic to modify Gas
         //   In Metamask, multiply 1.5 to Gas for ensuring that the estimated gas is sufficient
         //   https://github.com/MetaMask/metamask-extension/blob/9d38e537fca4a61643743f6bf3409f20189eb8bb/ui/ducks/send/helpers.js#L115
-        // tx.gasLimit = result*1.5;  
+        tx.gasLimit = result*1.5;  
         console.log('gasLimit', result)
       } else {
         throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);

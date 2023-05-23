@@ -37,7 +37,7 @@ async function main() {
   // console.log('receipt', rc);
 
   // nonce is set by the new_priv's address 
-  const new_wallet = new KlaytnWallet(new_priv, provider);
+  const new_wallet = new KlaytnWallet(sender, new_priv, provider);
 
   let new_tx = {
     type: 8,
