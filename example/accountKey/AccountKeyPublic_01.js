@@ -3,8 +3,8 @@ const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/s
 
 // create new account for testing 
 // https://baobab.wallet.klaytn.foundation/ 
-const sender_priv = '0xc271760404f5c1c8b95512a4e8b40a85e0ca4159f965db531f43d1196392c7a8' 
-const sender = '0xc602cddb58970475badead0cf791f7df4ed208d4' 
+const sender_priv = '0x9068ffc8ce6e3e79d69fb98ecf7a5fd078592fbe3e4dec1128f3aea5f72c1a78' 
+const sender = '0x0667dcd3dc0ad91120efb7d6fea506fda117cddd' 
 const reciever = '0xc40b6909eb7085590e1c26cb3becc25368e249e9' 
 
 const fs = require('fs');
@@ -18,12 +18,15 @@ async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
   // const wallet = new KlaytnWallet(sender_priv, provider);
 
+  // let new_key = new ethers.utils.SigningKey( new_priv ).compressedPublicKey; 
+  // console.log('new_key', new_key);
+
   // let tx = {
   //       type: 0x20,   // TxTypeAccountUpdate
   //       from: sender,
   //       key: {
   //           type: 0x02, 
-  //           key: new ethers.utils.SigningKey( new_priv ).compressedPublicKey,
+  //           key: new_key,
   //       }
   //   };
   
@@ -33,6 +36,7 @@ async function main() {
   // let rc = await sentTx.wait();
   // console.log('receipt', rc);
 
+  // nonce is set by the new_priv's address 
   const new_wallet = new KlaytnWallet(new_priv, provider);
 
   let new_tx = {
@@ -42,11 +46,11 @@ async function main() {
     from: sender,
   }; 
 
-  sentTx = await new_wallet.sendTransaction(new_tx);
-  console.log('sentTx', sentTx);
+  let sentTx2 = await new_wallet.sendTransaction(new_tx);
+  console.log('sentTx2', sentTx2);
 
-  rc = await sentTx.wait();
-  console.log('receipt', rc);
+  let rc2 = await sentTx2.wait();
+  console.log('receipt2', rc2);
 }
 
 main();
