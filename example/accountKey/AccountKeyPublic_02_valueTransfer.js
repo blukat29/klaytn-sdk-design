@@ -1,9 +1,8 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 
-// create new account for testing 
-// https://baobab.wallet.klaytn.foundation/ 
-const sender = '0x0667dcd3dc0ad91120efb7d6fea506fda117cddd' 
+// the same address of sender in AccountKeyPublic_01_accountUpdate.js 
+const sender = '0x1173d5dc7b5e1e07d857d74e962b6ed7d4234a92' 
 
 const fs = require('fs');
 const updated_priv = fs.readFileSync('./example/privateKey', 'utf8') // newly updated private key of sender

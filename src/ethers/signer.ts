@@ -1,12 +1,11 @@
 import { Wallet } from "@ethersproject/wallet";
-import { ExternallyOwnedAccount } from "@ethersproject/abstract-signer";
-import { SigningKey } from "@ethersproject/signing-key";
 import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { KlaytnTxFactory } from "../core";
-import { BytesLike, Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
+import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
 import { encodeTxForRPC } from "../core/klaytn_tx";
+import { HexStr } from "../core/util";
 
 // @ethersproject/abstract-signer/src.ts/index.ts:allowedTransactionKeys
 const ethersAllowedTransactionKeys: Array<string> = [
@@ -58,11 +57,22 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
 
 export class KlaytnWallet extends Wallet {
 
-  private klaytn_address: string;
+  private klaytn_address: string | undefined;
 
-  constructor(address: string, privateKey: BytesLike | ExternallyOwnedAccount | SigningKey, provider?: Provider) {
-    super( privateKey, provider); 
-    this.klaytn_address = address; 
+  constructor(address: any, privateKey: any, provider?: Provider) {
+    let str_addr = String(address); 
+
+    if ( HexStr.isHex(address) && str_addr.length == 42 && str_addr.startsWith("0x")) {
+      super( privateKey, provider); 
+      this.klaytn_address = address; 
+    } else if ( HexStr.isHex(address) && str_addr.length == 40 && !str_addr.startsWith("0x")) {
+      super( privateKey, provider); 
+      this.klaytn_address = "0x" + address; 
+    } else {
+      provider = privateKey; 
+      privateKey = address;
+      super( privateKey, provider); 
+    }
   }
 
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
