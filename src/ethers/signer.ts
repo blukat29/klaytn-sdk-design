@@ -75,9 +75,9 @@ export class KlaytnWallet extends Wallet {
     }
   }
 
-  getAddress(): Promise<string> {
-    return Promise.resolve( String(this.klaytn_address) );
-  }
+  // getAddress(): Promise<string> {
+  //   return Promise.resolve( String(this.klaytn_address) );
+  // }
 
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
     const savedFields = saveCustomFields(transaction);

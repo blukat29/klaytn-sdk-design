@@ -63,8 +63,12 @@ KlaytnTxFactory.add(TxTypeFeeDelegatedChainDataAnchoringWithRatio);
 import {
   AccountKeyLegacy,
   AccountKeyPublic,
+  AccountKeyWeightedMultiSig, 
+  AccountKeyRoleBased,
 } from "./klaytn_account";
 
 import { AccountKeyFactory } from "./account";
 AccountKeyFactory.add(AccountKeyLegacy);
 AccountKeyFactory.add(AccountKeyPublic);
+AccountKeyFactory.add(AccountKeyWeightedMultiSig);
+AccountKeyFactory.add(AccountKeyRoleBased);

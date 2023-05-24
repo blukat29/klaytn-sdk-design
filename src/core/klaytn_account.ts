@@ -1,4 +1,4 @@
-import { AccountKey } from "./account";
+import { AccountKey, FieldTypeAccountKey } from "./account";
 import { FieldTypeUint8, FieldTypeUint256, FieldTypeCompressedPubKey } from "./field";
 import { HexStr, RLP } from "./util";
 
@@ -62,13 +62,37 @@ export class AccountKeyWeightedMultiSig extends AccountKey {
   static typeName = "AccountKeyWeightedMultiSig"; 
   static fieldTypes = {
     'type': FieldTypeUint8,
-    'Threshold': FieldTypeUint256,
-    'WeightedPublicKeys': FieldTypeCompressedPubKey,
+    'threshold': FieldTypeUint256,
+    'weightedPublicKeys': FieldTypeAccountKey,
   };
 
   // 0x04 + encode([threshold, [[weight, CompressedPubKey1], [weight2, CompressedPubKey2]]])
   toRLP(): string {
-    const inner = this.getField("key");
+    // e.g.
+    // [
+    //   "03",
+    //   [
+    //     [
+    //       "01",
+    //       "02c734b50ddb229be5e929fc4aa8080ae8240a802d23d3290e5e6156ce029b110e"
+    //     ],
+    //     [
+    //       "01",
+    //       "0212d45f1cc56fbd6cd8fc877ab63b5092ac77db907a8a42c41dad3e98d7c64dfb"
+    //     ],
+    //     [
+    //       "01",
+    //       "02ea9a9f85065a00d7b9ffd3a8532a574035984587fd08107d8f4cbad6b786b0cd"
+    //     ],
+    //     [
+    //       "01",
+    //       "038551bc489d62fa2e6f767ba87fe93a62b679fca8ff3114eb5805e6487b51e8f6"
+    //     ]
+    //   ]
+    // ]
+    const inner = this.getField("weightedPublicKeys");
+    console.log( inner );
+    console.log( 'to RLP', RLP.encode(inner) );
     return HexStr.concat("0x04", RLP.encode(inner));
   }
 }
