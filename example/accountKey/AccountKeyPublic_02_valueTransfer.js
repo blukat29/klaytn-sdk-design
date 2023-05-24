@@ -19,7 +19,7 @@ async function main() {
   const wallet = new KlaytnWallet( sender, updated_priv, provider );
 
   let new_tx = {
-    type: 8,
+    type: 8,        // TxTypeValueTransfer
     to: reciever,
     value: 100000000000,
     from: sender,

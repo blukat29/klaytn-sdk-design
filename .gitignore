@@ -41,3 +41,10 @@ dist/**/*
 
 # ignore yarn.lock
 yarn.lock
+example/feePayerPrivateKey
+example/privateKey
+example/privateKey2
+example/privateKey3
+example/publicKey
+example/publicKey2
+example/publicKey3
