@@ -65,8 +65,15 @@ export class FieldTypeBytesFixedLen implements FieldType {
 export const FieldTypeCompressedPubKey = new FieldTypeBytesFixedLen(33);
 
 export const FieldTypeMultiKeys = new class implements FieldType {
-  canonicalize(value: []): string {
-    return RLP.encode( value );
+  canonicalize(value: [[]]): string {
+    let keys = [] ;
+
+    for ( let i=0; i<value.length ; i++){
+      keys.push( RLP.encode(value[i]) );
+      console.log( i, ': ', RLP.encode(value[i]) )
+    }
+    console.log('all', RLP.encode( keys ));
+    return RLP.encode( keys );
   }
   emptyValue(): string { return  RLP.encode([]) };
 }
