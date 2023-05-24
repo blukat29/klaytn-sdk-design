@@ -59,7 +59,7 @@ export class KlaytnWallet extends Wallet {
 
   private klaytn_address: string | undefined;
 
-  constructor(address: any, privateKey: any, provider?: Provider) {
+  constructor(address: any, privateKey?: any, provider?: Provider) {
     let str_addr = String(address); 
 
     if ( HexStr.isHex(address) && str_addr.length == 42 && str_addr.startsWith("0x")) {
@@ -73,6 +73,10 @@ export class KlaytnWallet extends Wallet {
       privateKey = address;
       super( privateKey, provider); 
     }
+  }
+
+  getAddress(): Promise<string> {
+    return Promise.resolve( String(this.klaytn_address) );
   }
 
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
