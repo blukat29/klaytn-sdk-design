@@ -1,5 +1,5 @@
-import { AccountKey, FieldTypeAccountKey } from "./account";
-import { FieldTypeUint8, FieldTypeUint256, FieldTypeCompressedPubKey } from "./field";
+import { AccountKey } from "./account";
+import { FieldTypeUint8, FieldTypeCompressedPubKey, FieldTypeMultiKeys } from "./field";
 import { HexStr, RLP } from "./util";
 
 
@@ -62,8 +62,8 @@ export class AccountKeyWeightedMultiSig extends AccountKey {
   static typeName = "AccountKeyWeightedMultiSig"; 
   static fieldTypes = {
     'type': FieldTypeUint8,
-    'threshold': FieldTypeUint256,
-    'weightedPublicKeys': FieldTypeAccountKey,
+    'threshold': FieldTypeUint8,
+    'weightedPublicKeys': FieldTypeMultiKeys,
   };
 
   // 0x04 + encode([threshold, [[weight, CompressedPubKey1], [weight2, CompressedPubKey2]]])

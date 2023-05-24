@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { HexStr } from "./util";
+import { HexStr, RLP } from "./util";
 import { SignatureLike, SignatureTuple, getSignatureTuple } from "./sig";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getAddress } from "@ethersproject/address";
@@ -63,6 +63,13 @@ export class FieldTypeBytesFixedLen implements FieldType {
 // Accepted types: hex-encoded string
 // Canonical type: hex-encoded string
 export const FieldTypeCompressedPubKey = new FieldTypeBytesFixedLen(33);
+
+export const FieldTypeMultiKeys = new class implements FieldType {
+  canonicalize(value: []): string {
+    return RLP.encode( value );
+  }
+  emptyValue(): string { return  RLP.encode([]) };
+}
 
 export class FieldTypeNumberBits implements FieldType {
   maxBits: number;
