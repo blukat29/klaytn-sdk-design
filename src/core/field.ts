@@ -87,23 +87,23 @@ export const FieldTypeCompressedPubKey = new FieldTypeBytesFixedLen(33);
 //   ]
 // ]
 export const FieldTypeMultiKeys = new class implements FieldType {
-  canonicalize(value: [ number, any[] ]): any[] {
+  canonicalize(value: [ number, [[number, string]] ]): any[] {
     
     let ret = [], keys = [];
 
+    console.log( value );
     ret.push( HexStr.fromNumber(value[0]) );
-    console.log( HexStr.fromNumber(value[0]) );
 
     for ( let i=0; i<value[1].length ; i++){
       let key = []; 
       key.push( HexStr.fromNumber( value[1][i][0] ));
       key.push( value[1][i][1] );
-      console.log( i, ': ', HexStr.fromNumber( value[1][i][0]), ',', value[1][i][1]);
-      
+      console.log( i, ': ', HexStr.fromNumber( value[1][i][0]), ', ', value[1][i][1]);
       keys.push( key );
       console.log( keys );
     }
 
+    ret.push( keys );
     return ret;
   }
   emptyValue(): string {  return "0x"; };

@@ -44,13 +44,16 @@ async function main() {
   let tx = {
         type: 0x20,    // TxTypeAccountUpdate
         from: sender,
+        gasLimit: 100000,  // has to be enough
         key: {
             type: 0x04,   // AccountKeyWeightedMultiSig
             keys: [
               2,
-              [ 1, new_key, ],
-              [ 1, new_key2 ],
-              [ 1, new_key3 ]
+              [
+                [ 1, new_key, ],
+                [ 1, new_key2 ],
+                [ 1, new_key3 ]
+              ]
             ]
         }
     };
