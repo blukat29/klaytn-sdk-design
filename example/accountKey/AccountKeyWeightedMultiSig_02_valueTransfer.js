@@ -1,11 +1,14 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { objectFromRLP } = require("../../dist/src/core/klaytn_tx");
 const fs = require('fs');
 
 // 
 // AccountKeyWeightedMultiSig Step 02 - value transfer
 // https://docs.klaytn.foundation/content/klaytn/design/accounts#accountkeyweightedmultisig
 //
+//   gasLimit: Must be large enough 
+// 
 
 const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
 
@@ -19,23 +22,24 @@ async function doSign( tx ) {
   const new_priv = fs.readFileSync('./example/privateKey', 'utf8'); 
   const wallet = new KlaytnWallet(sender, new_priv, provider);
 
-  tx = await wallet.populateTransaction(tx);
-  console.log(tx);
+  let ttx = await wallet.populateTransaction(tx);
+  console.log(ttx);
 
-  const txHashRLP = await wallet.signTransaction(tx);
+  const txHashRLP = await wallet.signTransaction(ttx);
   console.log('TxHashRLP', txHashRLP);
 
   return txHashRLP;   
 }
 
 async function addSign( txHashRLP, privateKey_path ) {
-  const new_priv = fs.readFileSync(privateKey_path, 'utf8'); 
+  const new_priv = fs.readFileSync( privateKey_path, 'utf8'); 
   const wallet = new KlaytnWallet(sender, new_priv, provider);
 
-  const tx = objectFromRLP( txHashRLP );
-  console.log(tx);
+  let tx = objectFromRLP( txHashRLP );
+  ttx = await wallet.populateTransaction(tx);
+  console.log(ttx);
   
-  const new_txHashRLP = await wallet.signTransaction(tx);
+  const new_txHashRLP = await wallet.signTransaction(ttx);
   console.log('new TxHashRLP', new_txHashRLP);
 
   return new_txHashRLP;   
@@ -44,9 +48,10 @@ async function addSign( txHashRLP, privateKey_path ) {
 async function main() {
 
   let tx = {
-    type: 9,    
+    type: 8,
+    gasLimit: 100000, 
     to: reciever,
-    value: 1e12,
+    value: 100000000000,
     from: sender,
   }; 
 
