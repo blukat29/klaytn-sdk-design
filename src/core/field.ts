@@ -64,18 +64,49 @@ export class FieldTypeBytesFixedLen implements FieldType {
 // Canonical type: hex-encoded string
 export const FieldTypeCompressedPubKey = new FieldTypeBytesFixedLen(33);
 
+// e.g.
+// [
+//   "03",
+//   [
+//     [
+//       "01",
+//       "02c734b50ddb229be5e929fc4aa8080ae8240a802d23d3290e5e6156ce029b110e"
+//     ],
+//     [
+//       "01",
+//       "0212d45f1cc56fbd6cd8fc877ab63b5092ac77db907a8a42c41dad3e98d7c64dfb"
+//     ],
+//     [
+//       "01",
+//       "02ea9a9f85065a00d7b9ffd3a8532a574035984587fd08107d8f4cbad6b786b0cd"
+//     ],
+//     [
+//       "01",
+//       "038551bc489d62fa2e6f767ba87fe93a62b679fca8ff3114eb5805e6487b51e8f6"
+//     ]
+//   ]
+// ]
 export const FieldTypeMultiKeys = new class implements FieldType {
-  canonicalize(value: [[]]): string {
-    let keys = [] ;
+  canonicalize(value: [ number, any[] ]): any[] {
+    
+    let ret = [], keys = [];
 
-    for ( let i=0; i<value.length ; i++){
-      keys.push( RLP.encode(value[i]) );
-      console.log( i, ': ', RLP.encode(value[i]) )
+    ret.push( HexStr.fromNumber(value[0]) );
+    console.log( HexStr.fromNumber(value[0]) );
+
+    for ( let i=0; i<value[1].length ; i++){
+      let key = []; 
+      key.push( HexStr.fromNumber( value[1][i][0] ));
+      key.push( value[1][i][1] );
+      console.log( i, ': ', HexStr.fromNumber( value[1][i][0]), ',', value[1][i][1]);
+      
+      keys.push( key );
+      console.log( keys );
     }
-    console.log('all', RLP.encode( keys ));
-    return RLP.encode( keys );
+
+    return ret;
   }
-  emptyValue(): string { return  RLP.encode([]) };
+  emptyValue(): string {  return "0x"; };
 }
 
 export class FieldTypeNumberBits implements FieldType {

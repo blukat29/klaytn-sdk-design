@@ -62,10 +62,10 @@ export class AccountKeyWeightedMultiSig extends AccountKey {
   static typeName = "AccountKeyWeightedMultiSig"; 
   static fieldTypes = {
     'type': FieldTypeUint8,
-    'threshold': FieldTypeUint8,
-    'weightedPublicKeys': FieldTypeMultiKeys,
+    'keys': FieldTypeMultiKeys,
   };
 
+  
   // 0x04 + encode([threshold, [[weight, CompressedPubKey1], [weight2, CompressedPubKey2]]])
   toRLP(): string {
     // e.g.
@@ -90,9 +90,9 @@ export class AccountKeyWeightedMultiSig extends AccountKey {
     //     ]
     //   ]
     // ]
-    const inner = this.getField("weightedPublicKeys");
-    console.log( inner );
-    console.log( 'to RLP', RLP.encode(inner) );
+    const inner = this.getField("keys");
+    console.log( 'inner', inner );
+    console.log( 'to RLP:', "0x04", RLP.encode(inner) );
     return HexStr.concat("0x04", RLP.encode(inner));
   }
 }

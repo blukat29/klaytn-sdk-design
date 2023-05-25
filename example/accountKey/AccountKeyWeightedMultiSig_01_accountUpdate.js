@@ -46,8 +46,8 @@ async function main() {
         from: sender,
         key: {
             type: 0x04,   // AccountKeyWeightedMultiSig
-            threshold: 2,
-            weightedPublicKeys: [
+            keys: [
+              2,
               [ 1, new_key, ],
               [ 1, new_key2 ],
               [ 1, new_key3 ]
