@@ -98,7 +98,6 @@ export class KlaytnWallet extends Wallet {
     if ( !(tx.nonce) && !!(this.klaytn_address)) {
       if (this.provider instanceof JsonRpcProvider ) { 
         const result = await this.provider.getTransactionCount( this.klaytn_address);
-        console.log('nonce', result)
         tx.nonce = result;
       } else {
         throw new Error(`Klaytn transaction can only be populated from a Klaytn JSON-RPC server`);

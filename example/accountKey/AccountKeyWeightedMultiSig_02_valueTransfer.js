@@ -57,7 +57,10 @@ async function main() {
 
   const txHashRLP  = await doSign( tx ); 
   const txHashRLP2 = await addSign( txHashRLP, './example/privateKey2' ); 
-  const txHashRLP3 = await addSign( txHashRLP, './example/privateKey3' ); 
+  const txHashRLP3 = await addSign( txHashRLP2, './example/privateKey3' ); 
+
+  let ttx = objectFromRLP( txHashRLP3 );
+  console.log(ttx);
 
   const txhash = await provider.send("klay_sendRawTransaction", [txHashRLP3]);
   console.log('txhash', txhash);

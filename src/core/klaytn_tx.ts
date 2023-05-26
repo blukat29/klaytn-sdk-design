@@ -35,10 +35,8 @@ export abstract class KlaytnTx extends FieldSet {
       throw new Error(`No 'txSignatures' field in txtype '${this.type}'`);
     }
     const tuple = getSignatureTuple(sig);
-    console.log( 'tuple:', tuple );
     this.fields.txSignatures ||= [];
     this.fields.txSignatures.push(tuple);
-    console.log( 'txSignatures:', this.fields.txSignatures );
   }
 
   // Add a signature as a feePayer
