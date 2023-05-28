@@ -144,32 +144,31 @@ export const FieldTypeWeightedMultiSigKeys = new class implements FieldType {
 // ]
 export const FieldTypeRoleBasedKeys = new class implements FieldType {
   canonicalize(value: [ any, any, any ] ): string[] {  
-    let ret = [];
-
     if ( value.length != 3 )
         throw new Error('RoleBasedKey format is wrong');
 
+    let ret = [];
     for ( let i=0; i<value.length ; i++){
       if ( typeof value[i] === 'string' ){
-        if ( !( value[i].startsWith('0x02') || value[i].startsWith('0x04') || value[i].startsWith('0x80')) )
+        if ( !( value[i].startsWith('0x02') || value[i].startsWith('0x04') || value[i].startsWith('0x80')) ) {
           throw new Error(`'${value[i]}' is wrong string format for role-based key`);
+        }
         ret.push( value[i] );
-        console.log('string: ', value[i]);
       } else if ( Array.isArray(value[i]) ){
         ret.push( HexStr.concat("0x04", RLP.encode( FieldTypeWeightedMultiSigKeys.canonicalize(value[i]) ))); 
       } else if ( typeof value[i] === 'object' ) {
-        console.log('object', value[i]);
-        if ( value[i].type == undefined || value[i].key == undefined || 
-          HexStr.fromNumber(value[i].type) != "0x02" || String( value[i].key ).length != 68 )
+        if ( value[i].type == undefined || HexStr.fromNumber(value[i].type) != "0x02" 
+              || value[i].key == undefined || String( value[i].key ).length != 68 ) {
           throw new Error(`'${value[i]}' is wrong object format for role-based key`);
+        }
         ret.push( HexStr.concat("0x02", RLP.encode(value[i].key)) ); 
       } else {
         throw new Error(`'${value[i]}' is wrong format for role-based key`);
       }
     }
-
     return ret;
   }
+
   emptyValue(): string {  return "0x"; };
 }
 
