@@ -1,5 +1,5 @@
 import { AccountKey } from "./account";
-import { FieldTypeUint8, FieldTypeCompressedPubKey, FieldTypeMultiKeys } from "./field";
+import { FieldTypeUint8, FieldTypeCompressedPubKey, FieldTypeWeightedMultiSigKeys } from "./field";
 import { HexStr, RLP } from "./util";
 
 
@@ -62,7 +62,7 @@ export class AccountKeyWeightedMultiSig extends AccountKey {
   static typeName = "AccountKeyWeightedMultiSig"; 
   static fieldTypes = {
     'type': FieldTypeUint8,
-    'keys': FieldTypeMultiKeys,
+    'keys': FieldTypeWeightedMultiSigKeys,
   };
 
   // 0x04 + encode([threshold, [[weight, CompressedPubKey1], [weight2, CompressedPubKey2]]])
@@ -79,7 +79,7 @@ export class AccountKeyRoleBased extends AccountKey {
   static typeName = "AccountKeyRoleBased";
   static fieldTypes = {
     'type': FieldTypeUint8,
-    'keys':  FieldTypeCompressedPubKey,
+    'keys': FieldTypeRoleBasedKeys,
   };
 
   // 0x05 + encode([key1, key2, key3])
