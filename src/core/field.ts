@@ -156,7 +156,7 @@ export const FieldTypeRoleBasedKeys = new class implements FieldType {
         ret.push( value[i] );
         console.log('string: ', value[i]);
       } else if ( Array.isArray(value[i]) ){
-        ret.push( FieldTypeWeightedMultiSigKeys.canonicalize(value[i]) ); 
+        ret.push( RLP.encode( FieldTypeWeightedMultiSigKeys.canonicalize(value[i]) ) ); 
       } else if ( typeof value[i] === 'object' ) {
         if ( value[i].type == undefined || value[i].key == undefined || 
           HexStr.fromNumber(value[i].type) != "0x20" || String( value[i].key ).length != 33 )

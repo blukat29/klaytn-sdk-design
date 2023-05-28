@@ -50,11 +50,6 @@ async function main() {
           type: 0x05,   // AccountKeyRoleBased
           keys: [
             // RoleTransaction
-            {
-              type: 0x02,  
-              key: new_key,
-            },
-            // RoleAccountUpdate
             [
               2,   
               [
@@ -63,6 +58,11 @@ async function main() {
                 [ 1, new_key3 ]
               ]
             ],
+            // RoleAccountUpdate
+            {
+              type: 0x02,  
+              key: new_key,
+            },
             // RoleFeePayer
             HexStr.concat("0x02", RLP.encode(new_key)) 
           ]
