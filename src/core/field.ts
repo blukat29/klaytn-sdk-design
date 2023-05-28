@@ -156,10 +156,11 @@ export const FieldTypeRoleBasedKeys = new class implements FieldType {
         ret.push( value[i] );
         console.log('string: ', value[i]);
       } else if ( Array.isArray(value[i]) ){
-        ret.push( RLP.encode( FieldTypeWeightedMultiSigKeys.canonicalize(value[i]) ) ); 
+        ret.push( HexStr.concat("0x04", RLP.encode( FieldTypeWeightedMultiSigKeys.canonicalize(value[i]) ))); 
       } else if ( typeof value[i] === 'object' ) {
+        console.log('object', value[i]);
         if ( value[i].type == undefined || value[i].key == undefined || 
-          HexStr.fromNumber(value[i].type) != "0x20" || String( value[i].key ).length != 33 )
+          HexStr.fromNumber(value[i].type) != "0x02" || String( value[i].key ).length != 68 )
           throw new Error(`'${value[i]}' is wrong object format for role-based key`);
         ret.push( HexStr.concat("0x02", RLP.encode(value[i].key)) ); 
       } else {

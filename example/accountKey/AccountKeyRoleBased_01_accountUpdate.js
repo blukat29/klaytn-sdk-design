@@ -1,5 +1,6 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { RLP, HexStr } = require("../../dist/src/core/util")
 const fs = require('fs');
 
 // 
@@ -45,7 +46,7 @@ async function main() {
   let tx = {
         type: 0x20,   // TxTypeAccountUpdate
         from: sender,
-        gasLimit: 100000, 
+        gasLimit: 1000000, 
         key: {
           type: 0x05,   // AccountKeyRoleBased
           keys: [
@@ -58,11 +59,13 @@ async function main() {
                 [ 1, new_key3 ]
               ]
             ],
+            
             // RoleAccountUpdate
             {
               type: 0x02,  
               key: new_key,
             },
+            
             // RoleFeePayer
             HexStr.concat("0x02", RLP.encode(new_key)) 
           ]
