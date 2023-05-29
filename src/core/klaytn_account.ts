@@ -5,8 +5,10 @@ import { HexStr, RLP } from "./util";
 
 // https://docs.klaytn.foundation/content/klaytn/design/accounts#accountkeynil
 export class AccountKeyNil extends AccountKey {
+  static type = 0x80;   // The type for AccountKeyNil is not defined in the spec
   static typeName = "AccountKeyNil";
   static fieldTypes = {
+    'type': FieldTypeUint8,
   }
 
   toRLP(): string {
