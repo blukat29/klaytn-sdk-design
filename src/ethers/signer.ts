@@ -1,11 +1,12 @@
 import { Wallet } from "@ethersproject/wallet";
 import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { KlaytnTxFactory } from "../core";
-import { Deferrable, keccak256, resolveProperties } from "ethers/lib/utils";
+import { Bytes, Deferrable, hashMessage, keccak256, recoverAddress, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
+import { KlaytnTxFactory } from "../core";
 import { encodeTxForRPC } from "../core/klaytn_tx";
 import { HexStr } from "../core/util";
+import { SignatureLike } from "../core/sig";
 
 // @ethersproject/abstract-signer/src.ts/index.ts:allowedTransactionKeys
 const ethersAllowedTransactionKeys: Array<string> = [
@@ -230,4 +231,22 @@ export class KlaytnWallet extends Wallet {
       throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
     }
   }
+}
+
+export async function verifyMessage(provider: Provider, address: string, message: Bytes | string, signature: any): Promise<string> {
+  
+  const acutal_signer_addr = recoverAddress(hashMessage(message), signature);
+
+  if (provider instanceof JsonRpcProvider) {
+    // eth_sendRawTransaction cannot process Klaytn typed transactions.
+    const result = await provider.send("klay_getAccount", [address]);
+    // TODO: will be updated
+    console.log('account:', result)
+    console.log('account:', result.account)
+    console.log('account:', result.account.key) 
+  } else {
+    throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
+  }
+
+  return "0x3829332"; // TODO: will be updated
 }

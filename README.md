@@ -16,8 +16,8 @@ node example/klaytn_tx_ethers.js
 - ~~Fee delegation & partial fee delegation examples~~
 - recover function core & example
 - Wallet API dynamic hooking 
-- Klaytn account key core 
-- Klaytn account key examples 
+- ~~Klaytn account key core~~
+- ~~Klaytn account key examples~~
 - Add more test cases
 - ethers: Send Klaytn typed tx via browser wallet (i.e. Wallet.sendTransaction works when this.provider is no JsonRpcProvider)
 - ethers: KlaytnWallet accepts address
