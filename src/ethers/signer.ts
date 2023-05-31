@@ -1,6 +1,6 @@
 import { Wallet } from "@ethersproject/wallet";
 import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { Bytes, Deferrable, hashMessage, keccak256, recoverAddress, resolveProperties } from "ethers/lib/utils";
+import { Bytes, Deferrable, computeAddress, hashMessage, keccak256, recoverAddress, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import _ from "lodash";
 import { KlaytnTxFactory } from "../core";
@@ -233,20 +233,26 @@ export class KlaytnWallet extends Wallet {
   }
 }
 
-export async function verifyMessage(provider: Provider, address: string, message: Bytes | string, signature: any): Promise<string> {
+export async function verifyMessageAsKlaytnAccountKey(provider: Provider, address: string, message: Bytes | string, signature: any): Promise<boolean> {
   
-  const acutal_signer_addr = recoverAddress(hashMessage(message), signature);
+  const actual_signer_addr = recoverAddress(hashMessage(message), signature);
+  console.log( 'actual signer addr: ', actual_signer_addr)
 
   if (provider instanceof JsonRpcProvider) {
-    // eth_sendRawTransaction cannot process Klaytn typed transactions.
-    const result = await provider.send("klay_getAccount", [address]);
-    // TODO: will be updated
-    console.log('account:', result)
-    console.log('account:', result.account)
-    console.log('account:', result.account.key) 
+    const klaytn_accountKey = await provider.send("klay_getAccountKey", [address, "latest"]);
+    console.log('Klaytn Accountkey: ', klaytn_accountKey)
+
+    if ( klaytn_accountKey.keyType == 2 ) {
+      const x = String(klaytn_accountKey.key.x).substring(2);
+      const y = String(klaytn_accountKey.key.y).substring(2);
+      let accountKeyPublic = computeAddress( HexStr.concat( "0x04" + x + y )); 
+      if ( accountKeyPublic === actual_signer_addr ) {
+        return true; 
+      }
+    }
   } else {
     throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
   }
 
-  return "0x3829332"; // TODO: will be updated
+  return false; 
 }

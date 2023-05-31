@@ -1,5 +1,7 @@
 const ethers = require("ethers");
 const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { verifyMessageAsKlaytnAccountKey } = require("../../dist/src/ethers/signer");
+
 const fs = require('fs');
 
 //
@@ -20,7 +22,6 @@ async function doSignMessage( message ) {
   const wallet = new KlaytnWallet( sender, updated_priv, provider );
 
   const signature = await wallet.signMessage(message);
-  console.log( signature );
 
   return {
     message: message,
@@ -30,18 +31,15 @@ async function doSignMessage( message ) {
 }
 
 async function doVerifyMessage ( obj ) {
-  console.log( obj );
-  const actualAddr = await verifyMessage( provider, obj.sender, obj.message, obj.signature);
-  console.log( 'Actual address:', actualAddr );
-  if (obj.address !== actualAddr) {
-    return false;
-  }
-  return true;
+  return await verifyMessageAsKlaytnAccountKey( provider, obj.address, obj.message, obj.signature);
 }
 
 async function main() {
   const message = "Hello World"; 
-  const obj = await doSignMessage( message ); 
+
+  const obj = await doSignMessage( message );
+  console.log( obj );
+  
   const result = await doVerifyMessage( obj ); 
   console.log( "verification result:", result);
 }
