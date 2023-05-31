@@ -52,7 +52,8 @@ async function main() {
           type: 0x05,   // AccountKeyRoleBased
           keys: [
             // RoleTransaction
-            new AccountKeyNil(),  // not updated  
+            AccountKeyNil, 
+
             // RoleAccountUpdate
             [
               2,   
@@ -62,8 +63,9 @@ async function main() {
                 [ 1, new_key3 ]
               ]
             ],
+
             // RoleFeePayer
-            "0x80", // not updated
+            AccountKeyNil,
           ]
         }
       };

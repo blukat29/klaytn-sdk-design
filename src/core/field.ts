@@ -3,7 +3,6 @@ import { HexStr, RLP } from "./util";
 import { SignatureLike, SignatureTuple, getSignatureTuple } from "./sig";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getAddress } from "@ethersproject/address";
-import { AccountKey } from "./account";
 
 export class FieldError extends Error {
   constructor(ty: FieldType, name: string, value: any) {
@@ -151,14 +150,13 @@ export const FieldTypeRoleBasedKeys = new class implements FieldType {
     let ret = [];
     for ( let i=0; i<value.length ; i++){
       if ( typeof value[i] === 'string' ){
-        if ( !( value[i].startsWith('0x02') || value[i].startsWith('0x04') || value[i].startsWith('0x80')) ) {
+        // AccountKeyNil '0x80', AccountKeyPublic '0x02', AccountKeyWeightedMultiSig '0x04' 
+        if ( !( value[i] == '0x80' || value[i].startsWith('0x02') || value[i].startsWith('0x04') ) ) {
           throw new Error(`'${value[i]}' is wrong string format for role-based key`);
         }
         ret.push( value[i] );
       } else if ( Array.isArray(value[i]) ){
         ret.push( HexStr.concat("0x04", RLP.encode( FieldTypeWeightedMultiSigKeys.canonicalize(value[i]) ))); 
-      } else if ( value[i] instanceof AccountKey ) {
-        ret.push( value[i].toRLP() );
       } else if ( typeof value[i] === 'object' ) {
         if ( value[i].type == undefined || HexStr.fromNumber(value[i].type) != "0x02" 
               || value[i].key == undefined || String( value[i].key ).length != 68 ) {
