@@ -14,7 +14,7 @@ node example/klaytn_tx_ethers.js
 - ~~RLP decoding for adding fee payer's Signature~~
 - ~~Populating gasPrice, gasLimit through Klaytn RPC~~
 - ~~Fee delegation & partial fee delegation examples~~
-- recover function core & example
+- ~~recover function core & example~~
 - Wallet API dynamic hooking 
 - ~~Klaytn account key core~~
 - ~~Klaytn account key examples~~
