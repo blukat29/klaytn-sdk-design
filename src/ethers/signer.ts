@@ -235,20 +235,48 @@ export class KlaytnWallet extends Wallet {
 
 export async function verifyMessageAsKlaytnAccountKey(provider: Provider, address: string, message: Bytes | string, signature: any): Promise<boolean> {
   
-  const actual_signer_addr = recoverAddress(hashMessage(message), signature);
-  console.log( 'actual signer addr: ', actual_signer_addr)
-
   if (provider instanceof JsonRpcProvider) {
+    
     const klaytn_accountKey = await provider.send("klay_getAccountKey", [address, "latest"]);
     console.log('Klaytn Accountkey: ', klaytn_accountKey)
 
     if ( klaytn_accountKey.keyType == 2 ) {
+      // AccountKeyPublic
+      const actual_signer_addr = recoverAddress(hashMessage(message), signature);
+    
       const x = String(klaytn_accountKey.key.x).substring(2);
       const y = String(klaytn_accountKey.key.y).substring(2);
+      // uncompressed public key = 0x04 + x coordinate + y coordinate
       let accountKeyPublic = computeAddress( HexStr.concat( "0x04" + x + y )); 
       if ( accountKeyPublic === actual_signer_addr ) {
         return true; 
       }
+    } else if ( klaytn_accountKey.keyType == 4 && Array.isArray(signature)) {
+      // AccountKeyWeightedMultiSig
+      const threshold = klaytn_accountKey.key.threshold;
+      let current_threshold = 0; 
+
+      for ( let i=0; i<klaytn_accountKey.key.keys.length; i++ ){
+        let weight = klaytn_accountKey.key.keys[i].weight;
+        let x = String(klaytn_accountKey.key.keys[i].key.x).substring(2);
+        let y = String(klaytn_accountKey.key.keys[i].key.y).substring(2);
+        let oneAddress = computeAddress( HexStr.concat( "0x04" + x + y ));
+
+        for ( let j=0; j<signature.length ; j++ ){
+          let actual_signer_addr = recoverAddress(hashMessage(message), signature[j]);
+
+          if ( oneAddress === actual_signer_addr ) {
+            current_threshold += weight;
+            if ( threshold <= current_threshold ) {
+              return true; 
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    } else if ( klaytn_accountKey.keyType == 5  ) {
+
     }
   } else {
     throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
