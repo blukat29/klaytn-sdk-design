@@ -238,49 +238,71 @@ export async function verifyMessageAsKlaytnAccountKey(provider: Provider, addres
   if (provider instanceof JsonRpcProvider) {
     
     const klaytn_accountKey = await provider.send("klay_getAccountKey", [address, "latest"]);
-    console.log('Klaytn Accountkey: ', klaytn_accountKey)
 
     if ( klaytn_accountKey.keyType == 2 ) {
       // AccountKeyPublic
-      const actual_signer_addr = recoverAddress(hashMessage(message), signature);
-    
-      const x = String(klaytn_accountKey.key.x).substring(2);
-      const y = String(klaytn_accountKey.key.y).substring(2);
-      // uncompressed public key = 0x04 + x coordinate + y coordinate
-      let accountKeyPublic = computeAddress( HexStr.concat( "0x04" + x + y )); 
-      if ( accountKeyPublic === actual_signer_addr ) {
-        return true; 
-      }
-    } else if ( klaytn_accountKey.keyType == 4 && Array.isArray(signature)) {
+      return verifyMessageAsKlaytnAccountKeyPublic( provider, klaytn_accountKey, message, signature ); 
+      
+    } else if ( klaytn_accountKey.keyType == 4 ) {
       // AccountKeyWeightedMultiSig
-      const threshold = klaytn_accountKey.key.threshold;
-      let current_threshold = 0; 
+      return verifyMessageAsKlaytnAccountKeyWeightedMultiSig(provider, klaytn_accountKey, message, signature );
 
-      for ( let i=0; i<klaytn_accountKey.key.keys.length; i++ ){
-        let weight = klaytn_accountKey.key.keys[i].weight;
-        let x = String(klaytn_accountKey.key.keys[i].key.x).substring(2);
-        let y = String(klaytn_accountKey.key.keys[i].key.y).substring(2);
-        let oneAddress = computeAddress( HexStr.concat( "0x04" + x + y ));
+    } else if ( klaytn_accountKey.keyType == 5 ) {
+      // AccountKeyRoleBased 
+      const roleTransactionKey = klaytn_accountKey.key[0]; 
 
-        for ( let j=0; j<signature.length ; j++ ){
-          let actual_signer_addr = recoverAddress(hashMessage(message), signature[j]);
-
-          if ( oneAddress === actual_signer_addr ) {
-            current_threshold += weight;
-            if ( threshold <= current_threshold ) {
-              return true; 
-            } else {
-              break;
-            }
-          }
-        }
+      if ( roleTransactionKey.keyType == 2 ) {
+        return verifyMessageAsKlaytnAccountKeyPublic( provider, roleTransactionKey, message, signature ); 
+      } else if ( roleTransactionKey.keyType == 4 ) {
+        return verifyMessageAsKlaytnAccountKeyWeightedMultiSig(provider, roleTransactionKey, message, signature );        
       }
-    } else if ( klaytn_accountKey.keyType == 5  ) {
-
     }
   } else {
     throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
   }
 
   return false; 
+}
+
+function verifyMessageAsKlaytnAccountKeyPublic( provider: Provider, klaytn_accountKey: any, message: Bytes | string, signature: any): boolean {
+  const actual_signer_addr = recoverAddress(hashMessage(message), signature);
+
+  const x = String(klaytn_accountKey.key.x).substring(2);
+  const y = String(klaytn_accountKey.key.y).substring(2);
+  let klaytn_addr = computeAddress( HexStr.concat( "0x04" + x + y )); 
+
+  if ( actual_signer_addr === klaytn_addr ) {
+    return true; 
+  }
+  return false; 
+}
+
+function verifyMessageAsKlaytnAccountKeyWeightedMultiSig( provider: Provider, klaytn_accountKey: any, message: Bytes | string, signature: any): boolean {
+  if ( !Array.isArray(signature) )
+  throw new Error(`This account needs multi-signature [ sig1, sig2 ... sigN ]`);
+
+  const threshold = klaytn_accountKey.key.threshold;
+  let current_threshold = 0; 
+
+  for ( let i=0; i<klaytn_accountKey.key.keys.length; i++ ){
+    let weight = klaytn_accountKey.key.keys[i].weight;
+    let x = String(klaytn_accountKey.key.keys[i].key.x).substring(2);
+    let y = String(klaytn_accountKey.key.keys[i].key.y).substring(2);
+    let oneOfAddress = computeAddress( HexStr.concat( "0x04" + x + y ));
+
+    for ( let j=0; j<signature.length ; j++ ){
+      let actual_signer_addr = recoverAddress(hashMessage(message), signature[j]);
+
+      if ( oneOfAddress === actual_signer_addr ) {
+        current_threshold += weight;
+        if ( threshold <= current_threshold ) {
+          return true; 
+        } else {
+          break;
+        }
+      }
+    } // for j
+  } // for i
+
+  return false;
 }
