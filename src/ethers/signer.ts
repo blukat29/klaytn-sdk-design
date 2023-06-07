@@ -59,8 +59,16 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
 export class KlaytnWallet extends Wallet {
 
   private klaytn_address: string | undefined;
+  
+  private dynamicUpdateWalletAPI;
+  
+  _checkTransaction:((transaction: Deferrable<TransactionRequest>) => Deferrable<TransactionRequest>) | undefined ;
+  _populateTransaction: ((transaction: Deferrable<TransactionRequest>) => Promise<TransactionRequest>) | undefined ;
 
-  constructor(address: any, privateKey?: any, provider?: Provider) {
+  _signTransaction; 
+  _sendTransaction;
+
+  constructor(address: any, privateKey?: any, provider?: Provider, dynamicUpdateWalletAPI: boolean=true ) {
     let str_addr = String(address); 
 
     if ( HexStr.isHex(address) && str_addr.length == 42 && str_addr.startsWith("0x")) {
@@ -74,6 +82,27 @@ export class KlaytnWallet extends Wallet {
       privateKey = address;
       super( privateKey, provider); 
     }
+
+    // KlaytnWallet API is also working on Wallet 
+    // For example, Wallet.populateTransaction is same with KlaytnWallet.populateTransaction. 
+    this.dynamicUpdateWalletAPI = dynamicUpdateWalletAPI;
+    if ( this.dynamicUpdateWalletAPI == true ) {
+      this._checkTransaction = super.checkTransaction; 
+      super.checkTransaction = this.checkTransaction; 
+
+      this._populateTransaction = super.populateTransaction; 
+      super.populateTransaction = this.populateTransaction; 
+
+      this._signTransaction = super.signTransaction;
+      super.signTransaction = this.signTransaction; 
+
+      // super.signTransactionAsFeePayer = this.signTransactionAsFeePayer;
+
+      this._sendTransaction = super.sendTransaction;
+      super.sendTransaction = this.sendTransaction; 
+
+      // super.sendTransactionAsFeePayer = this.sendTransactionAsFeePayer;
+    }
   }
 
   // getAddress(): Promise<string> {
@@ -82,7 +111,11 @@ export class KlaytnWallet extends Wallet {
 
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
     const savedFields = saveCustomFields(transaction);
-    transaction = super.checkTransaction(transaction);
+    if ( this.dynamicUpdateWalletAPI == true && this._checkTransaction != undefined ) {
+      transaction = this._checkTransaction(transaction);
+    } else {
+      transaction = super.checkTransaction(transaction);
+    }
     restoreCustomFields(transaction, savedFields);
 
     return transaction;
@@ -92,7 +125,11 @@ export class KlaytnWallet extends Wallet {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
     if (!KlaytnTxFactory.has(tx.type)) {
-      return super.populateTransaction(tx);
+      if ( this.dynamicUpdateWalletAPI == true && this._populateTransaction != undefined ) {
+        return this._populateTransaction(tx);
+      } else {
+        return super.populateTransaction(tx);
+      }
     }
 
     // Klaytn AccountKey is not matched with pubKey of the privateKey 
@@ -136,7 +173,11 @@ export class KlaytnWallet extends Wallet {
     }
 
     const savedFields = saveCustomFields(tx);
-    tx = await super.populateTransaction(tx);
+    if ( this.dynamicUpdateWalletAPI == true && this._populateTransaction != undefined ) {
+      tx = await this._populateTransaction(tx);
+    } else {
+      tx = await super.populateTransaction(tx);
+    }
     restoreCustomFields(tx, savedFields);
 
     return tx;
@@ -159,7 +200,11 @@ export class KlaytnWallet extends Wallet {
     let tx: TransactionRequest = await resolveProperties(transaction);
 
     if (!KlaytnTxFactory.has(tx.type)) {
-      return super.signTransaction(tx);
+      if ( this.dynamicUpdateWalletAPI == true && this._signTransaction != undefined ) {
+        return this._signTransaction(tx);
+      } else { 
+        return super.signTransaction(tx);
+      }
     }
 
     const ttx = KlaytnTxFactory.fromObject(tx);
