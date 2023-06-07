@@ -52,9 +52,6 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
   }
 }
 
-// Wallet API dynamic hooking
-// Wallet.populateTransaction = function() {
-// };
 
 export class KlaytnWallet extends Wallet {
 
@@ -96,12 +93,14 @@ export class KlaytnWallet extends Wallet {
       this._signTransaction = super.signTransaction;
       super.signTransaction = this.signTransaction; 
 
-      // super.signTransactionAsFeePayer = this.signTransactionAsFeePayer;
+      // @ts-ignore
+      super.signTransactionAsFeePayer = this.signTransactionAsFeePayer;
 
       this._sendTransaction = super.sendTransaction;
       super.sendTransaction = this.sendTransaction; 
 
-      // super.sendTransactionAsFeePayer = this.sendTransactionAsFeePayer;
+      // @ts-ignore
+      super.sendTransactionAsFeePayer = this.sendTransactionAsFeePayer;
     }
   }
 
