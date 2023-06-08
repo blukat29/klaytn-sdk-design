@@ -1,4 +1,4 @@
-import { Wallet } from "@ethersproject/wallet";
+import { Wallet as OldWallet } from "@ethersproject/wallet";
 import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { Bytes, Deferrable, computeAddress, hashMessage, keccak256, recoverAddress, resolveProperties } from "ethers/lib/utils";
 import { JsonRpcProvider } from "@ethersproject/providers";
@@ -53,7 +53,7 @@ function restoreCustomFields(tx: Deferrable<TransactionRequest>, savedFields: an
 }
 
 
-export class KlaytnWallet extends Wallet {
+export class Wallet extends OldWallet {
 
   private klaytn_address: string | undefined;
   

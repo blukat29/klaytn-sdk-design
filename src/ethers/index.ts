@@ -1,1 +1,1 @@
-export { KlaytnWallet } from "./signer";
+export { Wallet } from "./signer";
