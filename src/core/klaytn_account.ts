@@ -1,4 +1,4 @@
-import { AccountKey } from "./account";
+import { AccountKey } from "./accountKey";
 import { FieldTypeUint8, FieldTypeCompressedPubKey, FieldTypeWeightedMultiSigKeys, FieldTypeRoleBasedKeys } from "./field";
 import { HexStr, RLP } from "./util";
 

@@ -1,5 +1,5 @@
 export { KlaytnTx, KlaytnTxFactory } from "./klaytn_tx";
-export { AccountKey, AccountKeyFactory } from "./account";
+export { AccountKey, AccountKeyFactory } from "./accountKey";
 
 import { KlaytnTxFactory } from "./klaytn_tx";
 
@@ -68,7 +68,7 @@ import {
   AccountKeyRoleBased,
 } from "./klaytn_account";
 
-import { AccountKeyFactory } from "./account";
+import { AccountKeyFactory } from "./accountKey";
 AccountKeyFactory.add(AccountKeyLegacy);
 AccountKeyFactory.add(AccountKeyPublic);
 AccountKeyFactory.add(AccountKeyFail);

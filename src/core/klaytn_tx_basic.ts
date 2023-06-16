@@ -1,4 +1,4 @@
-import { FieldTypeAccountKey } from "./account";
+import { FieldTypeAccountKey } from "./accountKey";
 import { RLP, HexStr } from "./util";
 import {
   FieldTypeAddress,
