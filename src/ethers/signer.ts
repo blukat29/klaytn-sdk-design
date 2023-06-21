@@ -104,9 +104,24 @@ export class Wallet extends OldWallet {
     }
   }
 
-  // getAddress(): Promise<string> {
-  //   return Promise.resolve( String(this.klaytn_address) );
-  // }
+  getAddress(): Promise<string> {
+    if ( this.klaytn_address == undefined ) 
+      return super.getAddress();
+    return Promise.resolve( String(this.klaytn_address) );
+  }
+
+  getEtherAddress(): Promise<string> {
+    return super.getAddress();
+  }
+
+  async isDecoupled(): Promise<boolean> {
+    if ( this.klaytn_address == undefined )
+      return false;
+
+    let A = String( await this.getAddress() ).toLocaleUpperCase();
+    let B = String( await this.getEtherAddress() ).toLocaleUpperCase();
+    return A.localeCompare( B.toString() ) != 0;
+  }
 
   checkTransaction(transaction: Deferrable<TransactionRequest>): Deferrable<TransactionRequest> {
     const savedFields = saveCustomFields(transaction);

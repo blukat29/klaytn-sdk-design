@@ -60,13 +60,14 @@ KlaytnTxFactory.add(TxTypeFeeDelegatedAccountUpdateWithRatio);
 KlaytnTxFactory.add(TxTypeFeeDelegatedCancelWithRatio);
 KlaytnTxFactory.add(TxTypeFeeDelegatedChainDataAnchoringWithRatio);
 
+// AccountKey 
 import {
   AccountKeyLegacy,
   AccountKeyPublic,
   AccountKeyFail,
   AccountKeyWeightedMultiSig, 
   AccountKeyRoleBased,
-} from "./klaytn_account";
+} from "./klaytn_accountKeys";
 
 import { AccountKeyFactory } from "./accountKey";
 AccountKeyFactory.add(AccountKeyLegacy);
