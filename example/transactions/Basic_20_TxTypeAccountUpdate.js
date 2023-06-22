@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 
 // create new account for testing 
 // https://baobab.wallet.klaytn.foundation/ 
@@ -17,7 +17,7 @@ const sender = '0xd634b0e06dd997fb65b072063c5d619ea94d0b7c'
 // 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
-  const wallet = new KlaytnWallet(sender_priv, provider);
+  const wallet = new Wallet(sender_priv, provider);
 
   let tx = {
         type: 0x20,

@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 const { objectFromRLP } = require("../../dist/src/core/klaytn_tx");
 const fs = require('fs');
 
@@ -20,7 +20,7 @@ const reciever = '0xc40b6909eb7085590e1c26cb3becc25368e249e9';
 // do sign with the each updated sender's accountKey 
 async function doSign( tx ) {
   const new_priv = fs.readFileSync('./example/privateKey', 'utf8'); 
-  const wallet = new KlaytnWallet(sender, new_priv, provider);
+  const wallet = new Wallet(sender, new_priv, provider);
 
   let ttx = await wallet.populateTransaction(tx);
   console.log(ttx);
@@ -33,7 +33,7 @@ async function doSign( tx ) {
 
 async function addSign( txHashRLP, privateKey_path ) {
   const new_priv = fs.readFileSync( privateKey_path, 'utf8'); 
-  const wallet = new KlaytnWallet(sender, new_priv, provider);
+  const wallet = new Wallet(sender, new_priv, provider);
 
   let tx = objectFromRLP( txHashRLP );
   ttx = await wallet.populateTransaction(tx);

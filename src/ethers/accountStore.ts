@@ -145,14 +145,13 @@ export class AccountStore {
         for (let i=0 ; i < wallets.length ; i++) {
             if (this.provider instanceof JsonRpcProvider) {
                 let addr:string = await wallets[i].getAddress(); 
-                console.log( 'wallet[', i, '].addr =', addr);
                 if (this.hasAccountInfos( addr )) {
                     continue; 
                 }
+
                 let klaytn_account = await this.provider.send("klay_getAccount", [addr, "latest"]);
                 let klaytn_accountKey = klaytn_account.account.key; 
-                console.log( klaytn_account );
-
+            
                 accInfo = {
                     address: addr,
                     nonce: klaytn_account.account.nonce,
@@ -205,13 +204,13 @@ export class AccountStore {
                     let roleKeys = [];
                     for (let i=0 ; i<klaytn_accountKey.key.length ; i++) {
                         if (klaytn_accountKey.key[i].keyType == 1){
-                            // AccountKeyLegacy as a role-based key
+                            // AccountKeyLegacy in the role-based key
                             roleKeys.push({
                                 type: 1, 
                                 key: {}
                             });  
                         } else if (klaytn_accountKey.key[i].keyType == 2){
-                            // AccountKeyPublic as a role-based key
+                            // AccountKeyPublic in the role-based key
                             roleKeys.push({
                                 type: 2, 
                                 key: {
@@ -219,7 +218,7 @@ export class AccountStore {
                                 }
                             }); 
                         } else if (klaytn_accountKey.key[i].keyType == 4){
-                            // AccountKeyWeightedMultiSig as a role-based key
+                            // AccountKeyWeightedMultiSig in the role-based key
                             let multiKeys = {
                                 type: 4, 
                                 key: {

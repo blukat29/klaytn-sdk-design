@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 const { objectFromRLP } = require("../../dist/src/core/klaytn_tx");
 
 const fs = require('fs');
@@ -34,7 +34,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 //
 
 async function doSender() {
-  const sender_wallet = new KlaytnWallet(sender_priv, provider);
+  const sender_wallet = new Wallet(sender_priv, provider);
 
   const CONTRACT_ADDRESS = contract_addr;
   const CONTRACT_ABI = ["function setNumber(uint256 newNumber) public", "function increment() public"];
@@ -59,7 +59,7 @@ async function doSender() {
 }
 
 async function doFeePayer( senderTxHashRLP ) {
-  const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
+  const feePayer_wallet = new Wallet(feePayer_priv, provider);
 
   const tx = objectFromRLP( senderTxHashRLP );
   tx.feePayer = feePayer;

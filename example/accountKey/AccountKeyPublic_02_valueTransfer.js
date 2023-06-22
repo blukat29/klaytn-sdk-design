@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 const fs = require('fs');
 
 //
@@ -16,7 +16,7 @@ const updated_priv = fs.readFileSync('./example/privateKey', 'utf8');
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net');
-  const wallet = new KlaytnWallet( sender, updated_priv, provider );
+  const wallet = new Wallet( sender, updated_priv, provider );
 
   let new_tx = {
     type: 8,        // TxTypeValueTransfer

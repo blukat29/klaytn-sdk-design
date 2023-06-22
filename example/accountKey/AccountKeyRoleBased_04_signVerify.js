@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 const { verifyMessageAsKlaytnAccountKey } = require("../../dist/src/ethers/signer");
 const fs = require('fs');
 
@@ -18,7 +18,7 @@ const sender = '0x9b4284806060423079e612203c22e8cb48b9870e';
 
 async function doSignMessage( message, privateKey_path ) {
   const updated_priv = fs.readFileSync( privateKey_path, 'utf8'); 
-  const wallet = new KlaytnWallet( updated_priv, provider );
+  const wallet = new Wallet( updated_priv, provider );
 
   const signature = await wallet.signMessage(message);
 

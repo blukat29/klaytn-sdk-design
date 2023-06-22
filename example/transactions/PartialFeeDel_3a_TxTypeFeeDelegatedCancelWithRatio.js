@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 const { objectFromRLP } = require("../../dist/src/core/klaytn_tx");
 
 const fs = require('fs');
@@ -25,7 +25,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.
 // 
 
 async function doSender( nextNonce ) {
-  const sender_wallet = new KlaytnWallet(sender_priv, provider);
+  const sender_wallet = new Wallet(sender_priv, provider);
   
   let txCancel = {
     type: 0x3a,
@@ -44,7 +44,7 @@ async function doSender( nextNonce ) {
 }
 
 async function doFeePayer( senderTxHashRLP ) {
-  const feePayer_wallet = new KlaytnWallet(feePayer_priv, provider);
+  const feePayer_wallet = new Wallet(feePayer_priv, provider);
 
   const txCancel = objectFromRLP( senderTxHashRLP );
   txCancel.feePayer = feePayer;
@@ -55,7 +55,7 @@ async function doFeePayer( senderTxHashRLP ) {
 }
 
 async function main() {
-  const wallet = new KlaytnWallet(sender_priv, provider);
+  const wallet = new Wallet(sender_priv, provider);
    
   // 1) send ValueTransfer tx with the next nonce + 1
   let nextNonce = await wallet.getTransactionCount();

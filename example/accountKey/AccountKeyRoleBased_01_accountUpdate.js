@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 const { RLP, HexStr } = require("../../dist/src/core/util")
 const fs = require('fs');
 
@@ -34,7 +34,7 @@ function getPubkey3(){
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net');
-  const wallet = new KlaytnWallet( sender_priv, provider );
+  const wallet = new Wallet( sender_priv, provider );
 
   let new_key = getPubkey(); 
   console.log('1', new_key);
@@ -67,7 +67,10 @@ async function main() {
             },
             
             // RoleFeePayer
-            HexStr.concat("0x02", RLP.encode(new_key)) 
+            {
+              type: 0x02,  
+              key: new_key,
+            } 
           ]
         }
       };

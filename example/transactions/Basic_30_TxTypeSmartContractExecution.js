@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { KlaytnWallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
+const { Wallet } = require("../../dist/src/ethers"); // require("@klaytn/sdk-ethers");
 
 const fs = require('fs')
 const sender_priv = fs.readFileSync('./example/privateKey', 'utf8') // private key of sender 
@@ -30,7 +30,7 @@ const contract_addr = '0xD7fA6634bDDe0B2A9d491388e2fdeD0fa25D2067'
 //
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider('https://public-en-baobab.klaytn.net')
-  const wallet = new KlaytnWallet(sender_priv, provider);
+  const wallet = new Wallet(sender_priv, provider);
 
   const CONTRACT_ADDRESS = contract_addr;
   const CONTRACT_ABI = ["function setNumber(uint256 newNumber) public", "function increment() public"];
