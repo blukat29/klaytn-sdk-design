@@ -171,14 +171,9 @@ export class AccountStore {
                     accInfo.key = {
                         type: 2, 
                         key: {
-                            pubkey: {},
+                            pubkey: this.getPubkeyInfo( klaytn_accountKey.key.x, klaytn_accountKey.key.y )
                         }
                     }; 
-
-                    // @ts-ignore
-                    accInfo.key.key.pubkey = this.getPubkeyInfo( klaytn_accountKey.key.x, klaytn_accountKey.key.y );
-                    // @ts-ignore
-                    accInfo.key.key.pubkey.hasPrivateKey = this.hasInSignableKeyList( addr )
                 } else if ( klaytn_accountKey.keyType == 4 ) {
                     // AccountKeyWeightedMultiSig
                     accInfo.key = {
@@ -189,22 +184,13 @@ export class AccountStore {
                         }
                     };
 
-                    console.log(klaytn_accountKey.key.keys)
-
-                    // add mult-keys
-                    for (let i=0 ; i<klaytn_accountKey.key.keys.length ; i++) {
-                        let pubKey = this.getPubkeyInfo( klaytn_accountKey.key.keys[i].key.x, klaytn_accountKey.key.keys[i].key.y ); 
-                        pubKey.hasPrivateKey = this.hasInSignableKeyList( pubKey.hashed ); 
-                         
+                    for (let i=0 ; i<klaytn_accountKey.key.keys.length ; i++) { 
                         // @ts-ignore
                         accInfo.key.key.keys.push({
                             weight: klaytn_accountKey.key.keys[i].weight,
-                            pubkey: pubKey
+                            pubkey: this.getPubkeyInfo( klaytn_accountKey.key.keys[i].key.x, klaytn_accountKey.key.keys[i].key.y )
                         }); 
                     }
-
-                    // @ts-ignore
-                    console.log( accInfo.key.key.keys )
                 } else if ( klaytn_accountKey.keyType == 5 ) {
                     // AccountKeyRoleBased 
                     accInfo.key = {
@@ -216,30 +202,25 @@ export class AccountStore {
                         }
                     }; 
 
-                    let tmpKey = [];
-
-                    // add role keys
+                    let roleKeys = [];
                     for (let i=0 ; i<klaytn_accountKey.key.length ; i++) {
                         if (klaytn_accountKey.key[i].keyType == 1){
-                            tmpKey.push({
+                            // AccountKeyLegacy as a role-based key
+                            roleKeys.push({
                                 type: 1, 
                                 key: {}
                             });  
                         } else if (klaytn_accountKey.key[i].keyType == 2){
-                            let roleKey = {
+                            // AccountKeyPublic as a role-based key
+                            roleKeys.push({
                                 type: 2, 
                                 key: {
-                                    pubkey:{}
+                                    pubkey: this.getPubkeyInfo( klaytn_accountKey.key[i].key.x, klaytn_accountKey.key[i].key.y )
                                 }
-                            }; 
-
-                            roleKey.key.pubkey =  this.getPubkeyInfo( klaytn_accountKey.key[i].key.x, klaytn_accountKey.key[i].key.y );
-                            // @ts-ignore
-                            roleKey.key.pubkey.hasPrivateKey = this.hasInSignableKeyList( roleKey.key.pubkey.hashed );
-                            tmpKey.push( roleKey );
-                            console.log( roleKey );
+                            }); 
                         } else if (klaytn_accountKey.key[i].keyType == 4){
-                            let roleKey = {
+                            // AccountKeyWeightedMultiSig as a role-based key
+                            let multiKeys = {
                                 type: 4, 
                                 key: {
                                     threshold: klaytn_accountKey.key[i].key.threshold, 
@@ -249,31 +230,24 @@ export class AccountStore {
         
                             // add mult-keys
                             for (let j=0 ; j<klaytn_accountKey.key[i].key.keys.length ; j++) {
-                                let pubKey = this.getPubkeyInfo( klaytn_accountKey.key[i].key.keys[j].key.x, klaytn_accountKey.key[i].key.keys[j].key.y );
-                                pubKey.hasPrivateKey = this.hasInSignableKeyList( pubKey.hashed );
-
                                 // @ts-ignore
-                                roleKey.key.keys.push({
+                                multiKeys.key.keys.push({
                                     weight: klaytn_accountKey.key[i].key.keys[j].weight,
-                                    pubkey: pubKey 
+                                    pubkey: this.getPubkeyInfo( klaytn_accountKey.key[i].key.keys[j].key.x, klaytn_accountKey.key[i].key.keys[j].key.y ) 
                                 }); 
-                                console.log(roleKey.key.keys[j])
                             }
-
-                            tmpKey.push( roleKey );
-                            console.log( roleKey );
+                            roleKeys.push( multiKeys );
                         }  
                     }
 
                     // @ts-ignore
                     accInfo.key.key = {
-                        RoleTransaction: tmpKey[0], 
-                        RoleAccountUpdate: tmpKey[1], 
-                        RoleFeePayer: tmpKey[2]
+                        RoleTransaction: roleKeys[0], 
+                        RoleAccountUpdate: roleKeys[1], 
+                        RoleFeePayer: roleKeys[2]
                     };                  
                 }
                 
-                console.log( accInfo );
                 this.accountInfos.push( accInfo ); 
             } else {
                 throw new Error(`Klaytn typed transaction can only be broadcasted to a Klaytn JSON-RPC server`);
@@ -316,7 +290,7 @@ export class AccountStore {
         return null;
     }
 
-    getAccountInfo( address: string ) : any {
+    getAccountInfo( address: string ) : AccountInfo | null {
         let i:number;
         for ( i=0 ; this.accountInfos != undefined && i < this.accountInfos.length ; i++) {
             if ( HexStr.isSameHex( this.accountInfos[i].address, address) ){
@@ -337,17 +311,20 @@ export class AccountStore {
         const zeroPadX = HexStr.zeroPad( stripedX, 64 );
         const zeroPadY = HexStr.zeroPad( stripedY, 64 );
 
-        let compressedKey, hashedKey; 
+        let compressedKey;
         if ( ['0','2','4','6','8','a','c','e'].indexOf( String(x).substring(-1) ) != -1 ) {
             compressedKey = HexStr.concat( "0x02" + zeroPadX );
         } else {
             compressedKey = HexStr.concat( "0x03" + zeroPadX );
         }
-        hashedKey = computeAddress( HexStr.concat( "0x04" + zeroPadX + zeroPadY )); 
+        
+        let hashedKey = computeAddress( HexStr.concat( "0x04" + zeroPadX + zeroPadY )); 
+        let hasPrivateKey = this.hasInSignableKeyList( hashedKey );
 
         return { 
             compressed : compressedKey, 
-            hashed: hashedKey
+            hashed: hashedKey,
+            hasPrivateKey: hasPrivateKey
         }; 
     }
 }
